@@ -32,10 +32,6 @@ def create_homepage():
     return render_template("homepage.html")
 
 
-if __name__ == "__main__":
-    connect_to_db(app)
-    app.run(host="0.0.0.0", debug=True)
-
 # NOTE: CHECKING users emails routes added here. Just for CHECK
 @app.route("/users")
 def display_users_email():
@@ -59,15 +55,40 @@ def display_user_profile(user_id):
 def register_user():
     """Create a new user"""
 
+    first_name = request.form.get("fname")
+    last_name = request.form.get("lname")
     email = request.form.get("email")
     password = request.form.get("password")
 
     check_email = crud.get_user_by_email(email)
 
     if check_email == None:
-        crud.create_user(email, password)
-        flash("New account created successfully! Please log in")
+        crud.create_user(first_name, last_name, email, password)
+        flash(
+            "New account created successfully! Please log in"
+        )  # FIXME: Change Flash messages!!!
     else:
-        flash("Email is associated with an account. Try again")
+        flash("Email is associated with an account. Try again!")
 
     return redirect("/")
+
+
+@app.route("/login")
+def check_login_credentials():
+
+    email = request.args.get("login_email")
+    password = request.args.get("login_password")
+
+    match_passwords = crud.check_password(email, password)
+
+    if match_passwords == True:
+        flash("Logged in!")
+    else:
+        flash("OH NO!")
+
+    return redirect("/")
+
+
+if __name__ == "__main__":
+    connect_to_db(app)
+    app.run(host="0.0.0.0", debug=True)
