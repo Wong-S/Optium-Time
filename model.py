@@ -26,10 +26,10 @@ class User(db.Model):
     __tablename__ = "users"
 
     user_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    first_name = db.Column(db.String(15))  # nullable=False
-    last_name = db.Column(db.String(15))  # nullable=False
-    email = db.Column(db.String(30), unique=True)  # nullable=True
-    password = db.Column(db.String(25), unique=True)  # nullable=False
+    first_name = db.Column(db.String)  # nullable=False
+    last_name = db.Column(db.String)  # nullable=False
+    email = db.Column(db.String, unique=True)  # nullable=True
+    password = db.Column(db.String(30), unique=True)  # nullable=False
 
     # NOTE: For Journal class, can call entry_1.users; For User class, can call lenoard.journal
     journal = db.relationship("Journal", backref="users")
