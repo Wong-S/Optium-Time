@@ -15,6 +15,7 @@ from model import (
     connect_to_db,
 )
 
+
 # NOTE: 'first_name' must be same as called in model.py Class
 # Part 1: Create user
 def create_user(first_name, last_name, email, password):
@@ -87,14 +88,29 @@ def create_journal_entry(
 
 
 # POST function
+
+
+def get_user_email():
+    """Return users list of email address"""
+
+    return User.query.all()
+
+
+# NOTE: Test interactively returns list of user objects
+
+
+def get_user_by_id(user_id):
+    """Return user's profile with user's email"""
+
+    user_by_id = User.query.get(user_id)
+
+    return user_by_id
+
+
 def get_user_by_email(email):
     """ Return user's profile"""
 
     return User.query.filter(User.email == email).first()
-
-
-# NOTE -->
-# Test run in interactive mode:
 
 
 # Part 3:
