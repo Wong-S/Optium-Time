@@ -87,9 +87,7 @@ def create_journal_entry(
 # NOTE: CHECKING functions display user emails that were added!
 
 
-# POST function
-
-
+# Server.py create account POST function
 def get_user_email():
     """Return users list of email address"""
 
@@ -108,9 +106,23 @@ def get_user_by_id(user_id):
 
 
 def get_user_by_email(email):
-    """ Return user's profile"""
+    """ Return user's profile or None """
 
     return User.query.filter(User.email == email).first()
+
+
+# Server.py login route:
+def check_password(email, password):
+    """ Compare password on file for a user when they are logging in"""
+
+    user_info = get_user_by_email(email)
+
+    if user_info == None:
+        return False
+    elif user_info.password == password:
+        return True
+    else:
+        return False
 
 
 # Part 3:
