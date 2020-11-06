@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %} Journal Details {% endblock %}
+
+{% block body %}
+    <h1> JOURNAL DETAILS!!! </h1>
+    <ul>
+    {% for entry in journal_list %}
+        {{entry.entry_name}}
+        {{entry.entry_details}}
+        {{entry.created_at}}
+        {{entry.updated_at}}
+        {% endfor %}
+
+    </ul>
+
+{% endblock body%}
