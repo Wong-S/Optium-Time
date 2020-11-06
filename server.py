@@ -24,6 +24,7 @@ API_KEY = os.environ["YOUTUBE_KEY"]
 # raise
 # print("No key avaliable")
 
+# ================================================================================
 # Routes start here:
 @app.route("/")
 def create_homepage():
@@ -32,7 +33,8 @@ def create_homepage():
     return render_template("homepage.html")
 
 
-# NOTE: CHECKING users emails routes added here. Just for CHECK
+# ================================================================================
+# NOTE: CHECKING users emails routes added here. Just for CHECK FIXME: REMOVE LATER
 @app.route("/users")
 def display_users_email():
     """Show all users email addresses and link to user's profile"""
@@ -53,7 +55,7 @@ def display_user_profile(user_id):
 
 @app.route("/users", methods=["POST"])
 def register_user():
-    """Create a new user"""
+    """Create a new user account"""
 
     first_name = request.form.get("fname")
     last_name = request.form.get("lname")
@@ -75,6 +77,7 @@ def register_user():
 
 @app.route("/login")
 def check_login_credentials():
+    """Return journal webpage or redirect to homepage"""
 
     email = request.args.get("login_email")
     password = request.args.get("login_password")
@@ -83,10 +86,60 @@ def check_login_credentials():
 
     if match_passwords == True:
         flash("Logged in!")
+        return redirect("/user-page")
     else:
-        flash("OH NO!")
+        flash("Email or password do not match. Try again!")
+        return redirect("/")
 
-    return redirect("/")
+
+# =====================================================================
+# User Page Route: What displays here is Journals, Sleep Log, Playlists Selection, etc:
+
+
+@app.route("/user-page")
+def display_user_options():
+    """Return user's next selection"""
+
+    return render_template("user_page.html")
+
+
+# =====================================================================
+# NOTE: Journal Entry Routes Start Here:
+@app.route("/journal")
+def journal_entry():
+    """Return journal page """
+
+    return render_template("journal.html")
+
+
+# NOTE: CHECKING if Journal Entries actually got seeded and display correctly
+@app.route("/journal-current-entries")
+def display_journal_information():
+    """Show all user's journal information"""
+
+    journal_list = crud.get_user_journal()
+
+    return render_template("journal_details.html", journal_list=journal_list)
+
+
+@app.route("/journal-new-entries")
+def display_new_journal():
+    """Return new journal page"""
+
+    return render_template("journal_creation.html")
+
+
+@app.route("/journals", methods=["POST"])
+def register_journal_entry():
+    """Create a new journal entry per user"""
+
+    entry_name = request.form.get("entry-name")
+    entry_details = request.form.get("entry-details")
+
+    crud.create_journal_entry(entry_name, entry_details)
+    flash("New entry made!!")
+
+    return redirect("/journals")
 
 
 if __name__ == "__main__":
