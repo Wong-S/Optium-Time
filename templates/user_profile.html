@@ -2,10 +2,24 @@
 {% block title %} User Profile {% endblock %}
 
 {% block body %}
-<h1>{{ user_profile.first_name }}</h1>
-<h1>{{ user_profile.last_name }}</h1>
-<h1>{{ user_profile.email }}</h1>
-<h1>{{ user_profile.password }}</h1>
+<h1>User Profile Details:</h2>
+<h2>{{ user_profile.user_id }}</h2>
+<h2>{{ user_profile.first_name }}</h2>
+<h2>{{ user_profile.last_name }}</h2>
+<h2>{{ user_profile.email }}</h2>
+<h2>{{ user_profile.password }}</h2>
+
+<!--Journal Entry part -->
+<h2>Journal Entry Details Are:</h2>
+<p>{{user_profile.journal}}</p>
+{% for entry in user_profile.journal %}
+    <p>{{entry.entry_name }}</p>
+    <p>{{entry.entry_details}}</p>
+    <p>{{entry.created_at}}</p>
+    <p>{{entry.updated_at}}</p>
+
+    {% endfor %}
+
 
 
 
