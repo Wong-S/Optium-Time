@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %} New Journal Page {% endblock %}
+
+{% block body %}
+
+<h2>Create a Journal Entry</h2>
+<form action="/journals" method="POST">
+
+  <p>
+      Entry Name <input type="text" name="entry-name" maxlength = "50" required>
+  </p>
+
+  <p>
+    <textarea id = "entry-details" name = "entry-details" rows = "5" cols = "30"> Enter Default Text Here </textarea>
+  </p>
+
+
+  <p>
+    <input type="submit">
+  </p>
+</form>
+
+
+
+
+{% endblock %}
