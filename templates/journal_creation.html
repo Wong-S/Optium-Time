@@ -3,8 +3,8 @@
 
 {% block body %}
 
-<h2>Create a Journal Entry</h2>
-<form action="/journals" method="POST">
+<h2>Create a Journal Entry for User ID Number {{user_id}}</h2>
+<form action="/journals/ {{user_id}}" method="POST">
 
   <p>
       Entry Name <input type="text" name="entry-name" maxlength = "50" required>
