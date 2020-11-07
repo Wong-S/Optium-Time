@@ -3,14 +3,16 @@
 
 {% block body %}
 
-    <h1>Welcome [Insert User Name]</h1>
+    <h1>Welcome {{user.first_name}}</h1>
 
     <h2>Navigation</h2>
     <ul>
-    <li><a href="/journal">View all journal entries</a></li>
-    <li><a href="/sleep-log">View all sleep log</a></li>
-    <li><a href="/playlist">View all playlists</a></li>
+    <li><a href="/journal/{{user.user_id}}">View all journal entries</a></li>
+    <li><a href="/sleep-log/{{user.user_id}}">View all sleep log</a></li>
+    <li><a href="/playlist/{{user.user_id}}">View all playlists</a></li>
     </ul>
+
+
 
 
 {% endblock body%}
