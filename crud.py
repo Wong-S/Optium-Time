@@ -36,37 +36,6 @@ def create_user(first_name, last_name, email, password):
 # create_user('F','L', 'test@.com','124')
 
 
-# Part 2:
-# Create a Journal entry for user:
-def create_journal_entry(
-    entry_name, entry_details, created_at=datetime.now(), updated_at=datetime.now(),
-):
-    """Create and return a new journal entry"""
-
-    journal = Journal(
-        entry_name=entry_name,
-        entry_details=entry_details,
-        created_at=datetime.date(created_at),
-        updated_at=datetime.date(updated_at),
-    )
-
-    db.session.add(journal)
-    db.session.commit()
-
-    return journal
-
-
-# NOTE --> Need datetime.now() for when the exact moment created_at and updated_at occur. Might need to revise created_at to be fixed.
-# Test run in interactive mode:
-# 1) --> create_journal_entry('Kitchen Fire', 'Piece of parchment paper was set ablaze while touching the hot stove', '31-Oct-2020', '31-Oct-2020')
-# OR:
-# 2) --> create_journal_entry('Kitchen Fire', 'Piece of parchment paper was set ablaze while touching the hot stove', '31-Oct-2020', None)
-# OR:
-# 3) --> create_journal_entry('Kitchen Fire', 'Piece of parchment paper was set ablaze while touching the hot stove', '31-Oct-2020')
-# OR:
-# 4) --> create_journal_entry('Kitchen Fire', 'Piece of parchment paper was set ablaze while touching the hot stove')
-
-
 # Part 3:
 # Create a Sleep Log entry for user: FIXME: variable fix
 # def create_sleep_log(wake_time, bed_time=datetime.now(), current_date=datetime.now()):
@@ -86,13 +55,16 @@ def create_journal_entry(
 
 # NOTE: CHECKING functions display user emails that were added!
 
-
+# =================================================================
+# USER SECTION:
 # Server.py create account POST function
-def get_user_email():
-    """Return users list of email address"""
+def get_user():
+    """Return list of user objects"""
 
     return User.query.all()
 
+
+# NOTE: Getting list of objects from class User
 
 # NOTE: Test interactively returns list of user objects
 
@@ -103,6 +75,10 @@ def get_user_by_id(user_id):
     user_by_id = User.query.get(user_id)
 
     return user_by_id
+
+
+# NOTE: This returns at that specific id key for that user, with their info like name, email, etc. That you can make an instance attribute, etc
+# <User user_id 1 first_name = David >
 
 
 def get_user_by_email(email):
@@ -123,6 +99,69 @@ def check_password(email, password):
         return True
     else:
         return False
+
+
+# ================================================================
+# JOURNAL SECTION:
+
+# Part 2:
+# Create a Journal entry for user:
+def create_journal_entry(
+    user_id,
+    entry_name,
+    entry_details,
+    created_at=datetime.now(),
+    updated_at=datetime.now(),
+):
+    """Create and return a new journal entry"""
+
+    journal = Journal(
+        user_id=user_id,
+        entry_name=entry_name,
+        entry_details=entry_details,
+        created_at=datetime.date(created_at),
+        updated_at=datetime.date(updated_at),
+        # NOTE: Foreign Key from User Table
+    )
+
+    db.session.add(journal)
+    db.session.commit()
+
+    return journal
+
+
+# NOTE --> Need datetime.now() for when the exact moment created_at and updated_at occur. Might need to revise created_at to be fixed.
+# Test run in interactive mode:
+# 1) --> create_journal_entry('Kitchen Fire', 'Piece of parchment paper was set ablaze while touching the hot stove', '31-Oct-2020', '31-Oct-2020')
+# OR:
+# 2) --> create_journal_entry('Kitchen Fire', 'Piece of parchment paper was set ablaze while touching the hot stove', '31-Oct-2020', None)
+# OR:
+# 3) --> create_journal_entry('Kitchen Fire', 'Piece of parchment paper was set ablaze while touching the hot stove', '31-Oct-2020')
+# OR:
+# 4) --> create_journal_entry('Kitchen Fire', 'Piece of parchment paper was set ablaze while touching the hot stove')
+
+
+def get_user_journal(user_id):
+    """Return journal list of objects if email matches"""
+
+    user_by_id = User.query.get(user_id)
+    return Journal.query.all()
+
+
+def check_user_to_journal_id(user_id):
+    """Return joinedload user objects joined with journal table"""
+
+    # user_id = int(user_id)
+    return (
+        User.query.filter(User.user_id == user_id)
+        .options(db.joinedload("journals"))
+        .first()
+    )
+
+
+#     for user_ids in match_user_id:
+#         for user_id in user_ids.journal:
+#             if user_id
 
 
 # Part 3:
