@@ -32,8 +32,8 @@ class User(db.Model):
     password = db.Column(db.String(30), unique=True)  # nullable=False
 
     # NOTE: For Journal class, can call entry_1.users; For User class, can call lenoard.journal
-    journal = db.relationship("Journal", backref="users")
-    sleep_log = db.relationship("SleepLog", backref="users")
+    # FIXME: Need to change these and put in appropriate classes!
+    
     playlist = db.relationship("Playlist", backref="users")
 
     def __repr__(self):
@@ -51,15 +51,18 @@ class Journal(db.Model):
     __tablename__ = "journals"
 
     journal_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.user_id"))
     entry_name = db.Column(db.String(50))  # nullable=True
     entry_details = db.Column(db.String)  # nullable=True
     created_at = db.Column(db.DateTime)  # nullable=True
     updated_at = db.Column(db.DateTime)  # nullable=True
 
-    user_id = db.Column(db.Integer, db.ForeignKey("users.user_id"))
+    user = db.relationship(
+        "User", backref="journals"
+    )  # NOTE: This works and not like this in before in User Class: journal = db.relationship("Journal", backref="users")
 
     def __repr__(self):
-        return f"<Journal journal_id = {self.journal_id} entry_name = {self.entry_name} created_at = {self.created_at} updated_at = {self.updated_at}>"
+        return f"<Journal journal_id = {self.journal_id} user_id = {self.user_id} entry_name = {self.entry_name} created_at = {self.created_at} updated_at = {self.updated_at}>"
 
 
 # NOTE
@@ -70,17 +73,26 @@ class Journal(db.Model):
 # journal_1 = Journal(entry_name = 'Entry 1', entry_details = 'My journaling starts today', created_at = datetime.now(), updated_at = datetime.strptime("31-Oct-2015", "%d-%b-%Y"))
 
 
+# NOTE NOTE:
+# Test Run in Interactive mode using joinedload!
+# user_1 = User.query.filter(User.user_id == 13).options(db.joinedload("journals")).first()
+# >>> user_1.first_name
+# >>> for i in user_1.journals:
+# print(i.entry_name)
+
+
 class SleepLog(db.Model):
     """A user's sleep log"""
 
     __tablename__ = "sleep_logs"
 
     sleep_log_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.user_id"))
     wake_time = db.Column(db.String)  # nullable=False
     bed_time = db.Column(db.DateTime)  # nullable=False
     current_date = db.Column(db.DateTime)  # nullable=False
 
-    user_id = db.Column(db.Integer, db.ForeignKey("users.user_id"))
+    user = db.relationship("User", backref="sleep_logs"
 
     def __repr__(self):
         return f"<SleepLog sleep_log_id = {self.sleep_log_id} bed_time = {self.bed_time} current_date = {self.current_date}>"
