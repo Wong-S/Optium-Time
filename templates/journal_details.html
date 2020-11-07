@@ -4,13 +4,24 @@
 {% block body %}
     <h1> JOURNAL DETAILS!!! </h1>
     <ul>
-    {% for entry in journal_list %}
-        {{entry.entry_name}}
-        {{entry.entry_details}}
-        {{entry.created_at}}
-        {{entry.updated_at}}
+        
+    {% for entry in user_obj.journals %}
+        <p>{{entry.entry_name}}</p>
+        <p>{{entry.entry_details}}</p>
+        <p>{{entry.created_at}}</p>
+        <p>{{entry.updated_at}}</p>
+        
         {% endfor %}
 
+    
+    <h2> User's Details are</h2>
+        <p>{{user_obj.user_id}}</p>
+        <p>{{user_obj.first_name}}</p>
+        <p>{{user_obj.last_name}}</p>
+        <p>{{user_obj.email}}</p>
+        <p>{{user_obj.password}}</p>
+
+    
     </ul>
 
 {% endblock body%}
