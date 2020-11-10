@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title %} User Options {% endblock %}
+
+{% block body %}
+
+    <h1>Welcome {{user_id}} to Playlist and Video Selection Page</h1>
+
+    <h2>Navigation</h2>
+    <ul>
+    <li><a href="/current-playlist/{{user.user_id}}">View all playlists</a></li>
+    <li><a href="/search-videos/{{user.user_id}}">View all videos</a></li>
+    </ul>
+
+
+
+
+{% endblock body%}
