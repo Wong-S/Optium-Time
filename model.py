@@ -26,6 +26,7 @@ class User(db.Model):
     __tablename__ = "users"
 
     user_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+
     first_name = db.Column(db.String)  # nullable=False
     last_name = db.Column(db.String)  # nullable=False
     email = db.Column(db.String, unique=True)  # nullable=True
@@ -33,8 +34,6 @@ class User(db.Model):
 
     # NOTE: For Journal class, can call entry_1.users; For User class, can call lenoard.journal
     # FIXME: Need to change these and put in appropriate classes!
-    
-    playlist = db.relationship("Playlist", backref="users")
 
     def __repr__(self):
         return f"<User user_id = {self.user_id} first_name = {self.first_name}>"
@@ -52,6 +51,7 @@ class Journal(db.Model):
 
     journal_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(db.Integer, db.ForeignKey("users.user_id"))
+
     entry_name = db.Column(db.String(50))  # nullable=True
     entry_details = db.Column(db.String)  # nullable=True
     created_at = db.Column(db.DateTime)  # nullable=True
@@ -88,11 +88,12 @@ class SleepLog(db.Model):
 
     sleep_log_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(db.Integer, db.ForeignKey("users.user_id"))
+
     wake_time = db.Column(db.String)  # nullable=False
     bed_time = db.Column(db.DateTime)  # nullable=False
     current_date = db.Column(db.DateTime)  # nullable=False
 
-    user = db.relationship("User", backref="sleep_logs"
+    user = db.relationship("User", backref="sleep_logs")
 
     def __repr__(self):
         return f"<SleepLog sleep_log_id = {self.sleep_log_id} bed_time = {self.bed_time} current_date = {self.current_date}>"
@@ -109,11 +110,11 @@ class Playlist(db.Model):
     __tablename__ = "playlists"
 
     playlist_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    playlist_name = db.Column(db.String(50))  # nullable=False
-
     user_id = db.Column(db.Integer, db.ForeignKey("users.user_id"))
 
-    video = db.relationship("Video", backref="playlists")
+    playlist_name = db.Column(db.String(50))  # nullable=False
+
+    user = db.relationship("User", backref="playlists")
 
     def __repr__(self):
         return f"<Playlist playlist_id = {self.playlist_id} playlist_name = {self.playlist_name}>"
@@ -130,11 +131,13 @@ class Video(db.Model):
     __tablename__ = "videos"
 
     video_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    playlist_id = db.Column(db.Integer, db.ForeignKey("playlists.playlist_id"))
+
     description = db.Column(db.String)  # nullable=True
     duration = db.Column(db.Integer)  # nullable=False
     video_url = db.Column(db.String)  # nullable=False
 
-    playlist_id = db.Column(db.Integer, db.ForeignKey("playlists.playlist_id"))
+    playlist = db.relationship("Playlist", backref="videos")
 
     def __repr__(self):
         return f"<Video video_id = {self.video_id} video_url = {self.video_url}>"
@@ -151,6 +154,7 @@ class Category(db.Model):
     __tablename__ = "categories"
 
     category_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+
     category_name = db.Column(db.String(30))  # nullable=False
 
     def __repr__(self):

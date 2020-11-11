@@ -15,7 +15,8 @@ from model import (
     connect_to_db,
 )
 
-
+# =================================================================
+# CREATE USER TABLE, link to Model.py
 # NOTE: 'first_name' must be same as called in model.py Class
 # Part 1: Create user
 def create_user(first_name, last_name, email, password):
@@ -34,23 +35,6 @@ def create_user(first_name, last_name, email, password):
 # NOTE --> Email and Password are Unique!
 # Test run in interactive mode:
 # create_user('F','L', 'test@.com','124')
-
-
-# Part 3:
-# Create a Sleep Log entry for user: FIXME: variable fix
-# def create_sleep_log(wake_time, bed_time=datetime.now(), current_date=datetime.now()):
-#     """Create and return a new sleep log entry"""
-
-#     sleep_log = SleepLog(
-#         wake_time=wake_time
-#         bed_time=str(bed_time[11:16]),
-#         current_date=datetime.date(current_date),
-#     )
-# #bed_time=bed_time.strftime("%H:%M")
-#     db.session.add(sleep_log)
-#     db.session.commit()
-
-#     return sleep_log
 
 
 # NOTE: CHECKING functions display user emails that were added!
@@ -159,13 +143,62 @@ def check_user_to_journal_id(user_id):
     )
 
 
-#     for user_ids in match_user_id:
-#         for user_id in user_ids.journal:
-#             if user_id
-
-
+# ================================================================
+# PLAYLIST--VIDEO SECTION:
 # Part 3:
-# Create a Playlist for user:
+
+# Create a Playlist
+def create_playlist(playlist_name, user_id):
+    """Create and return a new playlist"""
+
+    playlist = Playlist(playlist_name=playlist_name, user_id=user_id)
+
+    db.session.add(playlist)
+    db.session.commit()
+
+    return playlist
+
+
+######################################################################
+
+# Create a Video
+
+
+def create_video(playlist_id, description, duration, video_url):
+    """Create and return a new video to a playlist"""
+
+    video = Video(
+        playlist_id=playlist_id,
+        description=description,
+        duration=duration,
+        video_url=video_url,
+    )
+
+    db.session.add(video)
+
+    db.session.commit()
+
+    return video
+
+
+# ================================================================
+# SLEEP LOG SECTION
+# Part 4:
+
+# Create a Sleep Log entry for user: FIXME: variable fix
+# def create_sleep_log(wake_time, bed_time=datetime.now(), current_date=datetime.now()):
+#     """Create and return a new sleep log entry"""
+
+#     sleep_log = SleepLog(
+#         wake_time=wake_time
+#         bed_time=str(bed_time[11:16]),
+#         current_date=datetime.date(current_date),
+#     )
+# #bed_time=bed_time.strftime("%H:%M")
+#     db.session.add(sleep_log)
+#     db.session.commit()
+
+#     return sleep_log
 
 
 if __name__ == "__main__":

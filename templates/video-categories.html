@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block title %} User Options {% endblock %}
+
+{% block body %}
+
+    <h1>Welcome {{user_id}} to Select from Video Categories</h1>
+
+
+    <form action="/video-selection/ {{user_id}}">
+
+        <label>Choose a Video Sound</label>
+
+        <select name="video-category">
+
+            <option value="rain sounds sleep">Rain</option>
+            <option value="fan sounds sleep">Fan</option>
+
+        </select>
+
+        <br>
+        <label>Choose Video Duration </label>
+
+        <input type="radio" name="duration" value="short">
+        <label>Short</label>
+
+        <input type="radio" name="duration" value="medium">
+        <label>Medium</label>
+
+        <input type="radio" name="duration" value="long">
+        <label>Long</label>
+
+        <br>
+        <input type="submit">
+
+    </form>
+
+
+{% endblock body%}
