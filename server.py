@@ -3,6 +3,7 @@
 from flask import Flask, render_template, request, flash, session, redirect
 from model import connect_to_db
 import crud
+import YouTube
 
 import os
 import requests
@@ -152,6 +153,49 @@ def register_journal_entry(user_id):
     flash("New entry made!!")
 
     return render_template("journal.html", user_id=user_id)
+
+
+# =====================================================================
+# NOTE: Playlist and Video Routes Start Here:
+
+
+@app.route("/video-playlist/<user_id>")
+def playlist_video_page(user_id):
+    """Return playlist and video options """
+
+    return render_template("playlist-video.html", user_id=user_id)
+
+
+@app.route("/video-categories/<user_id>")
+def video_category_list(user_id):
+    """Return list of video category selections"""
+
+    return render_template("video-categories.html", user_id=user_id)
+
+
+# NOTE: GET request after user inputs what video and video duration they want
+@app.route("/video-selection/<user_id>")
+def display_video_selection(user_id):
+    """Query selected video filter and display to frontend"""
+
+    video_category = request.args.get("video-category")
+    video_duration = request.args.get("duration")
+
+    display_videos = crud.display_selected_videos(video_category, video_duration)
+
+    return render_template(
+        "video-displays.html", user_id=user_id, display_videos=display_videos
+    )
+
+
+@app.route("/register-videos/<user_id>", methods=["POST"])
+def register_videos(user_id):
+    """Store video in database"""
+
+    video_list = request.form.get("checkboxname[]")
+    print(video_list)
+
+    return render_template("playlist.html", user_id=user_id, video_list=video_list)
 
 
 if __name__ == "__main__":
