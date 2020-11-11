@@ -1,6 +1,8 @@
 """CRUD operations"""
 from datetime import datetime, time
 
+import YouTube
+
 # FIXME NOTE: Since taking things from model, would be best to import all from model?
 # NOTE: CRUD -> create, read, update, delete
 from model import (
@@ -164,21 +166,54 @@ def create_playlist(playlist_name, user_id):
 # Create a Video
 
 
-def create_video(playlist_id, description, duration, video_url):
+def create_video(playlist_id, video_duration, video_url):
     """Create and return a new video to a playlist"""
 
     video = Video(
         playlist_id=playlist_id,
-        description=description,
-        duration=duration,
+        # description=description,
+        video_duration=video_duration,
         video_url=video_url,
     )
 
     db.session.add(video)
-
     db.session.commit()
 
     return video
+
+
+######################################################################
+
+# Create Duration for each video
+# FIXME: May not need this added as another table in the database
+
+# def create_video_duration(video_id, duration_length):
+#     """Create and return the video's duration"""
+
+#     video_duration = VideoDuration(video_id=video_id, duration_length=duration_length)
+
+#     db.session.add(video_duration)
+#     db.session.commit()
+
+#     return video_duration
+
+
+######################################################################
+# NOTE:Where YouTube.py functions come are implemented. TODO:Check if correct Doctests below?
+
+
+def display_selected_videos(video_category, video_duration):
+    """Return list of selected video attributes
+    
+    >>> display_selected_videos("rain sounds", "long")
+    [('Relaxing Sleep Music + Rain Sounds - Relaxing Music, Insomnia, Stress Relief Music', 'OSF7W68CKmE'), ('Thunder and Rain Sounds WHITE SCREEN for Sleep &amp; Relaxation | White Screen Rain Sounds', 'OEqgFkFBrlk'), ('🎧 Thunder &amp; Rain Sounds By Treehouse | Go to Sleep with Ambient Noise, @Ultizzz day#66', '1NwacRwhMug'), ('Heavy Thunderstorm w/ Rain Sounds - Thunder &amp; Lightning Rain on Window for Sleeping, Study and Relax', 'qMi2z2m3bsM'), ('Rain Sounds + Peaceful Piano - Relaxing Sleep Music, Insomnia, Meditation Music', 'JbGKtO47Jp8')]
+
+    """
+
+    selected_video = YouTube.search_videos(video_category, video_duration)
+    # print(selected_video)   #NOTE:Print list with tuples
+
+    return selected_video
 
 
 # ================================================================
