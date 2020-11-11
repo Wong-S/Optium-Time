@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block title %} Video Displays {% endblock %}
+
+{% block body %}
+
+    <h1>Video Display Selection for User Number: {{user_id}}</h1>
+
+
+
+
+    
+    
+
+    <form action="/register-videos/{{user_id}}" method="POST">
+        <label>Choose Video for Playlist </label>
+
+        {% for video in display_videos %}
+
+
+        <br>
+        
+        <p>{{video[0]}}</p>
+        <iframe width="420" height="345" src="https://www.youtube.com/embed/{{video[1]}}">
+        </iframe>
+
+        
+        <input type="checkbox" name="checkboxname[]">
+      
+
+        <br>
+        
+
+        {% endfor %}
+
+        <br>
+        <input type="submit">
+
+    </form>
+
+
+
+
+{% endblock body%}
