@@ -133,8 +133,9 @@ class Video(db.Model):
     video_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     playlist_id = db.Column(db.Integer, db.ForeignKey("playlists.playlist_id"))
 
-    description = db.Column(db.String)  # nullable=True
-    duration = db.Column(db.Integer)  # nullable=False
+    video_title = db.Column(db.String)
+    # description = db.Column(db.String)  # nullable=True
+    duration = db.Column(db.String)  # nullable=False
     video_url = db.Column(db.String)  # nullable=False
 
     playlist = db.relationship("Playlist", backref="videos")
@@ -146,6 +147,22 @@ class Video(db.Model):
 # NOTE
 # Test run in interactive mode:
 # video_1 = Video(description = 'Inside a car while it rains', duration = 2, video_url = 'https://etc')
+
+
+class VideoDuration(db.Model):
+    """API video duration (short, medium, long)"""
+
+    __tablename__ = "video_durations"
+
+    video_duration_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    video_id = db.Column(db.Integer, db.ForeignKey("videos.video_id"))
+
+    duration_length = db.Column(db.String)
+
+    video = db.relationship("Video", backref="video_durations")
+
+    def __repr__(self):
+        return f"<VideoDuration video_duration_id = {self.video_duration_id} duration_length = {self.duration_length}>"
 
 
 class Category(db.Model):
