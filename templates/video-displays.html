@@ -2,6 +2,7 @@
 {% block title %} Video Displays {% endblock %}
 
 {% block body %}
+   
 
     <h1>Video Display Selection for User Number: {{user_id}}</h1>
 
@@ -23,16 +24,21 @@
         <iframe width="420" height="345" src="https://www.youtube.com/embed/{{video[1]}}">
         </iframe>
 
-        
-        <input type="checkbox" name="checkboxname[]">
-      
+        <!-- <div class = "but-checkbox"> -->
+        <input type="checkbox" name="video-list" value= {{video[1]}}>
+        <!-- </div> -->
 
         <br>
         
 
         {% endfor %}
 
+
         <br>
+        <label>Enter the name for your Playlist</label>
+        <input type="text" name="playlist-name" required> 
+        <br>
+
         <input type="submit">
 
     </form>
