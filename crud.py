@@ -149,6 +149,31 @@ def check_user_to_journal_id(user_id):
 # PLAYLIST--VIDEO SECTION:
 # Part 3:
 
+# Create a Video Category (ie: rain, fan, ocean, etc.)
+def create_category(category_name):
+    """Create and return a new category"""
+
+    category = Category(category_name=category_name)
+
+    db.session.add(category)
+    db.session.commit(category)
+
+    return category
+
+
+# NOTE: Not really sure how this table works exactly. Would I still need to seed in database or can query?
+# Create a Video and Categories
+def create_video_categories(video_id, category_id):
+    """Create and return a new video with category id associated"""
+
+    video_category = VideoCategories(video_id=video_id, category_id=category_id)
+
+    db.session.add(video_category)
+    db.session.commit(video_category)
+
+    return video_category
+
+
 # Create a Playlist
 def create_playlist(playlist_name, user_id):
     """Create and return a new playlist"""
@@ -165,15 +190,19 @@ def create_playlist(playlist_name, user_id):
 
 # Create a Video
 
-
-def create_video(playlist_id, video_duration, video_url):
-    """Create and return a new video to a playlist"""
+# NOTE FIXME: The very first playlist user creates will default to value of id of 1. After that, should increment with each new one???
+def create_video(video_title, video_duration, video_url, playlist_id):
+    """Create and return a new video to a playlist
+    
+    >>>create_video('The rain falls', 'medium', 'X6SF3f2')
+    """
 
     video = Video(
-        playlist_id=playlist_id,
+        video_title=video_title,
         # description=description,
         video_duration=video_duration,
         video_url=video_url,
+        playlist_id=playlist_id,
     )
 
     db.session.add(video)
@@ -214,6 +243,28 @@ def display_selected_videos(video_category, video_duration):
     # print(selected_video)   #NOTE:Print list with tuples
 
     return selected_video
+
+
+def check_user_to_playlist_id(user_id):
+    """Return joinedload user objects joined with playlists table"""
+
+    # user_id = int(user_id)
+    return (
+        User.query.filter(User.user_id == user_id)
+        .options(db.joinedload("playlists"))
+        .first()
+    )
+
+
+def get_videos_from_playlist_id(playlist_id):
+    """Return joinedload video objects joined with playlists table"""
+
+    # user_id = int(user_id)
+    return (
+        Playlist.query.filter(Playlist.playlist_id == playlist_id)
+        .options(db.joinedload("videos"))
+        .first()
+    )
 
 
 # ================================================================
