@@ -183,6 +183,15 @@ def display_video_selection(user_id):
 
     display_videos = crud.display_selected_videos(video_category, video_duration)
 
+    # TODO FIXME: This function, the CATEGORY table, may cause future problems or might not be needed? For a table category, is it necessary to keep track of in database?
+
+    session["videos"] = (
+        display_videos,
+        video_category,
+        video_duration,
+    )  # NOTE: Store video selected list in a session with the video duration added at the end)
+    print(session["videos"])
+
     return render_template(
         "video-displays.html", user_id=user_id, display_videos=display_videos
     )
@@ -190,12 +199,83 @@ def display_video_selection(user_id):
 
 @app.route("/register-videos/<user_id>", methods=["POST"])
 def register_videos(user_id):
-    """Store video in database"""
+    """Store video and playlist in video database"""
 
-    video_list = request.form.get("checkboxname[]")
+    # TODO: Not sure of this session will cause future bugs, for example, session won't clear until user clears cache...thus, possiblity of bug when adding videos to database?
+    # NOTE: Get video id list from what user selected from HTML form
+
+    # NOTE: Playlist Creation functions begin here
+    playlist_name = request.form.get("playlist-name")
+    print(playlist_name)
+
+    playlist_obj = crud.create_playlist(playlist_name, user_id)
+    playlist_id = playlist_obj.playlist_id  # PRINTS THE PLAYLIST ID
+
+    # NOTE: Video Creation function begin here:
+    video_list = request.form.getlist("video-list")
     print(video_list)
 
-    return render_template("playlist.html", user_id=user_id, video_list=video_list)
+    print(session["videos"])
+
+    # NOTE: assign list of video ids only from tuple list
+    n = 1  # N. . .
+    video_url_id = [video[n] for video in session["videos"][0]]
+    print(video_url_id)
+
+    # Prints the title of videos only!! From the tuple list
+    n = 0  # N. . .
+    video_title = [video[n] for video in session["videos"][0]]
+
+    # NOTE:prints video duration which is either short, medium, long
+    print(session["videos"][2])
+    video_duration = session["videos"][2]
+
+    # NOTE: prints video category name which consist of many categories like rain, ocean, fan, etc
+    print(session["videos"][1])
+    video_category_name = session["videos"][1]
+
+    # Combine the two lists above into a dictionary using dictionary comprehension method
+    dict_video = {video_url_id[i]: video_title[i] for i in range(len(video_url_id))}
+    print(dict_video)
+
+    for video_ids in video_list:
+        # NOTE: Will this slow down runtime???
+        # NOTE: If the video ids from what user selected is equal to the video url id stored in session, then add the videos to CRUD
+        if video_ids in video_url_id:
+            video_title = dict_video[video_ids]
+            print(video_title)
+            crud.create_video(video_title, video_duration, video_ids, playlist_id)
+            # crud.create_category(video_category_name)
+
+    return render_template(
+        "playlist.html",
+        user_id=user_id,
+        video_list=video_list,
+        playlist_obj=playlist_obj,
+    )
+
+
+# NOTE: This next part is after user adds videos to their first, second, etc playlist. Now they can go view what current videos they have
+@app.route("/current-playlist/<user_id>")
+def view_playlist(user_id):
+    """Return videos stored in playlist"""
+
+    user_obj = crud.check_user_to_playlist_id(user_id)
+    print(user_obj)
+
+    return render_template("current_playlists.html", user_obj=user_obj)
+
+
+@app.route("/display-playlist-videos/<playlist_id>")
+def display_videos_in_playlist(playlist_id):
+    """Return videos in selected playlist"""
+
+    playlist_video_obj = crud.get_videos_from_playlist_id(playlist_id)
+    print(playlist_video_obj)
+
+    return render_template(
+        "display_playlist_videos.html", playlist_video_obj=playlist_video_obj
+    )
 
 
 if __name__ == "__main__":
