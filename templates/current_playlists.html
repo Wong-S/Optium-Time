@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %} Current Playlists {% endblock %}
+
+{% block body %}
+
+    <h1>Welcome {{user_obj.first_name}} to your Current Avaliable Playlists</h1>
+
+    <h2>Current Playlists</h2>
+
+    {% for video in user_obj.playlists %}
+    <p> <a href = "/display-playlist-videos/{{video.playlist_id}}">{{video.playlist_name}}</a> </p>
+   
+    
+    {% endfor %}
+    
+    <h2>Search For Videos</h2>
+
+    <ul>
+    <li><a href="/video-categories/{{user_obj.user_id}}">View all videos</a></li>
+    </ul>
+
+
+
+
+{% endblock body%}
