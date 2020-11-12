@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %} Videos in Playlist {% endblock %}
+
+{% block body %}
+
+    <h1>Your Playlist Videos</h1>
+
+    {% for video in playlist_video_obj.videos %}
+    <p>{{video.video_title}}</p>
+    <p>{{video.video_duration}}</p>
+    <iframe width="420" height="345" src="https://www.youtube.com/embed/{{video.video_url}}">
+    </iframe>
+   
+    
+    {% endfor %}
+
+    <h2>Go Back to Playlist List View</h2>
+
+    <ul>
+    <li><a href="/current-playlist/{{playlist_video_obj.user_id}}">View all playlists</a></li>
+    </ul>
+
+    
+    <h2>Search For MORE Videos</h2>
+
+    <ul>
+    <li><a href="/video-categories/{{playlist_video_obj.user_id}}">View more videos</a></li>
+    </ul>
+
+
+
+
+{% endblock body%}
