@@ -3,6 +3,7 @@
 from flask import Flask, render_template, request, flash, session, redirect
 from model import connect_to_db
 import crud
+import datetime_functions
 import YouTube
 
 import os
@@ -62,11 +63,14 @@ def register_user():
     last_name = request.form.get("lname")
     email = request.form.get("email")
     password = request.form.get("password")
+    timezone = request.form.get("timezone")
+
+    # NOTE:Store user's timezone selection into session; print to check
 
     check_email = crud.get_user_by_email(email)
 
     if check_email == None:
-        crud.create_user(first_name, last_name, email, password)
+        crud.create_user(first_name, last_name, email, password, timezone)
         flash(
             "New account created successfully! Please log in"
         )  # FIXME: Change Flash messages!!!
@@ -92,6 +96,15 @@ def check_login_credentials():
 
     if match_passwords == True:
         flash("Logged in!")
+
+        # NOTE: Storing user primary id in a session
+        session["user"] = user_details.user_id
+        print(session["user"])
+
+        # NOTE: Storing user's timezone in a session
+        session["timezone"] = user_details.timezone
+        print(session["timezone"])
+
         return render_template("user_page.html", user=user_details)
     else:
         flash("Email or password do not match. Try again!")
@@ -275,6 +288,83 @@ def display_videos_in_playlist(playlist_id):
 
     return render_template(
         "display_playlist_videos.html", playlist_video_obj=playlist_video_obj
+    )
+
+
+# =====================================================================
+# NOTE: Start part 4: Sleep log and Alarm clock routes
+
+
+@app.route("/set-alarm/<user_id>")
+def display_alarm_clock(user_id):
+    """Return alarm clock options"""
+
+    return render_template("set_alarm.html", user_id=user_id)
+
+
+# From set-alarm.html, got to this route below. Take in the wake-time and put to the database. THen flash message how much time between user will wake up
+@app.route("/set-alarm/<user_id>", methods=["POST"])
+def register_alarm(user_id):
+    """Store wake up and bed time to database"""
+
+    # NOTE: If you do an input like 4:44 PM, it'll return 16:44 ONLY. So only return Hour and Min
+    wake_time = request.form.get("alarm-wake")
+    print(wake_time)  # FIXME: Just a check
+
+    # NOTE: bed time calculation done by taking in user's current time zone from session
+    user_timezone = session["timezone"]
+    print(user_timezone)  # FIXME: Just a check
+
+    bed_time = datetime_functions.current_timezone_from_utc(user_timezone)
+    print(bed_time)  # FIXME: Just a check
+
+    # Seed into the database what user choose for wake time
+    crud.create_sleep_log(user_id, wake_time, bed_time)
+
+    # Find the total time user will have from bed time to wake time:
+    user_total_time = datetime_functions.time_difference(wake_time, bed_time)
+    print(user_total_time)
+    flash("Your alarm is set")
+
+    return redirect("/sleep-log")
+
+
+# NOTE: Chart.js to display user sleep in graphical model
+@app.route("/sleep-log")
+def display_sleep_graph_options():
+    """Return sleep graphs page"""
+
+    user_id = session["user"]
+    # FIXME: Somehow, calling and passing in just user_id does NOT work! It's because we need to actually pass in the user_id from the route above, but will need to render a new template, rather than redirect
+
+    sleep_log_user_obj = crud.get_sleep_data_user_id(user_id)
+
+    # NOTE: Need to conver the date to this format in this file, not the crud file because you'll still get this output to frontend: 2020-11-13 00:00:00, which is not what I need. Just the date, not the time
+    converted_current_date = []
+    for date in sleep_log_user_obj.sleep_logs:
+        current_date = date.current_date
+        converted_current_date.append(current_date.strftime("%b-%d-%Y"))
+
+    return render_template(
+        "sleep_graphs.html",
+        user_id=user_id,
+        sleep_log_user_obj=sleep_log_user_obj,
+        converted_current_date=converted_current_date,
+    )
+
+
+# FIXME NOTE: This function is kinda DRY...bit repetitive from the one above
+@app.route("/sleep-data-by-date/<user_id>")
+def display_sleep_times_for_date(user_id):
+    """Return sleep wake and bed time page"""
+
+    user_id = session["user"]
+    sleep_log_user_obj = crud.get_sleep_data_user_id(user_id)
+
+    return render_template(
+        "sleep_bed_wake_times.html",
+        user_id=user_id,
+        sleep_log_user_obj=sleep_log_user_obj,
     )
 
 
