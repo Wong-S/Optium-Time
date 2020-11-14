@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block title %} Sleep Times {% endblock %}
+
+{% block body %}
+
+    <h1>Sleep Times generated for user id: {{user_id}}</h1>
+
+    <h2>User's sleep log data by date:</h2>
+
+    {% for data in sleep_log_user_obj.sleep_logs %}
+     
+        <p>Wake time: {{data.wake_time}}</p>
+        <p>Bed time: {{data.bed_time}}</p>
+    {% endfor %}
+
+
+    
+    <h2>Navigation</h2>
+    <ul>
+    
+    <li><a href="/set-alarm/{{user_id}}">Hypnogram</a></li>
+  
+    </ul>
+
+
+
+
+{% endblock body%}
