@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %} Set Alarm Clock {% endblock %}
+
+{% block body %}
+
+    <h1>Set Alarm Clock for user-id: {{user_id}}</h1>
+
+    <h2>Enter Wake Time</h2>
+ 
+    <form action="/set-alarm/{{user_id}}" method="POST">
+        <label for="appt">Choose a time to Wake Up:</label>
+
+        <input type="time" id="alarm-wake" name="alarm-wake" required>
+
+        <p>
+        <input type="submit">
+        </p>
+    </form>
+
+
+
+
+{% endblock body%}
