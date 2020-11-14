@@ -16,6 +16,16 @@ os.system("createdb sleeps")
 model.connect_to_db(server.app)
 model.db.create_all()
 
+# Timezone for USA:
+timezone_list = [
+    "US/Central",
+    "US/Eastern",
+    "US/Pacific",
+    "US/Mountain",
+    "US/Alaska",
+    "US/Hawaii",
+]
+
 # Use Faker to generate and seed database:
 fake = Faker()
 
@@ -27,8 +37,9 @@ while i < 5:
     last_name = fake.last_name()
     email = fake.unique.email()
     password = fake.unique.building_number()
+    timezone = choice(timezone_list)
 
-    user = crud.create_user(first_name, last_name, email, password)
+    user = crud.create_user(first_name, last_name, email, password, timezone)
 
     i += 1
 
