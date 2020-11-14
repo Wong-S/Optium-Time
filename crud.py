@@ -21,11 +21,15 @@ from model import (
 # CREATE USER TABLE, link to Model.py
 # NOTE: 'first_name' must be same as called in model.py Class
 # Part 1: Create user
-def create_user(first_name, last_name, email, password):
+def create_user(first_name, last_name, email, password, timezone):
     """Create and return a new user"""
 
     user = User(
-        first_name=first_name, last_name=last_name, email=email, password=password
+        first_name=first_name,
+        last_name=last_name,
+        email=email,
+        password=password,
+        timezone=timezone,
     )
 
     db.session.add(user)
@@ -272,19 +276,31 @@ def get_videos_from_playlist_id(playlist_id):
 # Part 4:
 
 # Create a Sleep Log entry for user: FIXME: variable fix
-# def create_sleep_log(wake_time, bed_time=datetime.now(), current_date=datetime.now()):
-#     """Create and return a new sleep log entry"""
+def create_sleep_log(user_id, wake_time, bed_time, current_date=datetime.now().date()):
+    """Create and return a new sleep log entry"""
 
-#     sleep_log = SleepLog(
-#         wake_time=wake_time
-#         bed_time=str(bed_time[11:16]),
-#         current_date=datetime.date(current_date),
-#     )
-# #bed_time=bed_time.strftime("%H:%M")
-#     db.session.add(sleep_log)
-#     db.session.commit()
+    sleep_log = SleepLog(
+        user_id=user_id,
+        wake_time=wake_time,
+        bed_time=bed_time,
+        current_date=current_date,
+    )
+    # bed_time=bed_time.strftime("%H:%M")
+    db.session.add(sleep_log)
+    db.session.commit()
 
-#     return sleep_log
+    return sleep_log
+
+
+def get_sleep_data_user_id(user_id):
+    """Return joinedload sleep log objects joined with users table"""
+
+    # user_id = int(user_id)
+    return (
+        User.query.filter(User.user_id == user_id)
+        .options(db.joinedload("sleep_logs"))
+        .first()
+    )
 
 
 if __name__ == "__main__":
