@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block title %} Sleep Graphs {% endblock %}
+
+{% block body %}
+
+    <h1>3 Graphs generated for user id: {{user_id}}</h1>
+
+    <h2>User's sleep log data:</h2>
+    
+
+    {% for date in converted_current_date %}
+        <a href="/sleep-data-by-date/{{user_id}}">Current date: {{date}}</a></p>
+     
+ 
+    {% endfor %}
+
+
+    
+    <h2>Navigation</h2>
+    <ul>
+    <li><a href="/set-alarm/{{user_id}}">Set another alarm! (RETHINK THIS ROUTE)</a></li>
+    <li><a href="/set-alarm/{{user_id}}">Hypnogram</a></li>
+    <li><a href="/sleep-log/{{user_id}}">z</a></li>
+    <li><a href="/video-playlist/{{user_id}}">View all playlists and videos</a></li>
+    </ul>
+
+
+
+
+{% endblock body%}
