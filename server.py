@@ -1,6 +1,6 @@
 """Server for Sleep app."""
 
-from flask import Flask, render_template, request, flash, session, redirect
+from flask import Flask, render_template, request, flash, session, redirect, jsonify
 from model import connect_to_db
 import crud
 import datetime_functions
@@ -309,21 +309,31 @@ def register_alarm(user_id):
 
     # NOTE: If you do an input like 4:44 PM, it'll return 16:44 ONLY. So only return Hour and Min
     wake_time = request.form.get("alarm-wake")
-    print(wake_time)  # FIXME: Just a check
+    print(wake_time)  # FIXME: Just a check; THIS IS A STRING!!
 
     # NOTE: bed time calculation done by taking in user's current time zone from session
     user_timezone = session["timezone"]
     print(user_timezone)  # FIXME: Just a check
 
-    bed_time = datetime_functions.current_timezone_from_utc(user_timezone)
-    print(bed_time)  # FIXME: Just a check
+    bed_time = datetime_functions.current_time_timezone_from_utc(user_timezone)
+    print(bed_time)  # FIXME: Just a check, This is a STRING formatted
+
+    # NOTE: current_date calculation based on timezone because before, the date was not aware
+    current_date = datetime_functions.current_date_timezone_from_utc(user_timezone)
+    print(current_date)  # FIXME: This is a just a check
+    session[
+        "current_date"
+    ] = current_date  # NOTE: This is NOT the converted datetime format, just the regular object non formated??????
+    print("The SESSION STORED is", session["current_date"])  # Just an datetime object!
 
     # Seed into the database what user choose for wake time
-    crud.create_sleep_log(user_id, wake_time, bed_time)
+    crud.create_sleep_log(user_id, wake_time, bed_time, current_date)
 
     # Find the total time user will have from bed time to wake time:
-    user_total_time = datetime_functions.time_difference(wake_time, bed_time)
-    print(user_total_time)
+    user_total_time = datetime_functions.time_difference(
+        user_timezone, wake_time, bed_time
+    )
+    print("The Calculated SUBTRACT TIME is", user_total_time)
     flash("Your alarm is set")
 
     return redirect("/sleep-log")
@@ -354,18 +364,83 @@ def display_sleep_graph_options():
 
 
 # FIXME NOTE: This function is kinda DRY...bit repetitive from the one above
-@app.route("/sleep-data-by-date/<user_id>")
-def display_sleep_times_for_date(user_id):
+@app.route("/sleep-data-by-date/<user_id>/<date>")
+def display_sleep_times_for_date(user_id, date):
     """Return sleep wake and bed time page"""
 
     user_id = session["user"]
     sleep_log_user_obj = crud.get_sleep_data_user_id(user_id)
 
+    # TODO: MAKE A CRUD FUNCTION THAT CHECKS THE DATE IN THE DATABASE!! QUERY FOR IT! NOTE: Nvm...cannot filter by Date because need to filter by user_id since multiple dates in that database!
+    # sleep_log_current_date_obj = crud.get_sleep_data_by_date(date)
+    # print("The CURRENT DATE is", sleep_log_current_date_obj)
+    current_date_lst = []
+    for date in sleep_log_user_obj.sleep_logs:
+        print("DOES THIS WORK?", date.current_date)
+        current_date_lst.append(date.current_date)
+
+    print(current_date_lst)  # CHECKING if works
+
+    # TODO:THIS FUNCTION IS NOT CATCHING THE RIGHT DATE!
+    wake_bed_times_obj = crud.get_sleep_data_by_date(user_id, current_date_lst)
+    print("IF THIS WORKS", wake_bed_times_obj)
+
+    unconverted_current_date = wake_bed_times_obj.current_date
+    # NOTE: Going to put this datetime object into a session (This is unformatted version!!)
+    session["datetime_object_current_date"] = unconverted_current_date
+
+    converted_current_date = unconverted_current_date.strftime("%b-%d-%Y")
+
+    # NOTE: Get the total sleep hours by getting the time difference function from datetime_functions.py
+    # total_sleep_hours = datetime_functions.time_difference
+
     return render_template(
         "sleep_bed_wake_times.html",
         user_id=user_id,
+        converted_current_date=converted_current_date,
         sleep_log_user_obj=sleep_log_user_obj,
+        wake_bed_times_obj=wake_bed_times_obj,
     )
+
+
+@app.route("/total-sleep.json")
+def get_total_sleep():
+    """Get total sleep per day"""
+
+    user_id = session["user"]
+    sleep_log_user_obj = crud.get_sleep_data_user_id(user_id)
+
+    # NOTE: Need to convert the date to this format in this file, not the crud file because you'll still get this output to frontend: 2020-11-13 00:00:00, which is not what I need. Just the date, not the time
+    sleep_hours_this_day = []
+    for date in sleep_log_user_obj.sleep_logs:
+        print("The date in the database is", date.current_date)
+        print("The session current date is", session["current_date"])
+        # if date.current_date == session["current_date"]:
+        current_date = date.current_date
+        converted_current_date_this_day = current_date.strftime("%b-%d-%Y")
+
+        print("The CURRENT CONVERTED Date is", converted_current_date_this_day)
+
+        print("The WAKE time is", date.wake_time)
+        print("The BED time is", date.bed_time)
+
+        # Calling the user's timezone from session
+        user_timezone = session["timezone"]
+
+        total_sleep_hours_this_day = datetime_functions.time_difference(
+            user_timezone, date.wake_time, date.bed_time
+        )
+
+        print("The SUBTRACTED TIME DIFF is", total_sleep_hours_this_day)
+
+        sleep_hours_this_day.append(
+            {
+                "date": converted_current_date_this_day,
+                "sleep_hours": total_sleep_hours_this_day,
+            }
+        )
+
+    return jsonify({"data": sleep_hours_this_day})
 
 
 if __name__ == "__main__":
