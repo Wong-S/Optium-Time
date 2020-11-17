@@ -276,7 +276,7 @@ def get_videos_from_playlist_id(playlist_id):
 # Part 4:
 
 # Create a Sleep Log entry for user: FIXME: variable fix
-def create_sleep_log(user_id, wake_time, bed_time, current_date=datetime.now().date()):
+def create_sleep_log(user_id, wake_time, bed_time, current_date):
     """Create and return a new sleep log entry"""
 
     sleep_log = SleepLog(
@@ -292,8 +292,15 @@ def create_sleep_log(user_id, wake_time, bed_time, current_date=datetime.now().d
     return sleep_log
 
 
+# NOTE: Run in interactive terminal test:
+# create_sleep_log(user_id = 7, wake_time = 23:11:00, bed_time = 18:28:00, current_date = 2020-11-15)
+# <SleepLog sleep_log_id = 1 wake_time = 23:11:00 bed_time = 18:28:00 current_date = 2020-11-15>
+# >>> u = create_sleep_log(1, '23:11:00', '18:28:00', '2020-11-15')
+# create_sleep_log(1, time(7, 46, 00), time(22, 46, 00), '2020-11-15')
+
+
 def get_sleep_data_user_id(user_id):
-    """Return joinedload sleep log objects joined with users table"""
+    """Return joinedload user objects joined with sleep_logs table"""
 
     # user_id = int(user_id)
     return (
@@ -301,6 +308,22 @@ def get_sleep_data_user_id(user_id):
         .options(db.joinedload("sleep_logs"))
         .first()
     )
+
+
+def get_sleep_data_by_date(user_id, current_date_lst):
+    """Return sleep log objects filtering for current date"""
+
+    user_id_sleep_log_obj = get_sleep_data_user_id(user_id)
+    # TODO THIS IS WRONG! I NEED TO PASS IN THE DATE THE USER CLICKS....
+    for date in user_id_sleep_log_obj.sleep_logs:
+        if date.current_date in current_date_lst:
+            print("IS THIS THE RIGHT DATE?", date.current_date)
+            return SleepLog.query.filter(
+                SleepLog.current_date == date.current_date
+            ).first()
+
+    # user_id = int(user_id)
+    # return SleepLog.query.filter(SleepLog.current_date == date).first()
 
 
 if __name__ == "__main__":
