@@ -11,6 +11,9 @@
     <script src="http://code.jquery.com/jquery.js"></script>
     <script src="/static/js/video_display.js"></script>
 
+    {# jQuery #}
+    <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin></script>
+
     {% block head %}{% endblock %}
   </head>
   <body>
@@ -23,6 +26,8 @@
    <!-- part 4 -->
 
     {% block body %}{% endblock %}
+    
+    {% block js %}{% endblock %}
 
     {% block after_body %}{% endblock %}
   </body>
