@@ -1,24 +1,52 @@
 {% extends 'base.html' %}
 {% block title %} Sleep Times {% endblock %}
 
+{% block head %}
+  {# Moment: allows you to use time scales. If you want to use time scales,
+     you have to import Moment BEFORE Chart.js #}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+
+  {# ChartJS #}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.js"></script>
+
+  {# randomColor: generate random colors #}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/randomcolor/0.5.4/randomColor.min.js"></script>
+{% endblock %}
+
 {% block body %}
 
     <h1>Sleep Times generated for user id: {{user_id}}</h1>
 
     <h2>User's sleep log data by date:</h2>
 
-    {% for data in sleep_log_user_obj.sleep_logs %}
-     
-        <p>Wake time: {{data.wake_time}}</p>
-        <p>Bed time: {{data.bed_time}}</p>
-    {% endfor %}
+    <p>Current date: {{converted_current_date}}</p>
+    
 
 
+    <p>Wake Time: {{wake_bed_times_obj.wake_time}}</p>
+    <p>Bed Time: {{wake_bed_times_obj.bed_time}}</p>
+
+    <div id="site-content">
+        <h1>Total Sleep Hour of User per Day Chart.js</h1>
+    
+        <h2>Simple Bar Chart</h2>
+        <canvas id="bar-chart"></canvas>
+    
+        <h2>Bar Chart w/ Auto-Generated Colors</h2>
+        <canvas id="bar-colors"></canvas>
+    
+        <h2>Line Chart w/ Data from Server</h2>
+        <canvas id="line-chart"></canvas>
+    
+        <h2>Line Chart w/ Time Scale</h2>
+        <canvas id="line-time"></canvas>
+      </div>
     
     <h2>Navigation</h2>
     <ul>
     
     <li><a href="/set-alarm/{{user_id}}">Hypnogram</a></li>
+    <li><a href="/total-sleep-chartsjs/{{user_id}}">Total Sleep Per Day Chart.js</a></li>
   
     </ul>
 
@@ -26,3 +54,7 @@
 
 
 {% endblock body%}
+
+{% block js %}
+  <script src="/static/js/sleep_charts.js"></script>
+{% endblock %}
