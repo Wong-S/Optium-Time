@@ -1,4 +1,7 @@
+from random import random, randint, choice
+
 from datetime import datetime
+
 
 # from dateutil.parser import *
 import pytz
@@ -53,7 +56,7 @@ def current_time_timezone_from_utc(timezone):
     """Return Time in UTC active timezone"""
 
     user_timezone = pytz.timezone(timezone)
-    utc_datetime = datetime.now(user_timezone)
+    utc_datetime = datetime.now(user_timezone)  # FIXME: This returns the date of TODAY!
     print("Date & Time in UTC : ", utc_datetime.strftime("%H:%M"))
 
     return utc_datetime.strftime("%H:%M")  # Returning a STRING
@@ -68,6 +71,19 @@ def current_date_timezone_from_utc(timezone):
 
     return utc_datetime  # This is returning a datetime object
     # return utc_datetime.strftime("%m-%d-%Y")
+
+
+# ==================================================
+def create_date_obj(date_str):
+    """Return a datetime.date object"""
+
+    print("If you made it here, the argument passed is:", date_str)
+
+    datetime_obj = datetime.strptime(
+        date_str, "%b-%d-%Y"
+    )  # NOTE: The date_str passed in is the converted one. So Nov-25-2020. And this must match the format!
+
+    return datetime.date(datetime_obj)
 
 
 # ==================================================
@@ -183,3 +199,394 @@ def time_difference(timezone, wake_time, bed_time):
 
     return time_diff
 
+
+# ===============================================
+# HYPNOGRAM Starts Here:
+
+
+def create_hypnogram(total_sleep_hours):
+    """Return dictionary with 4 sleep stages"""
+
+    # Notes for dictionary keys:
+    # Awake = awake
+    # Stage 1 = NREM1
+    # Stage 2 = NREM2
+    # Stage 3/4 = NREM3
+    # REM = 4
+
+    # Total sleep time is 4 hrs or 240min
+    total_sleep_min = total_sleep_hours * 60
+    print("Your TOTAL SLEEP in MIN:", total_sleep_min)
+
+    # Sleep cycles last about 90 min?
+    sleep_cycle = total_sleep_min / 90
+    print("Your NUMBER of sleep cycle is:", sleep_cycle)
+
+    time_dict = {}
+
+    i = 0
+    while i < sleep_cycle:
+
+        # ONE CYCLE: After this, the cycle should not include Stage 1
+        if i < 1:
+            awake_stage = randint(12, 15)
+            print("Awake time stage is", awake_stage)
+
+            time_dict["awake"] = [awake_stage]
+
+            # ======================================================================================
+
+            time_dict["REM"] = [10]
+
+            # ======================================================================================
+            stage_1 = randint(5, 10)
+            print("Stage 1 sleep time is", stage_1)
+
+            time_dict["NREM1"] = stage_1
+
+            # ======================================================================================
+            stage_2 = randint(10, 25)
+            print("Stage 2 sleep time is", stage_2)
+
+            time_dict["NREM2"] = [stage_2]
+
+            # ======================================================================================
+
+            # stage_3_4 = randint(20, 40)
+            # print("Stage 3 and 4 sleep time is", stage_3_4)
+
+            # time_dict["NREM3"] = [stage_3_4]
+
+            total_sleep_before_rem = awake_stage + stage_1 + stage_2 + 10
+            print("Total Sleep Before REM", total_sleep_before_rem)
+
+            # Every cycle is about 90 min before REM initiates
+            time_difference_before_rem_stage = 90 - total_sleep_before_rem
+            print(
+                "Sleep difference before REM initiates, which will be stage 3 and 4",
+                time_difference_before_rem_stage,
+            )
+
+            time_dict["NREM3"] = [time_difference_before_rem_stage]
+
+            # total_stage_3_4_time = time_difference_before_rem_stage + stage_3_4
+            # print("Total sleep stage 3 and 4", total_stage_3_4_time)
+
+            # time_dict["NREM3"] = [total_stage_3_4_time]
+
+            # # ======================================================================================
+
+            # final_total_sleep_before_rem = (
+            #     awake_stage + stage_1 + stage_2 + total_stage_3_4_time
+            # )
+            # print("Total Sleep Before REM", final_total_sleep_before_rem)
+
+            # # ======================================================================================
+            # # rem_sleep = random.randint(20, 60)
+            # print("First stage of REM sleep will be 10min")
+
+            # time_dict["REM"] = [10]
+
+            i += 1
+
+        elif i < (sleep_cycle - 1):
+
+            # awake_stage = randint(12, 15)
+            # print("Awake time stage is", awake_stage)
+
+            # time_dict["awake"] = awake_stage
+
+            # ======================================================================================
+            # stage_1 = randint(5, 10)
+            # print("Stage 1 sleep time is", stage_1)
+
+            # time_dict['NREM1'] = stage_1
+
+            # ======================================================================================
+            stage_2 = randint(10, 25)
+            print("Stage 2 sleep time is", stage_2)
+
+            time_dict["NREM2"].append(stage_2)
+
+            # ======================================================================================
+            stage_3_4 = randint(20, 40)
+            print("Stage 3 and 4 sleep time is", stage_3_4)
+
+            time_dict["NREM3"].append(stage_3_4)
+
+            total_sleep_before_rem = stage_2 + stage_3_4
+            print("Total Sleep Before REM", total_sleep_before_rem)
+
+            # Every cycle is about 90 min before REM initiates
+            time_difference_before_rem_stage = 90 - total_sleep_before_rem
+            print(
+                "Sleep difference before REM initiates",
+                time_difference_before_rem_stage,
+            )
+
+            time_dict["REM"].append(time_difference_before_rem_stage)
+
+            # total_stage_3_4_time = time_difference_before_rem_stage + stage_3_4
+            # print("Total sleep stage 3 and 4", total_stage_3_4_time)
+
+            # time_dict["NREM3"].append(total_stage_3_4_time)
+
+            # # ======================================================================================
+
+            # final_total_sleep_before_rem = (
+            #     awake_stage + stage_1 + stage_2 + total_stage_3_4_time
+            # )
+            # print("Total Sleep Before REM", final_total_sleep_before_rem)
+
+            # # ======================================================================================
+            # rem_sleep = randint(30, 60)
+            # print("First stage of REM sleep will be 10min")
+
+            # time_dict["REM"].append(rem_sleep)
+
+            i += 1
+
+        else:
+
+            awake_stage = randint(12, 15)
+            print("Awake time stage is", awake_stage)
+
+            time_dict["awake"].append(awake_stage)
+
+            # ======================================================================================
+            # stage_1 = randint(5, 10)
+            # print("Stage 1 sleep time is", stage_1)
+
+            # time_dict['NREM1'] = stage_1
+
+            # ======================================================================================
+            stage_2 = randint(10, 25)
+            print("Stage 2 sleep time is", stage_2)
+
+            time_dict["NREM2"].append(stage_2)
+
+            # ======================================================================================
+            stage_3_4 = randint(20, 40)
+            print("Stage 3 and 4 sleep time is", stage_3_4)
+
+            time_dict["NREM3"].append(stage_3_4)
+
+            total_sleep_before_rem = awake_stage + stage_2 + stage_3_4
+            print("Total Sleep Before REM", total_sleep_before_rem)
+
+            # Every cycle is about 90 min before REM initiates
+            time_difference_before_rem_stage = 90 - total_sleep_before_rem
+            print(
+                "Sleep difference before REM initiates",
+                time_difference_before_rem_stage,
+            )
+
+            time_dict["REM"].append(time_difference_before_rem_stage)
+
+            # total_stage_3_4_time = time_difference_before_rem_stage + stage_3_4
+            # print("Total sleep stage 3 and 4", total_stage_3_4_time)
+
+            # time_dict["NREM3"].append(total_stage_3_4_time)
+
+            # # ======================================================================================
+
+            # final_total_sleep_before_rem = (
+            #     awake_stage + stage_1 + stage_2 + total_stage_3_4_time
+            # )
+            # print("Total Sleep Before REM", final_total_sleep_before_rem)
+
+            # # ======================================================================================
+            # rem_sleep = randint(0, 60)
+            # print("First stage of REM sleep will be 10min")
+
+            # time_dict["REM"].append(rem_sleep)
+
+            i += 1
+
+    print(time_dict)
+    return time_dict
+
+
+def create_time_stages(time_dict, total_sleep_hours):
+    """Return dictionary with sleep stages with sleep time"""
+
+    total_sleep_min = total_sleep_hours * 60
+    print("Your TOTAL SLEEP in MIN:", total_sleep_min)
+
+    # Sleep cycles last about 90 min?
+    sleep_cycle = total_sleep_min / 90
+    print("Your NUMBER of sleep cycle is:", sleep_cycle)
+
+    time_stages = []
+
+    i = 0
+    while i < sleep_cycle:
+        if i < 1:
+            awake = time_dict.get("awake")
+            time_stages.append(awake[0])
+            awake.pop(0)
+
+            stage_1 = time_dict.get("NREM1")
+            time_stages.append(stage_1)
+
+            stage_2 = time_dict.get("NREM2")
+            time_stages.append(stage_2[0])
+            # stage_2.pop((0))
+
+            stage_3 = time_dict.get("NREM3")
+            time_stages.append(stage_3[0])
+            # stage_3.pop((0))
+
+            rem = time_dict.get("REM")
+            time_stages.append(rem[0])
+            # rem.pop((0))
+
+            i += 1
+
+        elif i < sleep_cycle - 1:
+            print("IF THIS WORKS:", stage_2[i])
+            time_stages.append(stage_2[i])
+            # stage_2.pop(i)
+            time_stages.append(stage_3[i])
+
+            time_stages.append(rem[i])
+
+            i += 1
+
+        else:
+
+            time_stages.append(stage_2[i])
+            time_stages.append(stage_3[i])
+            time_stages.append(rem[i])
+            time_stages.append(awake[0])
+
+            break
+
+    print("The FINAL stage 2 is:", stage_2)
+    print("THE TIME STAGE IS:", time_stages)
+
+    return time_stages
+
+
+# elif i < 4 - 1:
+
+
+# for indx, num in enumerate(lst):
+#     print(indx, num)
+
+# i = 0
+# while i < len(lst):
+#     print(i)
+#     print(lst[i])
+
+#     i += 1
+def create_total_time_lst(time_stages):
+    """Return a list with times adding to total minutes of sleep cycle"""
+
+    time_lst = []
+
+    num = time_stages[0]  # Start at first index; 12
+    time_lst.append(num)
+
+    for i in range(len(time_stages) - 1):
+        # print(i)
+        # new_lst.append(lst[i])  # Add the first element to new list
+
+        next_num = time_stages[i + 1]
+        # print(next_num)
+
+        num += next_num
+        # print(number)
+
+        time_lst.append(num)
+
+        i += 1
+
+    print()
+    print("BEHOLD THE TIME LIST:", time_lst)
+    print()
+    return time_lst
+
+
+def create_time_final_dict(time_stages, time_lst):
+    """"Return dictionary with time stage and time minutes to JSON"""
+
+    print(len(time_stages))
+    print(len(time_lst))
+
+    # GIVEN THE TIME LIST, assign values of the time as KEYS to a dictionary. While, the values of those time keys will be the stages
+    # time_lst = [14, 19, 40, 80, 90, 110, 136, 180, 195, 235, 270, 284, 311, 348, 360]
+    final_time_dict = {}
+
+    sleep_cycle = 4
+
+    first_sleep_stage_lst = ["Awake", "NREM1", "NREM2", "NREM3", "REM"]
+    middle_sleep_stage_lst = ["NREM2", "NREM3", "REM"]
+    last_sleep_stage_lst = ["NREM2", "NREM3", "REM", "Awake"]
+    i = 0
+    while i < sleep_cycle:
+
+        if i < 1:
+            time_lst_first_slice = time_lst[0:5]
+
+            print(time_lst)
+
+            for time_key in time_lst_first_slice:
+                for stage_value in first_sleep_stage_lst:
+                    final_time_dict[time_key] = stage_value
+                    first_sleep_stage_lst.remove(stage_value)
+                    break
+
+            i += 1
+
+        elif i < sleep_cycle - 1:
+
+            middle_length = len(middle_sleep_stage_lst)
+            print("MIDDLE LENGTH:", middle_length)
+
+            print(type(middle_length))
+
+            time_slice_middle = time_lst[5:]  # KEYS
+
+            slice_length = len(time_slice_middle) - 4
+            print("SLICE LENGTH:", slice_length)
+
+            print(type(slice_length))
+
+            new_middle_lst = []
+
+            while middle_length < slice_length:
+                for sleep_stage in middle_sleep_stage_lst:
+                    new_middle_lst.append(sleep_stage)
+
+                    middle_length += 1
+
+            print(middle_sleep_stage_lst)
+            print(new_middle_lst)
+
+            final_middle_sleep_stage_lst = middle_sleep_stage_lst + new_middle_lst
+            print(final_middle_sleep_stage_lst)
+
+            for time_key in time_slice_middle:
+                for stage_value in final_middle_sleep_stage_lst:
+                    final_time_dict[time_key] = stage_value
+                    final_middle_sleep_stage_lst.remove(stage_value)
+                    break
+
+            i += 1
+
+        else:
+
+            time_lst_last_slice = time_lst[-4:]
+            print("NEW MIDDLE TIME SLICE", time_lst_last_slice)
+
+            for time_key in time_lst_last_slice:
+                for stage_value in last_sleep_stage_lst:
+                    final_time_dict[time_key] = stage_value
+                    last_sleep_stage_lst.remove(stage_value)
+                    break
+
+            i += 1
+
+    print("THE FINAL TIME DICT is:", final_time_dict)
+    return final_time_dict
