@@ -38,14 +38,17 @@
         <h2>Line Chart w/ Data from Server</h2>
         <canvas id="line-chart"></canvas>
     
-        <h2>Line Chart w/ Time Scale</h2>
+        <h2>Line Chart w/ Time Scale Sleep Hours</h2>
         <canvas id="line-time"></canvas>
+
+        <h2>Line Chart w/ Time Scale Hypnogram</h2>
+        <canvas id="line-hypnogram"></canvas>
       </div>
     
     <h2>Navigation</h2>
     <ul>
     
-    <li><a href="/set-alarm/{{user_id}}">Hypnogram</a></li>
+    <li><a href="/hypnogram/{{user_id}}/{{converted_current_date}}/{{wake_bed_times_obj.wake_time}}/{{wake_bed_times_obj.bed_time}}">Hypnogram</a></li>
     <li><a href="/total-sleep-chartsjs/{{user_id}}">Total Sleep Per Day Chart.js</a></li>
   
     </ul>
