@@ -310,16 +310,16 @@ def get_sleep_data_user_id(user_id):
     )
 
 
-def get_sleep_data_by_date(user_id, current_date_lst):
+def get_sleep_data_by_date(user_id, current_date_lst, correct_date_obj):
     """Return sleep log objects filtering for current date"""
 
     user_id_sleep_log_obj = get_sleep_data_user_id(user_id)
-    # TODO THIS IS WRONG! I NEED TO PASS IN THE DATE THE USER CLICKS....
+    # // TODO THIS IS WRONG! I NEED TO PASS IN THE DATE THE USER CLICKS....
     for date in user_id_sleep_log_obj.sleep_logs:
-        if date.current_date in current_date_lst:
-            print("IS THIS THE RIGHT DATE?", date.current_date)
+        if correct_date_obj in current_date_lst:
+            print("IS THIS THE RIGHT DATE?", correct_date_obj)
             return SleepLog.query.filter(
-                SleepLog.current_date == date.current_date
+                SleepLog.current_date == correct_date_obj
             ).first()
 
     # user_id = int(user_id)
