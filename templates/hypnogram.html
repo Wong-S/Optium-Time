@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block title %} Hypnogram Graph {% endblock %}
+
+{% block head %}
+  {# Moment: allows you to use time scales. If you want to use time scales,
+     you have to import Moment BEFORE Chart.js #}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+
+  {# ChartJS #}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.js"></script>
+
+  {# randomColor: generate random colors #}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/randomcolor/0.5.4/randomColor.min.js"></script>
+{% endblock %}
+
+{% block body %}
+
+    <h1>Hypnogram Graph for user id: {{user_id}}</h1>
+
+    <h2>User's sleep log data by date:</h2>
+
+    <p>Current date: {{selected_date}}</p>
+    
+
+
+    <p>Wake Time: {{wake_time}}</p>
+    <p>Bed Time: {{bed_time}}</p>
+
+    <div id="site-content">
+        <h1>Total Sleep Hour of User per Day Chart.js</h1>
+    
+        <h2>Simple Bar Chart</h2>
+        <canvas id="bar-chart"></canvas>
+    
+        <h2>Bar Chart w/ Auto-Generated Colors</h2>
+        <canvas id="bar-colors"></canvas>
+    
+        <h2>Line Chart w/ Data from Server</h2>
+        <canvas id="line-chart"></canvas>
+    
+        <h2>Line Chart w/ Time Scale Sleep Hours</h2>
+        <canvas id="line-time"></canvas>
+
+        <h2>Line Chart w/ Time Scale Hypnogram</h2>
+        <canvas id="line-hypnogram"></canvas>
+      </div>
+    
+    <h2>Navigation</h2>
+    <ul>
+    
+    <li><a href="/hypnogram/{{user_id}}">Hypnogram</a></li>
+    <li><a href="/total-sleep-chartsjs/{{user_id}}">Total Sleep Per Day Chart.js</a></li>
+  
+    </ul>
+
+
+
+
+{% endblock body%}
+
+{% block js %}
+  <script src="/static/js/sleep_charts.js"></script>
+{% endblock %}
