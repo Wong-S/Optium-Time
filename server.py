@@ -339,7 +339,7 @@ def register_alarm(user_id):
     return redirect("/sleep-log")
 
 
-# NOTE: Chart.js to display user sleep in graphical model
+# NOTE: This parts begins the Chart.js to display user sleep in graphical model
 @app.route("/sleep-log")
 def display_sleep_graph_options():
     """Return sleep graphs page"""
@@ -368,8 +368,19 @@ def display_sleep_graph_options():
 def display_sleep_times_for_date(user_id, date):
     """Return sleep wake and bed time page"""
 
+    print(
+        "THE HTML DATE is:", date
+    )  # NOTE: ThIS CHECKS OUT! The date does pass in correctly depending on what the user click on
+
+    print(type(date))
+
+    date_obj = datetime_functions.create_date_obj(date)
+    print("The NEW DATETIME DATE Object is:", date_obj)
+
     user_id = session["user"]
     sleep_log_user_obj = crud.get_sleep_data_user_id(user_id)
+
+    print("The user object is:", sleep_log_user_obj)
 
     # TODO: MAKE A CRUD FUNCTION THAT CHECKS THE DATE IN THE DATABASE!! QUERY FOR IT! NOTE: Nvm...cannot filter by Date because need to filter by user_id since multiple dates in that database!
     # sleep_log_current_date_obj = crud.get_sleep_data_by_date(date)
@@ -379,10 +390,30 @@ def display_sleep_times_for_date(user_id, date):
         print("DOES THIS WORK?", date.current_date)
         current_date_lst.append(date.current_date)
 
-    print(current_date_lst)  # CHECKING if works
+    print(
+        current_date_lst
+    )  # NOTE: CHECKING if works; IT IS, but it is now a list of datetime.date objects! Not the previous formatted string
 
-    # TODO:THIS FUNCTION IS NOT CATCHING THE RIGHT DATE!
-    wake_bed_times_obj = crud.get_sleep_data_by_date(user_id, current_date_lst)
+    # // TODO: CHECKING HERE IF the HTML "date" is the date the user clicked on!
+    # NOTE: This conditional isn't even running because the "date" is != to the datetime objects in that list
+    # SO I can either convert this "date" string into an object to compare to the list of objects
+    print()
+    print("CHECK THIS NOW!!!")
+    # NOTE: Convert the datetime.datetime obj to a datetime.date ONLY object
+
+    # if date_obj in current_date_lst:
+    #     print(
+    #         "The DATE OBJECT matches the dates in list:", date_obj
+    #     )  # UPDATE: IT WORKS!
+
+    #     correct_date_obj = date_obj
+    #     print("The CORRECT DATE obj is:", correct_date_obj)
+    # // TODO: Making the "date" HTML string into a datetime.date object
+
+    # // TODO:THIS FUNCTION IS NOT CATCHING THE RIGHT DATE!
+    wake_bed_times_obj = crud.get_sleep_data_by_date(
+        user_id, current_date_lst, date_obj
+    )
     print("IF THIS WORKS", wake_bed_times_obj)
 
     unconverted_current_date = wake_bed_times_obj.current_date
@@ -408,13 +439,14 @@ def get_total_sleep():
     """Get total sleep per day"""
 
     user_id = session["user"]
+    print("FOR TOTAL SLEEP JSON user is:", user_id)
     sleep_log_user_obj = crud.get_sleep_data_user_id(user_id)
 
     # NOTE: Need to convert the date to this format in this file, not the crud file because you'll still get this output to frontend: 2020-11-13 00:00:00, which is not what I need. Just the date, not the time
     sleep_hours_this_day = []
     for date in sleep_log_user_obj.sleep_logs:
         print("The date in the database is", date.current_date)
-        print("The session current date is", session["current_date"])
+        # print("The session current date is", session["current_date"])  #FIXME NOTE: somehow, after commenting this out, the session error that current data doesn't exist anymore works!
         # if date.current_date == session["current_date"]:
         current_date = date.current_date
         converted_current_date_this_day = current_date.strftime("%b-%d-%Y")
@@ -441,6 +473,116 @@ def get_total_sleep():
         )
 
     return jsonify({"data": sleep_hours_this_day})
+
+
+# =======
+# Hypnogram JSON Route Happens Chart.JS
+
+
+@app.route("/hypnogram/<user_id>/<selected_date>/<wake_time>/<bed_time>")
+def create_hypnogram(user_id, selected_date, wake_time, bed_time):
+    """Return hypnogram graph"""
+
+    # NOTE: Just to Check; Delete later
+    print("The USER ID for this path is:", user_id)
+    print("The CURRENT SELECTED DATE path is:", selected_date)
+    print("The WAKE TIME path is:", wake_time)
+    print("The BED TIME path is:", bed_time)
+
+    user_timezone = session["timezone"]
+
+    total_sleep_hours_this_day = datetime_functions.time_difference(
+        user_timezone, wake_time, bed_time
+    )
+
+    # STORES total_sleep hours. Need to convert to minutes
+    session["total_sleep_hours"] = total_sleep_hours_this_day
+    total_sleep_hrs = session["total_sleep_hours"]
+    print("THE TOTAL SLEEP HOURS IS:", total_sleep_hrs)
+
+    print("The HYPNOGRAM SUBTRACTED TIME DIFF  is", total_sleep_hours_this_day)
+
+    # NOTE: Call the datetime_function.py Hypnogram function!
+    hypnogram_dict = datetime_functions.create_hypnogram(total_sleep_hours_this_day)
+
+    print("The SLEEP STAGE DICT Hypnogram is:", hypnogram_dict)
+
+    session["hypnogram"] = hypnogram_dict
+
+    hypnogram_info = session["hypnogram"]
+    print("The FINAL info for hypnogram is:", hypnogram_info)
+
+    return render_template(
+        "hypnogram.html",
+        user_id=user_id,
+        selected_date=selected_date,
+        wake_time=wake_time,
+        bed_time=bed_time,
+    )
+
+
+@app.route("/hypnogram-sleep.json")
+def get_individual_sleep_times():
+    """Get total sleep per day"""
+
+    total_sleep_hrs = session["total_sleep_hours"]
+    print("Total SLEEP HOURS for JSON route is:", total_sleep_hrs)
+
+    hypnogram_time_dict = session["hypnogram"]  # Return time_dict
+    print("THE Hypnogram SLEEP JSON route time_dict is:", hypnogram_time_dict)
+
+    # NOTE: need to put the sleep stages as individual units on y axis
+    # sleep_stages = []
+    # for each_stage in hypnogram_info.keys():
+    #     sleep_stages.append(each_stage)
+
+    # print("The SLEEP STAGES for JSON is:", sleep_stages)
+
+    # # NOTE: need to put the time for each stages for x axis
+    # time_stages = []
+    # for time in hypnogram_info.values():
+    #     time_stages.append(time)
+
+    # print("The TIME STAGES for JSON is:", time_stages)
+
+    # =========================================================
+    time_stages = datetime_functions.create_time_stages(
+        hypnogram_time_dict, total_sleep_hrs
+    )
+
+    time_lst = datetime_functions.create_total_time_lst(time_stages)
+
+    final_time_dict = datetime_functions.create_time_final_dict(time_stages, time_lst)
+    print("DOES FINAL time dict work?:", final_time_dict)
+    # =========================================================
+    # hypnogram_data = []
+
+    # for time_stage, sleep_stage in final_time_dict.items():
+
+    #     hypnogram_data.append(
+    #         {"sleep_mins": time_stage, "sleep_stages": sleep_stage,}
+    #     )
+
+    # print("The data going INTO Chart.js Hypnogram is:", hypnogram_data)
+
+    # CHART.JS
+    labels = []
+    data = []
+    for key_time, value_stage in final_time_dict.items():
+        data.append(key_time)
+        labels.append(value_stage)
+
+    # TODO: There is a bug where the time added is wrong. Example, 9.19 hrs for Nov 16th is about 551.4min, however, it returns over 630min. No problem with function in Sublime
+    print()
+    print("THE LABELS for Hynogram is:", labels)
+    print("THE DATA for hynoogram is:", data)
+    print()
+    # return jsonify(labels, data)  #Returning object
+
+    hynogram_data_2 = [{"sleep_labels": labels, "time_data": data}]
+    return jsonify({"data": hynogram_data_2})
+
+    # return jsonify({"data": hypnogram_data})
 
 
 if __name__ == "__main__":
