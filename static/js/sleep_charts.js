@@ -1,103 +1,103 @@
 "use strict";
 
-const barChart = new Chart(
-  $('#bar-chart'),
-  {
-    type: 'bar',
-    data: {
-      labels: ['Watermelon', 'Canteloupe', 'Honeydew'],
-      datasets: [
-        {
-          label: 'Today',
-          data: [10, 36, 27]
-        },
-        {
-          label: 'Yesterday',
-          data: [5, 0, 7]
-        }
-      ]
-    }
-  }
-);
+// const barChart = new Chart(
+//   $('#bar-chart'),
+//   {
+//     type: 'bar',
+//     data: {
+//       labels: ['Watermelon', 'Canteloupe', 'Honeydew'],
+//       datasets: [
+//         {
+//           label: 'Today',
+//           data: [10, 36, 27]
+//         },
+//         {
+//           label: 'Yesterday',
+//           data: [5, 0, 7]
+//         }
+//       ]
+//     }
+//   }
+// );
 
-const colorfulBarChart = new Chart(
-  $('#bar-colors'),
-  {
-    type: 'bar',
-    data: {
-      labels: ['Watermelon', 'Canteloupe', 'Honeydew'],
-      datasets: [
-        {
-          label: 'Today',
-          data: [15, 36, 27]
-        },
-        {
-          label: 'Yesterday',
-          data: [5, 0, 7]
-        }
-      ]
-    },
-    options: {
-      datasets: {
-        bar: {
-          // We use a function to automatically set the background color of
-          // each bar in the bar chart.
-          //
-          // There are many other properties that accept functions. For more
-          // information see: https://www.chartjs.org/docs/latest/general/options.html#scriptable-options
-          backgroundColor: () => {
-            // `randomColor` is a JS module we found off GitHub: https://github.com/davidmerfield/randomColor
-            // We imported it in templates/chartjs.html
-            return randomColor();
-          }
-        }
-      },
-      scales: {
-        // This is where you can configure x- and y-axes if you don't like the
-        // automatic range that Chart.js sets for you.
-        //
-        // For more info see: https://www.chartjs.org/docs/latest/axes/cartesian/
-        yAxes: [
-          {
-            ticks: {
-              min: 0,
-              max: 40
-            }
-          },
-        ]
-      }
-    }
-  }
-);
+// const colorfulBarChart = new Chart(
+//   $('#bar-colors'),
+//   {
+//     type: 'bar',
+//     data: {
+//       labels: ['Watermelon', 'Canteloupe', 'Honeydew'],
+//       datasets: [
+//         {
+//           label: 'Today',
+//           data: [15, 36, 27]
+//         },
+//         {
+//           label: 'Yesterday',
+//           data: [5, 0, 7]
+//         }
+//       ]
+//     },
+//     options: {
+//       datasets: {
+//         bar: {
+//           // We use a function to automatically set the background color of
+//           // each bar in the bar chart.
+//           //
+//           // There are many other properties that accept functions. For more
+//           // information see: https://www.chartjs.org/docs/latest/general/options.html#scriptable-options
+//           backgroundColor: () => {
+//             // `randomColor` is a JS module we found off GitHub: https://github.com/davidmerfield/randomColor
+//             // We imported it in templates/chartjs.html
+//             return randomColor();
+//           }
+//         }
+//       },
+//       scales: {
+//         // This is where you can configure x- and y-axes if you don't like the
+//         // automatic range that Chart.js sets for you.
+//         //
+//         // For more info see: https://www.chartjs.org/docs/latest/axes/cartesian/
+//         yAxes: [
+//           {
+//             ticks: {
+//               min: 0,
+//               max: 40
+//             }
+//           },
+//         ]
+//       }
+//     }
+//   }
+// );
 
-$.get('/total-sleep.json', (res) => {
-  // We need to restructure the generic data we got from the server. In this
-  // case, we need an array of objects like this:
-  // [{x: xValue, y: yValue}, ...,]
-  const data = [];
-  for (const dailyTotal of res.data) {
-    data.push({x: dailyTotal.date, y: dailyTotal.sleep_hours});
-  }
+// $.get('/total-sleep.json', (res) => {
+//   // We need to restructure the generic data we got from the server. In this
+//   // case, we need an array of objects like this:
+//   // [{x: xValue, y: yValue}, ...,]
+//   const data = [];
+//   for (const dailyTotal of res.data) {
+//     data.push({x: dailyTotal.date, y: dailyTotal.sleep_hours});
+//   }
 
-  // Since Chart.js doesn't understand that we want to plot this data by *time*,
-  // the resulting line graph is really ugly.
-  //
-  // See the next demo for how to use times on the x- or y-axis.
-  new Chart(
-    $('#line-chart'),
-    {
-      type: 'line',
-      data: {
-        datasets: [
-          {
-            label: 'All Melons',
-            data: data
-          }
-        ]
-      }
-    }
-  );
-});
+//   // Since Chart.js doesn't understand that we want to plot this data by *time*,
+//   // the resulting line graph is really ugly.
+//   //
+//   // See the next demo for how to use times on the x- or y-axis.
+//   new Chart(
+//     $('#line-chart'),
+//     {
+//       type: 'line',
+//       data: {
+//         datasets: [
+//           {
+//             label: 'All Melons',
+//             data: data
+//           }
+//         ]
+//       }
+//     }
+//   );
+// });
 
 $.get('/total-sleep.json', (res) => {
   // In order to make this work, you need to use ISO-formatted date/time
@@ -116,6 +116,10 @@ $.get('/total-sleep.json', (res) => {
       data: {
         datasets: [
           {
+            backgroundColor : "rgba(252,233,79,0.5)",
+            borderColor : "rgba(82,75,25,1)",
+            pointBackgroundColor : "rgba(166,152,51,1)",
+            pointBorderColor : "#fff",
             label: 'Total Sleep Hours per Week',
             data: data
           }
@@ -150,3 +154,92 @@ $.get('/total-sleep.json', (res) => {
     }
   );
 });
+
+
+/////////////////////////////////////////////////////
+//HYPNOGRAM graph
+
+$.get('/hypnogram-sleep.json', (res) => {
+
+  //////////THIS WORKS
+  var data = {
+      labels : ["January","February","March",
+                  "April","May","June",
+                  "July","Agost","September",
+                  "October","November","December"],
+      datasets : [
+        {
+          backgroundColor : "rgba(252,233,79,0.5)",
+          borderColor : "rgba(82,75,25,1)",
+          pointBackgroundColor : "rgba(166,152,51,1)",
+          pointBorderColor : "#fff",
+          data : [65,68,75,
+                        81,95,105,
+                        130,120,105,
+                        90,75,70],
+          steppedLine: true
+        }
+      ]
+    }
+  
+  
+  
+    // Also, to enable scaling by time, you need to import Moment *before*
+    // Chart.js. See `templates/chartjs.html`.
+    new Chart(
+      $('#line-hypnogram'),
+      {
+        type: 'line',
+        data: data,
+  
+  
+          // scales: {
+          //   // xAxes: [
+          //   //   {
+          //   //     type: 'linear',
+          //   //     distribution: 'bottom'
+          //   //   }
+          //   // ]
+          //   // yAxes: [{ticks: {beginAtZero: true, callback: function(value,index,values) {return data;}}}]
+          // },
+  
+        }
+  
+    );
+  });
+  
+
+
+
+
+
+//////////THIS WORKS
+
+
+// $.get('/hypnogram-sleep.json', (res) => {})
+// var scatterChart = new Chart(ctx, {
+//   type: 'scatter',
+//   data: {
+//       datasets: [{
+//           label: 'Scatter Dataset',
+//           data: [{
+//               x: -10,
+//               y: 0
+//           }, {
+//               x: 0,
+//               y: 10
+//           }, {
+//               x: 10,
+//               y: 5
+//           }]
+//       }]
+//   },
+//   options: {
+//       scales: {
+//           xAxes: [{
+//               type: 'linear',
+//               position: 'bottom'
+//           }]
+//       }
+//   }
+// });
