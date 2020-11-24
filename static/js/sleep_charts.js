@@ -1,74 +1,74 @@
 "use strict";
 
-// const barChart = new Chart(
-//   $('#bar-chart'),
-//   {
-//     type: 'bar',
-//     data: {
-//       labels: ['Watermelon', 'Canteloupe', 'Honeydew'],
-//       datasets: [
-//         {
-//           label: 'Today',
-//           data: [10, 36, 27]
-//         },
-//         {
-//           label: 'Yesterday',
-//           data: [5, 0, 7]
-//         }
-//       ]
-//     }
-//   }
-// );
+const barChart = new Chart(
+  $('#bar-chart'),
+  {
+    type: 'bar',
+    data: {
+      labels: ['Watermelon', 'Canteloupe', 'Honeydew'],
+      datasets: [
+        {
+          label: 'Today',
+          data: [10, 36, 27]
+        },
+        {
+          label: 'Yesterday',
+          data: [5, 0, 7]
+        }
+      ]
+    }
+  }
+);
 
-// const colorfulBarChart = new Chart(
-//   $('#bar-colors'),
-//   {
-//     type: 'bar',
-//     data: {
-//       labels: ['Watermelon', 'Canteloupe', 'Honeydew'],
-//       datasets: [
-//         {
-//           label: 'Today',
-//           data: [15, 36, 27]
-//         },
-//         {
-//           label: 'Yesterday',
-//           data: [5, 0, 7]
-//         }
-//       ]
-//     },
-//     options: {
-//       datasets: {
-//         bar: {
-//           // We use a function to automatically set the background color of
-//           // each bar in the bar chart.
-//           //
-//           // There are many other properties that accept functions. For more
-//           // information see: https://www.chartjs.org/docs/latest/general/options.html#scriptable-options
-//           backgroundColor: () => {
-//             // `randomColor` is a JS module we found off GitHub: https://github.com/davidmerfield/randomColor
-//             // We imported it in templates/chartjs.html
-//             return randomColor();
-//           }
-//         }
-//       },
-//       scales: {
-//         // This is where you can configure x- and y-axes if you don't like the
-//         // automatic range that Chart.js sets for you.
-//         //
-//         // For more info see: https://www.chartjs.org/docs/latest/axes/cartesian/
-//         yAxes: [
-//           {
-//             ticks: {
-//               min: 0,
-//               max: 40
-//             }
-//           },
-//         ]
-//       }
-//     }
-//   }
-// );
+const colorfulBarChart = new Chart(
+  $('#bar-colors'),
+  {
+    type: 'bar',
+    data: {
+      labels: ['Watermelon', 'Canteloupe', 'Honeydew'],
+      datasets: [
+        {
+          label: 'Today',
+          data: [15, 36, 27]
+        },
+        {
+          label: 'Yesterday',
+          data: [5, 0, 7]
+        }
+      ]
+    },
+    options: {
+      datasets: {
+        bar: {
+          // We use a function to automatically set the background color of
+          // each bar in the bar chart.
+          //
+          // There are many other properties that accept functions. For more
+          // information see: https://www.chartjs.org/docs/latest/general/options.html#scriptable-options
+          backgroundColor: () => {
+            // `randomColor` is a JS module we found off GitHub: https://github.com/davidmerfield/randomColor
+            // We imported it in templates/chartjs.html
+            return randomColor();
+          }
+        }
+      },
+      scales: {
+        // This is where you can configure x- and y-axes if you don't like the
+        // automatic range that Chart.js sets for you.
+        //
+        // For more info see: https://www.chartjs.org/docs/latest/axes/cartesian/
+        yAxes: [
+          {
+            ticks: {
+              min: 0,
+              max: 40
+            }
+          },
+        ]
+      }
+    }
+  }
+);
 
 // $.get('/total-sleep.json', (res) => {
 //   // We need to restructure the generic data we got from the server. In this
@@ -159,25 +159,215 @@ $.get('/total-sleep.json', (res) => {
 /////////////////////////////////////////////////////
 //HYPNOGRAM graph
 
+// $.get('/hypnogram-sleep.json', (res) => {
+
+//   //////////THIS WORKS
+//   var data = {
+//       labels : ["January","February","March",
+//                   "April","May","June",
+//                   "July","Agost","September",
+//                   "October","November","December"],
+//       datasets : [
+//         {
+//           backgroundColor : "rgba(252,233,79,0.5)",
+//           borderColor : "rgba(82,75,25,1)",
+//           pointBackgroundColor : "rgba(166,152,51,1)",
+//           pointBorderColor : "#fff",
+//           data : [65,68,75,
+//                         81,95,105,
+//                         130,120,105,
+//                         90,75,70],
+//           steppedLine: true
+//         }
+//       ]
+//     }
+  
+  
+  
+//     // Also, to enable scaling by time, you need to import Moment *before*
+//     // Chart.js. See `templates/chartjs.html`.
+//     new Chart(
+//       $('#line-hypnogram'),
+//       {
+//         type: 'line',
+//         data: data,
+  
+  
+//           // scales: {
+//           //   // xAxes: [
+//           //   //   {
+//           //   //     type: 'linear',
+//           //   //     distribution: 'bottom'
+//           //   //   }
+//           //   // ]
+//           //   // yAxes: [{ticks: {beginAtZero: true, callback: function(value,index,values) {return data;}}}]
+//           // },
+  
+//         }
+  
+//     );
+//   });
+  
+
+
+  // $.get('/hypnogram-sleep.json', (res) => {
+
+  //   //////////THIS WORKS
+  //   var data = {
+  //       labels : ['Awake', 'NREM1', 'NREM2', 'NREM3', 'REM', 'NREM2', 'NREM3', 'REM', 'NREM2', 'NREM3', 'REM', 'NREM2', 'NREM3', 'REM', 'NREM2', 'NREM3', 'REM', 'NREM2', 'NREM3', 'REM', 'NREM2', 'NREM3', 'REM', 'Awake'],
+  //       datasets : [
+  //         {
+  //           backgroundColor : "rgba(252,233,79,0.5)",
+  //           borderColor : "rgba(82,75,25,1)",
+  //           pointBackgroundColor : "rgba(166,152,51,1)",
+  //           pointBorderColor : "#fff",
+  //           data : [15, 20, 42, 80, 90, 100, 128, 180, 193, 226, 270, 280, 301, 360, 371, 396, 450, 471, 510, 540, 553, 580, 618, 630],
+  //           steppedLine: true
+  //         }
+  //       ]
+  //     }
+    
+    
+    
+  //     // Also, to enable scaling by time, you need to import Moment *before*
+  //     // Chart.js. See `templates/chartjs.html`.
+  //     new Chart(
+  //       $('#line-demo-months'),
+  //       {
+  //         type: 'line',
+  //         data: data,
+    
+    
+  //           // scales: {
+  //           //   // xAxes: [
+  //           //   //   {
+  //           //   //     type: 'linear',
+  //           //   //     distribution: 'bottom'
+  //           //   //   }
+  //           //   // ]
+  //           //   // yAxes: [{ticks: {beginAtZero: true, callback: function(value,index,values) {return data;}}}]
+  //           // },
+    
+  //         }
+    
+  //     );
+  //   });
+    
+  // $.get('/hypnogram-sleep.json', (res) => {
+
+    //////////THIS WORKS
+var data = {
+    labels : ["January","February","March",
+                "April","May","June",
+                "July","Agost","September",
+                "October","November","December"],
+    datasets : [
+      {
+        backgroundColor : "rgba(252,233,79,0.5)",
+        borderColor : "rgba(82,75,25,1)",
+        pointBackgroundColor : "rgba(166,152,51,1)",
+        pointBorderColor : "#fff",
+        data : [65,68,75,
+                      81,95,105,
+                      130,120,105,
+                      90,75,70],
+        steppedLine: true
+      }
+    ]
+  }
+    
+    
+    
+      // Also, to enable scaling by time, you need to import Moment *before*
+      // Chart.js. See `templates/chartjs.html`.
+  new Chart(
+    $('#line-demo-months'),
+    {
+      type: 'line',
+      data: data,
+
+
+        // scales: {
+        //   // xAxes: [
+        //   //   {
+        //   //     type: 'linear',
+        //   //     distribution: 'bottom'
+        //   //   }
+        //   // ]
+        //   // yAxes: [{ticks: {beginAtZero: true, callback: function(value,index,values) {return data;}}}]
+        // },
+
+      }
+
+  );
+    // });
+      
+
+
+      $.get('/hypnogram-sleep.json', (res) => {
+        console.log(res)
+        // console.log(res.data[0].sleep_labels) //Sleep log 
+        // console.log(res.data[0].time_data)
+
+        //////////THIS WORKS
+        var data = {
+            labels :  res.data.time_data,
+            datasets : [
+              {
+                backgroundColor : "rgba(252,233,79,0.5)",
+                borderColor : "rgba(82,75,25,1)",
+                pointBackgroundColor : "rgba(166,152,51,1)",
+                pointBorderColor : "#fff",
+                data : res.data.sleep_labels,
+                steppedLine: true
+              }
+            ]
+          }
+        
+        
+        
+          // Also, to enable scaling by time, you need to import Moment *before*
+          // Chart.js. See `templates/chartjs.html`.
+          new Chart(
+            $('#line-hypnogram'),
+            {
+              type: 'line',
+              data: data,
+        
+        
+                // scales: {
+                //   // xAxes: [
+                //   //   {
+                //   //     type: 'linear',
+                //   //     distribution: 'bottom'
+                //   //   }
+                //   // ]
+                //   // yAxes: [{ticks: {beginAtZero: true, callback: function(value,index,values) {return data;}}}]
+                // },
+        
+              }
+        
+          );
+        });
+//////////THIS WORKS
+//DOUGHNUT Chart.js
+
 $.get('/hypnogram-sleep.json', (res) => {
+  console.log(res)
+  // console.log(res.data[0].sleep_labels) //Sleep log 
+  // console.log(res.data[0].time_data)
 
   //////////THIS WORKS
   var data = {
-      labels : ["January","February","March",
-                  "April","May","June",
-                  "July","Agost","September",
-                  "October","November","December"],
+      labels : res.data.doughnut_name,
       datasets : [
         {
-          backgroundColor : "rgba(252,233,79,0.5)",
+          backgroundColor : ["#0074D9", "#FF4136", "#2ECC40", "#FF851B"],
           borderColor : "rgba(82,75,25,1)",
           pointBackgroundColor : "rgba(166,152,51,1)",
           pointBorderColor : "#fff",
-          data : [65,68,75,
-                        81,95,105,
-                        130,120,105,
-                        90,75,70],
-          steppedLine: true
+          data : res.data.doughnut_percent
+          
         }
       ]
     }
@@ -187,9 +377,9 @@ $.get('/hypnogram-sleep.json', (res) => {
     // Also, to enable scaling by time, you need to import Moment *before*
     // Chart.js. See `templates/chartjs.html`.
     new Chart(
-      $('#line-hypnogram'),
+      $('#doughnut-sleep-stages'),
       {
-        type: 'line',
+        type: 'doughnut',
         data: data,
   
   
@@ -207,13 +397,9 @@ $.get('/hypnogram-sleep.json', (res) => {
   
     );
   });
-  
 
 
 
-
-
-//////////THIS WORKS
 
 
 // $.get('/hypnogram-sleep.json', (res) => {})
