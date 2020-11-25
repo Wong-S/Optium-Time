@@ -191,7 +191,10 @@ def video_category_list(user_id):
 def display_video_selection(user_id):
     """Query selected video filter and display to frontend"""
 
-    video_category = request.args.get("video-category")
+    video_category = request.args.getlist("categories")
+
+    print("THE video_category LIST IS:", video_category)
+
     video_duration = request.args.get("duration")
 
     display_videos = crud.display_selected_videos(video_category, video_duration)
@@ -523,10 +526,12 @@ def create_hypnogram(user_id, selected_date, wake_time, bed_time):
 
 @app.route("/hypnogram-sleep.json")
 def get_individual_sleep_times():
-    """Get total sleep per day"""
+    """Get total sleep per day and Return JSON dictionary for Chart.js"""
 
     total_sleep_hrs = session["total_sleep_hours"]
     print("Total SLEEP HOURS for JSON route is:", total_sleep_hrs)
+
+    total_sleep_min = total_sleep_hrs * 60
 
     hypnogram_time_dict = session["hypnogram"]  # Return time_dict
     print("THE Hypnogram SLEEP JSON route time_dict is:", hypnogram_time_dict)
@@ -550,7 +555,11 @@ def get_individual_sleep_times():
         hypnogram_time_dict, total_sleep_hrs
     )
 
+    print("THE TIME STAGE ON SERVER.PY side is:", time_stages)
+
     time_lst = datetime_functions.create_total_time_lst(time_stages)
+
+    print("The TIME LST on SERVER.PY side is", time_lst)
 
     final_time_dict = datetime_functions.create_time_final_dict(time_stages, time_lst)
     print("DOES FINAL time dict work?:", final_time_dict)
@@ -565,22 +574,61 @@ def get_individual_sleep_times():
 
     # print("The data going INTO Chart.js Hypnogram is:", hypnogram_data)
 
-    # CHART.JS
-    labels = []
-    data = []
+    # CHART.JS Hypnogram==================
+    sleep_labels = []
+    time_data = []
     for key_time, value_stage in final_time_dict.items():
-        data.append(key_time)
-        labels.append(value_stage)
+        time_data.append(key_time)
+        sleep_labels.append(value_stage)
 
-    # TODO: There is a bug where the time added is wrong. Example, 9.19 hrs for Nov 16th is about 551.4min, however, it returns over 630min. No problem with function in Sublime
+    # // TODO: There is a bug where the time added is wrong. Example, 9.19 hrs for Nov 16th is about 551.4min, however, it returns over 630min. No problem with function in Sublime
     print()
-    print("THE LABELS for Hynogram is:", labels)
-    print("THE DATA for hynoogram is:", data)
+    print("THE LABELS for Hynogram is:", sleep_labels)
+    print("THE DATA for hynoogram is:", time_data)
     print()
     # return jsonify(labels, data)  #Returning object
 
-    hynogram_data_2 = [{"sleep_labels": labels, "time_data": data}]
-    return jsonify({"data": hynogram_data_2})
+    # CHART.JS Doughnut======================
+
+    doughnut_data_dict = datetime_functions.create_doughnut_chart(
+        hypnogram_time_dict, total_sleep_min
+    )
+
+    print()
+    print("THE Data from the DOUGHNUT dict is:", doughnut_data_dict)
+    print()
+
+    doughnut_percent_lst = []
+    doughnut_name_lst = []
+
+    for sleep_name, percentage in doughnut_data_dict.items():
+        doughnut_name_lst.append(sleep_name)
+        doughnut_percent_lst.append(f"{percentage:.2f}")
+
+    print("The DOUGHNUT percents is:", doughnut_percent_lst)
+    print("The DOUGHNUT Name is:", doughnut_name_lst)
+
+    # doughnut_data_lst = []
+    # awake_percentage = doughnut_data_dict.get("Awake")
+    # awake_percentage_formatted = "{:.2f}".format(awake_percentage)
+    # print("The AWAKE PERCENTAGE IS:", awake_percentage_formatted)
+
+    # light_sleep_percentage = doughnut_data_dict.get("Light Sleep")
+    # light_sleep_percentage_formatted = "{:.2f}".format(light_sleep_percentage)
+
+    # deep_sleep_percentage = doughnut_data_dict.get("Deep Sleep")
+    # deep_sleep_percentage_formatted = "{:.2f}".format(deep_sleep_percentage)
+
+    # rem_sleep_percentage = doughnut_data_dict.get("REM Sleep")
+    # rem_sleep_percentage_formatted = "{:.2f}".format(rem_sleep_percentage)
+
+    hynogram_doughnut_data = {
+        "sleep_labels": sleep_labels,
+        "time_data": time_data,
+        "doughnut_name": doughnut_name_lst,
+        "doughnut_percent": doughnut_percent_lst,
+    }
+    return jsonify({"data": hynogram_doughnut_data})
 
     # return jsonify({"data": hypnogram_data})
 
