@@ -256,50 +256,50 @@ $.get('/total-sleep.json', (res) => {
   // $.get('/hypnogram-sleep.json', (res) => {
 
     //////////THIS WORKS
-var data = {
-    labels : ["January","February","March",
-                "April","May","June",
-                "July","Agost","September",
-                "October","November","December"],
-    datasets : [
-      {
-        backgroundColor : "rgba(252,233,79,0.5)",
-        borderColor : "rgba(82,75,25,1)",
-        pointBackgroundColor : "rgba(166,152,51,1)",
-        pointBorderColor : "#fff",
-        data : [65,68,75,
-                      81,95,105,
-                      130,120,105,
-                      90,75,70],
-        steppedLine: true
-      }
-    ]
-  }
+// var data = {
+//     labels : ["January","February","March",
+//                 "April","May","June",
+//                 "July","Agost","September",
+//                 "October","November","December"],
+//     datasets : [
+//       {
+//         backgroundColor : "rgba(252,233,79,0.5)",
+//         borderColor : "rgba(82,75,25,1)",
+//         pointBackgroundColor : "rgba(166,152,51,1)",
+//         pointBorderColor : "#fff",
+//         data : [65,68,75,
+//                       81,95,105,
+//                       130,120,105,
+//                       90,75,70],
+//         steppedLine: true
+//       }
+//     ]
+//   }
     
     
     
-      // Also, to enable scaling by time, you need to import Moment *before*
-      // Chart.js. See `templates/chartjs.html`.
-  new Chart(
-    $('#line-demo-months'),
-    {
-      type: 'line',
-      data: data,
+//       // Also, to enable scaling by time, you need to import Moment *before*
+//       // Chart.js. See `templates/chartjs.html`.
+//   new Chart(
+//     $('#line-demo-months'),
+//     {
+//       type: 'line',
+//       data: data,
 
 
-        // scales: {
-        //   // xAxes: [
-        //   //   {
-        //   //     type: 'linear',
-        //   //     distribution: 'bottom'
-        //   //   }
-        //   // ]
-        //   // yAxes: [{ticks: {beginAtZero: true, callback: function(value,index,values) {return data;}}}]
-        // },
+//         // scales: {
+//         //   // xAxes: [
+//         //   //   {
+//         //   //     type: 'linear',
+//         //   //     distribution: 'bottom'
+//         //   //   }
+//         //   // ]
+//         //   // yAxes: [{ticks: {beginAtZero: true, callback: function(value,index,values) {return data;}}}]
+//         // },
 
-      }
+//       }
 
-  );
+//   );
     // });
       
 
@@ -310,6 +310,10 @@ var data = {
         // console.log(res.data[0].time_data)
 
         //////////THIS WORKS
+        var yLabels = {
+          1: 'NREM3', 2: 'NREM2', 3: 'NREM1', 4: 'REM', 5: 'Awake'
+        }
+
         var data = {
             labels :  res.data.time_data,
             datasets : [
@@ -334,6 +338,18 @@ var data = {
               type: 'line',
               data: data,
         
+              options : {
+                scales : {
+                  yAxes: [{
+                    ticks : {
+                      beginAtZero: true,
+                      callback: function(value, index, values) {
+                        return yLabels[value];
+                      }
+                    }
+                  }]
+                }
+              }
         
                 // scales: {
                 //   // xAxes: [
@@ -429,3 +445,40 @@ $.get('/hypnogram-sleep.json', (res) => {
 //       }
 //   }
 // });
+
+var myChart = new Chart(ctx, {
+  type: 'bar',
+  data: {
+      labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+      datasets: [{
+          label: '# of Votes',
+          data: [12, 19, 3, 5, 2, 3],
+          backgroundColor: [
+              'rgba(255, 99, 132, 0.2)',
+              'rgba(54, 162, 235, 0.2)',
+              'rgba(255, 206, 86, 0.2)',
+              'rgba(75, 192, 192, 0.2)',
+              'rgba(153, 102, 255, 0.2)',
+              'rgba(255, 159, 64, 0.2)'
+          ],
+          borderColor: [
+              'rgba(255, 99, 132, 1)',
+              'rgba(54, 162, 235, 1)',
+              'rgba(255, 206, 86, 1)',
+              'rgba(75, 192, 192, 1)',
+              'rgba(153, 102, 255, 1)',
+              'rgba(255, 159, 64, 1)'
+          ],
+          borderWidth: 1
+      }]
+  },
+  options: {
+      scales: {
+          yAxes: [{
+              ticks: {
+                  beginAtZero: true
+              }
+          }]
+      }
+  }
+});
