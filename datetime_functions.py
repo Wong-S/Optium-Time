@@ -219,7 +219,7 @@ def create_hypnogram(total_sleep_hours):
     print("Your TOTAL SLEEP in MIN:", total_sleep_min)
 
     # Sleep cycles last about 90 min?
-    sleep_cycle = total_sleep_min / 90
+    sleep_cycle = total_sleep_min // 90
     print("Your NUMBER of sleep cycle is:", sleep_cycle)
 
     time_dict = {}
@@ -303,13 +303,13 @@ def create_hypnogram(total_sleep_hours):
             # time_dict['NREM1'] = stage_1
 
             # ======================================================================================
-            stage_2 = randint(10, 25)
+            stage_2 = randint(30, 60)  # SWITCHED TO 20, 40
             print("Stage 2 sleep time is", stage_2)
 
             time_dict["NREM2"].append(stage_2)
 
             # ======================================================================================
-            stage_3_4 = randint(20, 40)
+            stage_3_4 = randint(10, 20)  # SWITCHED FROM 20, 40
             print("Stage 3 and 4 sleep time is", stage_3_4)
 
             time_dict["NREM3"].append(stage_3_4)
@@ -360,13 +360,13 @@ def create_hypnogram(total_sleep_hours):
             # time_dict['NREM1'] = stage_1
 
             # ======================================================================================
-            stage_2 = randint(10, 25)
+            stage_2 = randint(20, 40)
             print("Stage 2 sleep time is", stage_2)
 
             time_dict["NREM2"].append(stage_2)
 
             # ======================================================================================
-            stage_3_4 = randint(20, 40)
+            stage_3_4 = randint(10, 20)
             print("Stage 3 and 4 sleep time is", stage_3_4)
 
             time_dict["NREM3"].append(stage_3_4)
@@ -407,6 +407,11 @@ def create_hypnogram(total_sleep_hours):
     return time_dict
 
 
+# THIS FUNCTION CHECKS OUT ABOVE!
+# ======================================================================================
+# THIS FUNCTION CHECKS OUT BELOW
+
+
 def create_time_stages(time_dict, total_sleep_hours):
     """Return dictionary with sleep stages with sleep time"""
 
@@ -414,7 +419,7 @@ def create_time_stages(time_dict, total_sleep_hours):
     print("Your TOTAL SLEEP in MIN:", total_sleep_min)
 
     # Sleep cycles last about 90 min?
-    sleep_cycle = total_sleep_min / 90
+    sleep_cycle = total_sleep_min // 90
     print("Your NUMBER of sleep cycle is:", sleep_cycle)
 
     time_stages = []
@@ -480,6 +485,11 @@ def create_time_stages(time_dict, total_sleep_hours):
 #     print(lst[i])
 
 #     i += 1
+
+# ======================================================================================
+# THIS FUNCTION CHECKS OUT BELOW
+
+
 def create_total_time_lst(time_stages):
     """Return a list with times adding to total minutes of sleep cycle"""
 
@@ -508,6 +518,10 @@ def create_total_time_lst(time_stages):
     return time_lst
 
 
+# ======================================================================================
+# THIS FUNCTION CHECKS OUT BELOW
+
+
 def create_time_final_dict(time_stages, time_lst):
     """"Return dictionary with time stage and time minutes to JSON"""
 
@@ -520,9 +534,11 @@ def create_time_final_dict(time_stages, time_lst):
 
     sleep_cycle = 4
 
-    first_sleep_stage_lst = ["Awake", "NREM1", "NREM2", "NREM3", "REM"]
-    middle_sleep_stage_lst = ["NREM2", "NREM3", "REM"]
-    last_sleep_stage_lst = ["NREM2", "NREM3", "REM", "Awake"]
+    # ["Awake", "NREM1", "NREM2", "NREM3", "REM"] #[5, 3, 2, 1, 4]
+    first_sleep_stage_lst = [5, 3, 2, 1, 4]
+    middle_sleep_stage_lst = [2, 1, 4]  # ["NREM2", "NREM3", "REM"] #[2, 1, 4]
+    # ["NREM2", "NREM3", "REM", "Awake"] #[2,1,4,5]
+    last_sleep_stage_lst = [2, 1, 4, 5]
     i = 0
     while i < sleep_cycle:
 
@@ -590,3 +606,59 @@ def create_time_final_dict(time_stages, time_lst):
 
     print("THE FINAL TIME DICT is:", final_time_dict)
     return final_time_dict
+
+
+# ===============================================
+# DOUGHNUT CHART DATA CALCULATIONS Starts Here:
+
+
+def calculate_sleep_stage_percent(sleep_stage, total_sleep_time):
+    """Return the percent of each sleep stage"""
+
+    sum = 0
+    for i in sleep_stage:
+        sum += i
+
+        sleep_percentile = (sum / total_sleep_time) * 100
+
+    return sleep_percentile
+
+
+def create_doughnut_chart(time_dict, total_sleep_time):
+    """Return percentile of each sleep stage as a dictionary"""
+
+    doughnut_dict = {}
+
+    # ====================================
+    awake = time_dict.get("awake")
+    print(awake)  # Gives back a list
+    awake_percent = calculate_sleep_stage_percent(awake, total_sleep_time)
+
+    doughnut_dict["Awake"] = awake_percent
+
+    # ====================================LIGHT SLEEP STARTS HERE
+    # WILL NEED TO CHANGE IF YOU FIX THE FORMULA FOR THE HYNOGRAM!!!
+    stage_1 = time_dict.get("NREM1")
+    stage_1_percent = (stage_1 / total_sleep_time) * 100
+
+    stage_2 = time_dict.get("NREM2")
+    # time_stages.append(stage_2[0])
+    # stage_2.pop((0))
+    stage_2_percent = calculate_sleep_stage_percent(stage_2, total_sleep_time)
+
+    doughnut_dict["Light Sleep"] = stage_1_percent + stage_2_percent
+
+    # ====================================DEEP SLEEP STARTS HERE
+    stage_3 = time_dict.get("NREM3")
+    # time_stages.append(stage_3[0])
+    # stage_3.pop((0))
+    stage_3_percent = calculate_sleep_stage_percent(stage_3, total_sleep_time)
+
+    doughnut_dict["Deep Sleep"] = stage_3_percent
+
+    rem = time_dict.get("REM")
+    rem_percent = calculate_sleep_stage_percent(rem, total_sleep_time)
+
+    doughnut_dict["REM Sleep"] = rem_percent
+
+    return doughnut_dict
