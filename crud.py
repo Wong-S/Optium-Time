@@ -100,8 +100,10 @@ def create_journal_entry(
     user_id,
     entry_name,
     entry_details,
-    created_at=datetime.now(),
-    updated_at=datetime.now(),
+    created_at,
+    updated_at
+    # created_at=datetime.now(),
+    # updated_at=datetime.now(),
 ):
     """Create and return a new journal entry"""
 
@@ -109,8 +111,10 @@ def create_journal_entry(
         user_id=user_id,
         entry_name=entry_name,
         entry_details=entry_details,
-        created_at=datetime.date(created_at),
-        updated_at=datetime.date(updated_at),
+        created_at=created_at,
+        updated_at=updated_at
+        # created_at=datetime.date(created_at),
+        # updated_at=datetime.date(updated_at),
         # NOTE: Foreign Key from User Table
     )
 
@@ -324,6 +328,54 @@ def get_sleep_data_by_date(user_id, current_date_lst, correct_date_obj):
 
     # user_id = int(user_id)
     # return SleepLog.query.filter(SleepLog.current_date == date).first()
+
+
+def get_sleep_data_by_filtered_date(user_id, chosen_date_by_user):
+    """Return sleep log objects filtering for current date"""
+
+    user_id_sleep_log_obj = get_sleep_data_user_id(user_id)
+
+    print("HEY IS IT WORKING??")
+
+    for date in user_id_sleep_log_obj.sleep_logs:
+        if chosen_date_by_user == date.current_date:
+            print("THIS IS THE DATE YOU FILTERED OUT?", date.current_date)
+            return SleepLog.query.filter(
+                SleepLog.current_date == chosen_date_by_user
+            ).first()
+
+
+def get_sleep_time_by_filtered_date_lst(user_id, date_obj_lst):
+    """Return sleep log objects filtering for current date"""
+
+    user_id_sleep_log_obj = get_sleep_data_user_id(user_id)
+
+    print("HEY IS IT WORKING??")
+    # FIXME: REMOVE LATER! JUST FOR CHECKING
+    # print(date_obj_lst)
+    # for i in date_obj_lst:
+    #     print(i)
+    #     for x in i:
+    #         print("THE DATE OBJECT IS?:", x)
+
+    selected_date_obj_lst = []
+    for all_dates in user_id_sleep_log_obj.sleep_logs:
+        print(all_dates.current_date)
+        print(type(all_dates.current_date))
+        for date_lst in date_obj_lst:
+            for date_obj in date_lst:
+                print(date_obj)
+                print(type(date_obj))
+                if date_obj == all_dates.current_date:
+                    print("THIS IS THE DATE YOU FILTERED OUT?", all_dates.current_date)
+                    query_obj = SleepLog.query.filter(
+                        SleepLog.current_date == date_obj
+                    ).first()
+
+                    selected_date_obj_lst.append(query_obj)
+    # NOTE: JUST FOR CHECKING! IT WORKS
+    print(selected_date_obj_lst)
+    return selected_date_obj_lst
 
 
 if __name__ == "__main__":
