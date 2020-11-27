@@ -57,9 +57,9 @@ def current_time_timezone_from_utc(timezone):
 
     user_timezone = pytz.timezone(timezone)
     utc_datetime = datetime.now(user_timezone)  # FIXME: This returns the date of TODAY!
-    print("Date & Time in UTC : ", utc_datetime.strftime("%H:%M"))
+    print("Date & Time in UTC : ", utc_datetime.strftime("%H:%M:%S"))
 
-    return utc_datetime.strftime("%H:%M")  # Returning a STRING
+    return utc_datetime.strftime("%H:%M:%S")  # Returning a STRING
 
 
 def current_date_timezone_from_utc(timezone):
@@ -78,6 +78,30 @@ def create_date_obj(date_str):
     """Return a datetime.date object"""
 
     print("If you made it here, the argument passed is:", date_str)
+
+    datetime_obj = datetime.strptime(
+        date_str, "%b-%d-%Y"
+    )  # NOTE: The date_str passed in is the converted one. So Nov-25-2020. And this must match the format!
+
+    return datetime.date(datetime_obj)
+
+
+def create_filtered_date_obj(date_str):
+    """Return a datetime.date object"""
+
+    print("If you made it here, the argument passed is:", date_str)
+
+    datetime_obj = datetime.strptime(
+        date_str, "%Y-%m-%d"
+    )  # NOTE: The date_str passed in is the converted one. So Nov-25-2020. And this must match the format!
+
+    return datetime.date(datetime_obj)
+
+
+def change_filtered_dates_to_obj(date_str):
+    """Return a datetime.date object"""
+
+    print("Finally, the argument passed is:", date_str)
 
     datetime_obj = datetime.strptime(
         date_str, "%b-%d-%Y"
@@ -133,9 +157,11 @@ def time_difference(timezone, wake_time, bed_time):
     # STEP 1: Need to convert datetime.time object to a string
     wake_time = str(wake_time)
     print(type(wake_time))
+    print("The wake_time is", wake_time)
 
     bed_time = str(bed_time)
     print(type(bed_time))
+    print("The bed time is", bed_time)
 
     # STEP 1:
     wake_time = datetime.strptime(
@@ -522,7 +548,7 @@ def create_total_time_lst(time_stages):
 # THIS FUNCTION CHECKS OUT BELOW
 
 
-def create_time_final_dict(time_stages, time_lst):
+def create_time_final_dict(time_stages, time_lst, total_sleep_hrs):
     """"Return dictionary with time stage and time minutes to JSON"""
 
     print(len(time_stages))
@@ -532,7 +558,12 @@ def create_time_final_dict(time_stages, time_lst):
     # time_lst = [14, 19, 40, 80, 90, 110, 136, 180, 195, 235, 270, 284, 311, 348, 360]
     final_time_dict = {}
 
-    sleep_cycle = 4
+    total_sleep_min = total_sleep_hrs * 60
+    print("Your TOTAL SLEEP in MIN:", total_sleep_min)
+
+    # Sleep cycles last about 90 min?
+    sleep_cycle = total_sleep_min // 90
+    print("Your NUMBER of sleep cycle is:", sleep_cycle)
 
     # ["Awake", "NREM1", "NREM2", "NREM3", "REM"] #[5, 3, 2, 1, 4]
     first_sleep_stage_lst = [5, 3, 2, 1, 4]
