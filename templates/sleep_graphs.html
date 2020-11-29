@@ -9,10 +9,51 @@
     
 
     {% for date in converted_current_date %}
-        <a href="/sleep-data-by-date/{{user_id}}">Current date: {{date}}</a></p>
+        <a href="/sleep-data-by-date/{{user_id}}/{{date}}">Current date: {{date}}</a></p>
      
  
     {% endfor %}
+
+    <h2>Dates Grouped by 7:</h2>
+    {% for dates in dates_grouped_by_seven %}
+    <a href="/data-by-weekly-dates/{{user_id}}/{{dates}}">{{dates}}</a></p>
+ 
+
+    {% endfor %}
+
+    <h2>Search for Specific Date Grouped by 7??:</h2>
+    <form action="/date-filter/{{user_id}}">
+
+        <label>Find a Sleep Date</label>
+
+        <label for="start">Start date:</label>
+
+        <input type="date" id="start" name="date-start">
+        
+        
+
+        <br>
+        <input type="submit">
+
+    </form>
+
+    <h2>Search for Specific Month and Year:</h2>
+    <form action="/month-filter/{{user_id}}">
+
+        <label>Find a Sleep Information by Month/Year</label>
+
+        <label for="start">Start month:</label>
+
+        <input type="month" id="month" name="start-month">
+        
+        
+
+        <br>
+        <input type="submit">
+
+    </form>
+
+
 
 
     
