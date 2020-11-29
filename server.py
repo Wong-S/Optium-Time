@@ -105,7 +105,7 @@ def check_login_credentials():
         session["timezone"] = user_details.timezone
         print(session["timezone"])
 
-        return render_template("user_page.html", user=user_details)
+        return redirect("/user-page")
     else:
         flash("Email or password do not match. Try again!")
         return redirect("/")
@@ -115,11 +115,15 @@ def check_login_credentials():
 # User Page Route: What displays here is Journals, Sleep Log, Playlists Selection, etc:
 
 
-# @app.route("/user-page")
-# def display_user_options():
-#     """Return user's next selection"""
+@app.route("/user-page")
+def display_user_options():
+    """Return user's next selection"""
 
-#     return render_template("user_page.html")
+    user_id = session["user"]
+
+    user_obj = crud.get_user_by_id(user_id)
+
+    return render_template("user_page.html", user_obj=user_obj)
 
 
 # =====================================================================
@@ -364,9 +368,54 @@ def register_alarm(user_id):
     print("The Calculated SUBTRACT TIME is", user_total_time)
     flash("Your alarm is set")
 
-    return redirect("/sleep-log")
+    # TODO CREATE A ALARM COUNTDOWN FOR THE HOMEPAGE 11/28 ---------
+    # Steps I need to take is create a JSON route to store the user's alarm total alarm
+    session["alarm"] = user_total_time
+
+    print("THE STORED ALARM SESSION IS:", user_total_time)
+
+    #
+    # return render_template("user_page.html")
+    # Redirect to the homepage and see the alarm countdown clock. THen add an option to delete the alarm or not?
+    return redirect("/user-page")
 
 
+@app.route("/countdown.json")
+def get_alarm_countdown_details():
+    """Return user's alarm settings to frontend"""
+
+    user_alarm_details = session["alarm"]  # 7.46 (Float type)
+    print("THE ROUTE FOR THE ALARM COUNTDOWN SESSION IS:", user_alarm_details)
+    print(type(user_alarm_details))
+
+    user_alarm_details_str = str(user_alarm_details)
+
+    user_alarm_details_lst = user_alarm_details_str.split(".")
+
+    alarm_hours = int(user_alarm_details_lst[0])
+    alarm_minutes = int(user_alarm_details_lst[1])
+
+    print("THE ALARM HOURS IS:", alarm_hours)
+    print("THE ALARM MINUTES IS:", alarm_minutes)
+
+    alarm_dict = {"hours": alarm_hours, "minutes": alarm_minutes}
+    print("ALARM DICTIONARY IS:", alarm_dict)
+
+    return alarm_dict
+
+
+# =================================================
+# TODO MAKE A COUNTDOWN TIMER FOR USER TO SEE AND THEN IT SETS THE ALARM????????
+@app.route("/countdown-timer")
+def display_countdown_timer():
+    """Return countdown timer page of set alarm"""
+
+    print("YOU MADE IT HERE AT THIS ROUTE!!! FOR COUNTDOWN")
+
+    return render_template("countdown.html")
+
+
+# =================================================
 # NOTE: This parts begins the Chart.js to display user sleep in graphical model
 @app.route("/sleep-log")
 def display_sleep_graph_options():
@@ -481,9 +530,22 @@ def display_chosen_sleep_date(user_id):
             print("THIS LIST THAT FILTERED OUT 7 DAYS:", date)
             selected_group_dates_obj_lst.append(date)
 
-    print("THE FINAL LIST OF DATES IS:", selected_group_dates_obj_lst)
+    print(
+        "THE FINAL LIST OF DATES IS:", selected_group_dates_obj_lst
+    )  # [[datetime.date(2020, 11, 22), datetime.date(2020, 11, 23), datetime.date(2020, 11, 24), datetime.date(2020, 11, 25), datetime.date(2020, 11, 26)]]
     # Store in session and take to the json route below
-    session["final_weekly_dates"] = selected_group_dates_obj_lst
+
+    converted_current_date_str = []  # This list contains ALL the dates.
+    for date_lst in selected_group_dates_obj_lst:
+        print(date_lst)
+        for date in date_lst:
+            print("LOOK HERE:", date)
+
+            converted_current_date_str.append(date.strftime("%b-%d-%Y"))
+
+    print("THE CONVERTED DATES OBJ TO STR IS:", converted_current_date_str)
+
+    session["final_weekly_dates"] = converted_current_date_str
 
     # NOTE: Next step is taking this list of objects and now looking in the database and calculating the wake and bed times again.
     # SO, in order, get a list of the wake up and bed times. Then get only the total hours from that and put it in a list. Store in a session and take to JSON route
@@ -491,11 +553,36 @@ def display_chosen_sleep_date(user_id):
         user_id, selected_group_dates_obj_lst
     )
 
-    print("SO the LIST OF OBJ FOR EACH DATE IS?:", pre_time_sleep_log_obj)
+    print(
+        "SO the LIST OF OBJ FOR EACH DATE IS?:", pre_time_sleep_log_obj
+    )  # [<SleepLog sleep_log_id = 22 wake_time = 09:30:00 bed_time = 23:11:00 current_date = 2020-11-22>, <SleepLog sleep_log_id = 23 wake_time = 09:30:00 bed_time = 23:11:00 current_date = 2020-11-23>, <SleepLog sleep_log_id = 24 wake_time = 09:30:00 bed_time = 23:11:00 current_date = 2020-11-24>, <SleepLog sleep_log_id = 25 wake_time = 05:55:00 bed_time = 23:42:52 current_date = 2020-11-25>, <SleepLog sleep_log_id = 26 wake_time = 08:33:00 bed_time = 12:20:21 current_date = 2020-11-26>]
 
     # NOTE: Now, take the query filtered list of objects above and take the wake and bed time hours and return a list of only those hours!
+    # //  TODO STOPPED HERE!!!
+    timezone = session["timezone"]
+    print("USER TIMEZONE CURRENTLY IS:", timezone)
 
-    return render_template("sleep_dates_by_week.html", filtered_date=filtered_date)
+    total_time_hours_lst = []
+    for i in pre_time_sleep_log_obj:
+        total_subtracted_hours = datetime_functions.time_difference(
+            timezone, i.wake_time, i.bed_time
+        )
+        total_time_hours_lst.append(total_subtracted_hours)
+
+    print(
+        "BEFORE PASS INTO HTML THE TOTAL TIME HOURS ISL", total_time_hours_lst
+    )  # CHECKS OUT, RETURNS: [10.19, 10.19, 10.19, 6.12, 20.12]
+
+    session["total_weekly_hrs_json"] = total_time_hours_lst
+
+    weekly_hours_lst = session["total_weekly_hrs_json"]
+    # Calculate the average number of hours per week:
+    average_hrs = datetime_functions.calculate_weekly_avg_hrs(weekly_hours_lst)
+    print("AVERAGE HOURS SLEPT PER WEEK:", average_hrs)
+
+    return render_template(
+        "sleep_dates_by_week.html", filtered_date=filtered_date, average_hrs=average_hrs
+    )
 
 
 # FOR CHART.JS WEEKLY DATES
@@ -503,8 +590,21 @@ def display_chosen_sleep_date(user_id):
 def weekly_dates_json():
     """Return JSON dict to chart.js"""
 
-    weekly_date_list_obj = session["final_weekly_dates"]
-    print("FOR JSON WEEKLY DATES IS:", weekly_date_list_obj)
+    weekly_date_lst_obj = session["final_weekly_dates"]
+    print("FOR JSON WEEKLY DATES IS:", weekly_date_lst_obj)
+
+    # converted_current_date_str = []  # This list contains ALL the dates.
+    # for date_lst in weekly_date_lst_obj:
+    #     print(date_lst)
+    #     for date in date_lst:
+    #         print("LOOK HERE:", date)
+
+    #         converted_current_date_str.append(date.strftime("%b-%d-%Y"))
+
+    # print("THE CONVERTED DATES FOR JSON IS:", converted_current_date_str)
+
+    total_hrs = session["total_weekly_hrs_json"]
+    print("TOTAL HOURS LIST IS:", total_hrs)
 
     # sleep_hours_this_day.append(
     #     {
@@ -512,8 +612,24 @@ def weekly_dates_json():
     #         "sleep_hours": total_sleep_hours_this_day,
     #     }
     # )
+    weekly_sleep_data = {
+        "total_hours": total_hrs,
+        "dates_over_time": weekly_date_lst_obj,
+    }
 
-    # return jsonify({"data": sleep_hours_this_day})
+    return jsonify({"data": weekly_sleep_data})
+
+    # hynogram_doughnut_data = {
+
+
+#         "sleep_labels": sleep_labels,
+#         "time_data": time_data,
+#         "doughnut_name": doughnut_name_lst,
+#         "doughnut_percent": doughnut_percent_lst,
+#     }
+#     return jsonify({"data": hynogram_doughnut_data})
+
+#     # return jsonify({"data": hypnogram_data})
 
 
 # This Route shows the Week depending on what User clicks on; DOESN"T WORK SINCE DATES CANNOT BE PASSED AS A LIST FROM HTML TO BACKEND!
@@ -524,6 +640,149 @@ def weekly_dates_json():
 #     print("THE WEEKLY DATES USER SELECTED ARE:")
 
 #     return render_template("sleep_dates_by_week.html")
+
+# TODO STOPPED HERE: 11/28 !!!!!!!!!!!!!
+# =======================This starts the Filtering out by Month!
+@app.route("/month-filter/<user_id>")
+def filter_by_month(user_id):
+    """Return dates by month"""
+
+    chosen_month_by_user_str = request.args.get("start-month")  # 2020-11 (STRING)
+
+    print("THE CHOSEN MONTH BY USER WAS:", chosen_month_by_user_str)
+
+    sleep_log_user_obj = crud.get_sleep_data_user_id(
+        user_id
+    )  # <User user_id = 1 first_name = Shelby>
+
+    print("ALL THE USER'S  DATA IS:", sleep_log_user_obj)
+
+    # Now I need to call the joined sleep_log table
+    all_date_obj_lst = []
+    for data in sleep_log_user_obj.sleep_logs:
+        print(data.current_date)  # 2020-11-25
+        print(type(data.current_date))  # <class 'datetime.date'>
+        # print(data.current_date[0]) #ERROR! NOT SCRIPTABLE
+        all_date_obj_lst.append(data.current_date)
+
+    print(
+        "LIST OF ALL DATE OBJECTS IS:", all_date_obj_lst
+    )  # [datetime.date(2020, 11, 1), datetime.date(2020, 11, 2), datetime.date(2020, 11, 3), datetime.date(2020, 11, 4), datetime.date(2020, 11, 5), datetime.date(2020, 11, 6), datetime.date(2020, 11, 7), datetime.date(2020, 11, 8), datetime.date(2020, 11, 9), datetime.date(2020, 11, 10), datetime.date(2020, 11, 11), datetime.date(2020, 11, 12), datetime.date(2020, 11, 13), datetime.date(2020, 11, 14), datetime.date(2020, 11, 15), datetime.date(2020, 11, 16), datetime.date(2020, 11, 17), datetime.date(2020, 11, 18), datetime.date(2020, 11, 19), datetime.date(2020, 11, 20), datetime.date(2020, 11, 21), datetime.date(2020, 11, 22), datetime.date(2020, 11, 23), datetime.date(2020, 11, 24), datetime.date(2020, 11, 25), datetime.date(2020, 11, 26), datetime.date(2020, 11, 27)]
+    ##############
+    # I Can do The following steps:
+    # 1. Store the datetime in a list
+    # 2. Convert that list to a string format with only the 2020-11 present
+    ##############
+    all_datetime_str_lst = datetime_functions.create_date_str(all_date_obj_lst)
+    print(
+        "ALL DATES AS A STRING IS:", all_datetime_str_lst
+    )  # ['2020-11', '2020-11', '2020-11', '2020-11', '2020-11', '2020-11', '2020-11', '2020-11', '2020-11', '2020-11', '2020-11', '2020-11', '2020-11', '2020-11', '2020-11', '2020-11', '2020-11', '2020-11', '2020-11', '2020-11', '2020-11', '2020-11', '2020-11', '2020-11', '2020-11', '2020-11', '2020-11']
+
+    # NOW, need to take the all_date_obj_lst and convert to the converted string dates "2020-11-1"
+    converted_dates_obj_to_str = datetime_functions.convert_date_obj_to_str_format(
+        all_date_obj_lst
+    )
+
+    print(
+        "IF YOU MAKE IT HERE THE ALL STRINGS DATES ARE:", converted_dates_obj_to_str
+    )  # ['2020-11-01', '2020-11-02', '2020-11-03', '2020-11-04', '2020-11-05', '2020-11-06', '2020-11-07', '2020-11-08', '2020-11-09', '2020-11-10', '2020-11-11', '2020-11-12', '2020-11-13', '2020-11-14', '2020-11-15', '2020-11-16', '2020-11-17', '2020-11-18', '2020-11-19', '2020-11-20', '2020-11-21', '2020-11-22', '2020-11-23', '2020-11-24', '2020-11-25', '2020-11-26', '2020-11-27']
+
+    # Now combine the converted string dates and the HTML selected month dates into a dict:
+    all_month_dict = {
+        converted_dates_obj_to_str[i]: all_datetime_str_lst[i]
+        for i in range(len(converted_dates_obj_to_str))
+    }
+
+    print(
+        "THE DICTIONARY FOR MONTHS IS:", all_month_dict
+    )  # {'2020-11-01': '2020-11', '2020-11-02': '2020-11', '2020-11-03': '2020-11', '2020-11-04': '2020-11', '2020-11-05': '2020-11', '2020-11-06': '2020-11', '2020-11-07': '2020-11', '2020-11-08': '2020-11', '2020-11-09': '2020-11', '2020-11-10': '2020-11', '2020-11-11': '2020-11', '2020-11-12': '2020-11', '2020-11-13': '2020-11', '2020-11-14': '2020-11', '2020-11-15': '2020-11', '2020-11-16': '2020-11', '2020-11-17': '2020-11', '2020-11-18': '2020-11', '2020-11-19': '2020-11', '2020-11-20': '2020-11', '2020-11-21': '2020-11', '2020-11-22': '2020-11', '2020-11-23': '2020-11', '2020-11-24': '2020-11', '2020-11-25': '2020-11', '2020-11-26': '2020-11', '2020-11-27': '2020-11'}
+
+    # Now return only the selected months and string dates associated with tht HTML choosen date values from the dict and RETURN a new list with those months
+    selected_month_filter_str_lst = []
+
+    for k, v in all_month_dict.items():
+        if v == chosen_month_by_user_str:
+            selected_month_filter_str_lst.append(k)
+
+    print(
+        "Filtered OUT MONTHS FROM CHOSEN HTML DATE ARE:", selected_month_filter_str_lst
+    )  # ['2020-11-01', '2020-11-02', '2020-11-03', '2020-11-04', '2020-11-05', '2020-11-06', '2020-11-07', '2020-11-08', '2020-11-09', '2020-11-10', '2020-11-11', '2020-11-12', '2020-11-13', '2020-11-14', '2020-11-15', '2020-11-16', '2020-11-17', '2020-11-18', '2020-11-19', '2020-11-20', '2020-11-21', '2020-11-22', '2020-11-23', '2020-11-24', '2020-11-25', '2020-11-26', '2020-11-27']
+
+    # TODO FINISH HERE 11/28 !!!!!
+    # Now take that list of strings and convert back to datetime.date obj. Then do a crud filter for those objects and get the wake,bed time info. Look above on line 476 for how to do it with the last grouped dates!
+
+    month_date_obj_lst = datetime_functions.create_filtered_date_obj_from_str_lst(
+        selected_month_filter_str_lst
+    )
+
+    print(
+        "CONVERTED MONTHS FROM STR TO OBJ LST:", month_date_obj_lst
+    )  # [datetime.datetime(2020, 11, 1, 0, 0), datetime.datetime(2020, 11, 2, 0, 0), datetime.datetime(2020, 11, 3, 0, 0), datetime.datetime(2020, 11, 4, 0, 0), datetime.datetime(2020, 11, 5, 0, 0), datetime.datetime(2020, 11, 6, 0, 0), datetime.datetime(2020, 11, 7, 0, 0), datetime.datetime(2020, 11, 8, 0, 0), datetime.datetime(2020, 11, 9, 0, 0), datetime.datetime(2020, 11, 10, 0, 0), datetime.datetime(2020, 11, 11, 0, 0), datetime.datetime(2020, 11, 12, 0, 0), datetime.datetime(2020, 11, 13, 0, 0), datetime.datetime(2020, 11, 14, 0, 0), datetime.datetime(2020, 11, 15, 0, 0), datetime.datetime(2020, 11, 16, 0, 0), datetime.datetime(2020, 11, 17, 0, 0), datetime.datetime(2020, 11, 18, 0, 0), datetime.datetime(2020, 11, 19, 0, 0), datetime.datetime(2020, 11, 20, 0, 0), datetime.datetime(2020, 11, 21, 0, 0), datetime.datetime(2020, 11, 22, 0, 0), datetime.datetime(2020, 11, 23, 0, 0), datetime.datetime(2020, 11, 24, 0, 0), datetime.datetime(2020, 11, 25, 0, 0), datetime.datetime(2020, 11, 26, 0, 0), datetime.datetime(2020, 11, 27, 0, 0)]
+
+    # Now take the list of datetime.date objects and do a query filter to get the wake and bed times
+    user_sleep_log_obj_for_date_lst = crud.get_sleep_time_by_filtered_month_lst(
+        user_id, month_date_obj_lst
+    )
+
+    print(
+        "USER OBJ WITH THOSE FILTERED DATE MONTHS:", user_sleep_log_obj_for_date_lst
+    )  # [<SleepLog sleep_log_id = 1 wake_time = 07:30:00 bed_time = 23:11:00 current_date = 2020-11-01>, <SleepLog sleep_log_id = 2 wake_time = 08:30:00 bed_time = 23:11:00 current_date = 2020-11-02>, <SleepLog sleep_log_id = 3 wake_time = 07:30:00 bed_time = 23:11:00 current_date = 2020-11-03>, <SleepLog sleep_log_id = 4 wake_time = 08:30:00 bed_time = 23:11:00 current_date = 2020-11-04>, <SleepLog sleep_log_id = 5 wake_time = 07:30:00 bed_time = 23:11:00 current_date = 2020-11-05>, <SleepLog sleep_log_id = 6 wake_time = 08:30:00 bed_time = 23:11:00 current_date = 2020-11-06>, <SleepLog sleep_log_id = 7 wake_time = 07:30:00 bed_time = 23:11:00 current_date = 2020-11-07>, <SleepLog sleep_log_id = 8 wake_time = 08:30:00 bed_time = 23:11:00 current_date = 2020-11-08>, <SleepLog sleep_log_id = 9 wake_time = 07:30:00 bed_time = 23:11:00 current_date = 2020-11-09>, <SleepLog sleep_log_id = 10 wake_time = 08:30:00 bed_time = 23:11:00 current_date = 2020-11-10>, <SleepLog sleep_log_id = 11 wake_time = 07:30:00 bed_time = 23:11:00 current_date = 2020-11-11>, <SleepLog sleep_log_id = 12 wake_time = 08:30:00 bed_time = 23:11:00 current_date = 2020-11-12>, <SleepLog sleep_log_id = 13 wake_time = 07:30:00 bed_time = 23:11:00 current_date = 2020-11-13>, <SleepLog sleep_log_id = 14 wake_time = 08:30:00 bed_time = 23:11:00 current_date = 2020-11-14>, <SleepLog sleep_log_id = 15 wake_time = 07:30:00 bed_time = 23:11:00 current_date = 2020-11-15>, <SleepLog sleep_log_id = 16 wake_time = 08:30:00 bed_time = 23:11:00 current_date = 2020-11-16>, <SleepLog sleep_log_id = 17 wake_time = 09:30:00 bed_time = 23:11:00 current_date = 2020-11-17>, <SleepLog sleep_log_id = 18 wake_time = 10:30:00 bed_time = 23:11:00 current_date = 2020-11-18>, <SleepLog sleep_log_id = 19 wake_time = 07:30:00 bed_time = 23:11:00 current_date = 2020-11-19>, <SleepLog sleep_log_id = 20 wake_time = 10:30:00 bed_time = 23:11:00 current_date = 2020-11-20>, <SleepLog sleep_log_id = 21 wake_time = 09:30:00 bed_time = 23:11:00 current_date = 2020-11-21>, <SleepLog sleep_log_id = 22 wake_time = 09:30:00 bed_time = 23:11:00 current_date = 2020-11-22>, <SleepLog sleep_log_id = 23 wake_time = 09:30:00 bed_time = 23:11:00 current_date = 2020-11-23>, <SleepLog sleep_log_id = 24 wake_time = 09:30:00 bed_time = 23:11:00 current_date = 2020-11-24>, <SleepLog sleep_log_id = 25 wake_time = 05:55:00 bed_time = 23:42:52 current_date = 2020-11-25>, <SleepLog sleep_log_id = 26 wake_time = 08:33:00 bed_time = 12:20:21 current_date = 2020-11-26>, <SleepLog sleep_log_id = 27 wake_time = 06:30:00 bed_time = 17:55:33 current_date = 2020-11-27>]
+
+    timezone = session["timezone"]
+    print("USER TIMEZONE CURRENTLY IS:", timezone)
+
+    total_time_hours_lst = []
+    for i in user_sleep_log_obj_for_date_lst:
+        total_subtracted_hours = datetime_functions.time_difference(
+            timezone, i.wake_time, i.bed_time
+        )
+        total_time_hours_lst.append(total_subtracted_hours)
+
+    print(
+        "THE TOTAL TIME HOURS IS", total_time_hours_lst
+    )  # [8.19, 9.19, 8.19, 9.19, 8.19, 9.19, 8.19, 9.19, 8.19, 9.19, 8.19, 9.19, 8.19, 9.19, 8.19, 9.19, 10.19, 11.19, 8.19, 11.19, 10.19, 10.19, 10.19, 10.19, 6.12, 20.12, 12.34]
+
+    # Now convert the datetime obj list to formatted strings to be displayed to the front end!
+    #   1. Will pick two displays: Currently We have: Nov 1 (looks cluttered)
+    #   2. 11/1/20
+    #   3/ 11/1
+
+    # Type string format #1:
+    month_date_converted_to_str = datetime_functions.create_date_str_with_different_format(
+        month_date_obj_lst
+    )
+
+    print(
+        "THE FIRST TYPE:", month_date_converted_to_str
+    )  # ['11/01', '11/02', '11/03', '11/04', '11/05', '11/06', '11/07', '11/08', '11/09', '11/10', '11/11', '11/12', '11/13', '11/14', '11/15', '11/16', '11/17', '11/18', '11/19', '11/20', '11/21', '11/22', '11/23', '11/24', '11/25', '11/26', '11/27', '11/28']
+
+    # NOW STORE TIME HOURS AND MONTHS STRINGS INTO A SESSION AND PUT INTO A JSON ROUTE
+    session["month_total_hours"] = total_time_hours_lst
+    session["month_dates"] = month_date_converted_to_str
+
+    return render_template(
+        "sleep_log_by_month.html",
+        user_id=user_id,
+        chosen_month_by_user_str=chosen_month_by_user_str,
+    )
+
+
+@app.route("/monthly-sleep-data.json")
+def monthly_dates_json():
+    """Return JSON dict with a month dates to chart.js"""
+
+    total_monthly_hours = session["month_total_hours"]
+    print("FOR JSON MONTH ROUTE THE TOTAL MONTHLY HOURS IS:", total_monthly_hours)
+
+    all_dates_in_month = session["month_dates"]
+    print("MONTHLY DATES FOR CHOSEN DATE IS:", all_dates_in_month)
+
+    monthly_sleep_data = {
+        "total_monthly_hours": total_monthly_hours,
+        "monthly_dates_over_time": all_dates_in_month,
+    }
+
+    return jsonify({"data": monthly_sleep_data})
 
 
 # TODO COMMENTED OUT HERE FOR DEBUGGING!!!!!!!!!!!!!!! WILL NEED TO RE-COMMENT!!!
