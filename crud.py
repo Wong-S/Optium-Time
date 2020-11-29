@@ -362,7 +362,11 @@ def get_sleep_time_by_filtered_date_lst(user_id, date_obj_lst):
     for all_dates in user_id_sleep_log_obj.sleep_logs:
         print(all_dates.current_date)
         print(type(all_dates.current_date))
-        for date_lst in date_obj_lst:
+        for (
+            date_lst
+        ) in (
+            date_obj_lst
+        ):  # Need a nested loop since date_obj_lst is a session so a list within another list
             for date_obj in date_lst:
                 print(date_obj)
                 print(type(date_obj))
@@ -373,6 +377,40 @@ def get_sleep_time_by_filtered_date_lst(user_id, date_obj_lst):
                     ).first()
 
                     selected_date_obj_lst.append(query_obj)
+    # NOTE: JUST FOR CHECKING! IT WORKS
+    print(selected_date_obj_lst)
+    return selected_date_obj_lst
+
+
+def get_sleep_time_by_filtered_month_lst(user_id, month_date_obj_lst):
+    """Return sleep log objects filtering for current date"""
+
+    user_id_sleep_log_obj = get_sleep_data_user_id(user_id)
+
+    print("HEY IS IT WORKING??")
+    # FIXME: REMOVE LATER! JUST FOR CHECKING
+    # print(date_obj_lst)
+    # for i in date_obj_lst:
+    #     print(i)
+    #     for x in i:
+    #         print("THE DATE OBJECT IS?:", x)
+
+    selected_date_obj_lst = []
+    for all_dates in user_id_sleep_log_obj.sleep_logs:
+        print("FIRST PART:", all_dates.current_date)
+        print(type(all_dates.current_date))
+        for date_in_lst in month_date_obj_lst:
+            print("SECOND PART WORKING!?:", date_in_lst)
+            print(type(date_in_lst))
+            if all_dates.current_date == date_in_lst:
+
+                print("THIS IS THE DATE YOU FILTERED OUT?", all_dates.current_date)
+                print("????", month_date_obj_lst)
+                query_obj = SleepLog.query.filter(
+                    SleepLog.current_date == all_dates.current_date
+                ).first()
+
+                selected_date_obj_lst.append(query_obj)
     # NOTE: JUST FOR CHECKING! IT WORKS
     print(selected_date_obj_lst)
     return selected_date_obj_lst
