@@ -26,6 +26,17 @@
     <p>Wake Time: {{wake_bed_times_obj.wake_time}}</p>
     <p>Bed Time: {{wake_bed_times_obj.bed_time}}</p>
 
+
+    <h1>Journal for Associated with Sleep Log for user id: {{user_id}}</h1>
+
+    {% for entry_title_key, entry_details_value in journal_titles_by_date.items() %}
+  
+        
+        <li><a href="/journal-entries/{{entry_details_value}}">{{entry_title_key}}</a></li>
+  
+        
+        {% endfor %}
+
     <div id="site-content">
         <h1>Total Sleep Hour of User per Day Chart.js</h1>
     
