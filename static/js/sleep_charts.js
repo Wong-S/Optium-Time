@@ -1,24 +1,24 @@
-"use strict";
+//"use strict";
 
-const barChart = new Chart(
-  $('#bar-chart'),
-  {
-    type: 'bar',
-    data: {
-      labels: ['Watermelon', 'Canteloupe', 'Honeydew'],
-      datasets: [
-        {
-          label: 'Today',
-          data: [10, 36, 27]
-        },
-        {
-          label: 'Yesterday',
-          data: [5, 0, 7]
-        }
-      ]
-    }
-  }
-);
+// const barChart = new Chart(
+//   $('#bar-chart'),
+//   {
+//     type: 'bar',
+//     data: {
+//       labels: ['Watermelon', 'Canteloupe', 'Honeydew'],
+//       datasets: [
+//         {
+//           label: 'Today',
+//           data: [10, 36, 27]
+//         },
+//         {
+//           label: 'Yesterday',
+//           data: [5, 0, 7]
+//         }
+//       ]
+//     }
+//   }
+// );
 
 const colorfulBarChart = new Chart(
   $('#bar-colors'),
@@ -339,10 +339,16 @@ $.get('/total-sleep.json', (res) => {
               data: data,
         
               options : {
-                scales : {
+                scales : { 
+                  xAxes:[{
+                    ticks: {
+                      beginAtZero: true
+                    }
+                  }],
                   yAxes: [{
                     ticks : {
                       beginAtZero: true,
+
                       callback: function(value, index, values) {
                         return yLabels[value];
                       }
@@ -446,39 +452,274 @@ $.get('/hypnogram-sleep.json', (res) => {
 //   }
 // });
 
-var myChart = new Chart(ctx, {
-  type: 'bar',
-  data: {
-      labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-      datasets: [{
-          label: '# of Votes',
-          data: [12, 19, 3, 5, 2, 3],
-          backgroundColor: [
-              'rgba(255, 99, 132, 0.2)',
-              'rgba(54, 162, 235, 0.2)',
-              'rgba(255, 206, 86, 0.2)',
-              'rgba(75, 192, 192, 0.2)',
-              'rgba(153, 102, 255, 0.2)',
-              'rgba(255, 159, 64, 0.2)'
-          ],
-          borderColor: [
-              'rgba(255, 99, 132, 1)',
-              'rgba(54, 162, 235, 1)',
-              'rgba(255, 206, 86, 1)',
-              'rgba(75, 192, 192, 1)',
-              'rgba(153, 102, 255, 1)',
-              'rgba(255, 159, 64, 1)'
-          ],
-          borderWidth: 1
-      }]
-  },
-  options: {
-      scales: {
-          yAxes: [{
-              ticks: {
-                  beginAtZero: true
-              }
+// var myChart = new Chart(ctx, {
+//   type: 'bar',
+//   data: {
+//       labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+//       datasets: [{
+//           label: '# of Votes',
+//           data: [12, 19, 3, 5, 2, 3],
+//           backgroundColor: [
+//               'rgba(255, 99, 132, 0.2)',
+//               'rgba(54, 162, 235, 0.2)',
+//               'rgba(255, 206, 86, 0.2)',
+//               'rgba(75, 192, 192, 0.2)',
+//               'rgba(153, 102, 255, 0.2)',
+//               'rgba(255, 159, 64, 0.2)'
+//           ],
+//           borderColor: [
+//               'rgba(255, 99, 132, 1)',
+//               'rgba(54, 162, 235, 1)',
+//               'rgba(255, 206, 86, 1)',
+//               'rgba(75, 192, 192, 1)',
+//               'rgba(153, 102, 255, 1)',
+//               'rgba(255, 159, 64, 1)'
+//           ],
+//           borderWidth: 1
+//       }]
+//   },
+//   options: {
+//       scales: {
+//           yAxes: [{
+//               ticks: {
+//                   beginAtZero: true
+//               }
+//           }]
+//       }
+//   }
+// });
+
+
+
+//Weekly Sleep Log by Time Scale
+
+$.get('/weekly-sleep-data.json', (res) => {
+  console.log(res)
+  // In order to make this work, you need to use ISO-formatted date/time
+  // strings. Check out the view function for `/sales_this_week.json` in
+  // server.py to see an example.
+  
+  // const data = res.data.map((dailyTotal) => {
+  //   return {x: dailyTotal.date, y: dailyTotal.sleep_hours};
+  // });
+
+  // Also, to enable scaling by time, you need to import Moment *before*
+  // Chart.js. See `templates/chartjs.html`.
+
+  const barChart = new Chart(
+    $('#weekly-bar-scale'),
+    {
+      type: 'bar',
+      data: {
+        labels: res.data.dates_over_time,
+        datasets: [
+          {
+            //label: res.data.dates_over_time,
+            data: res.data.total_hours
+          },
+        ]
+      },
+      options: {
+        datasets: {
+          bar: {
+            // We use a function to automatically set the background color of
+            // each bar in the bar chart.
+            //
+            // There are many other properties that accept functions. For more
+            // information see: https://www.chartjs.org/docs/latest/general/options.html#scriptable-options
+            backgroundColor: () => {
+              // `randomColor` is a JS module we found off GitHub: https://github.com/davidmerfield/randomColor
+              // We imported it in templates/chartjs.html
+              return randomColor();
+            }
+          }
+        },
+        scales: {
+          yAxes : [{
+            ticks: {
+              beginAtZero: true,
+              
+
+            }
           }]
+        }
       }
-  }
+    }
+  );
+  // new Chart(
+  //   $('#weekly-time-scale'),
+  //   {
+  //     type: 'line',
+  //     data: {
+  //       datasets: [
+  //         {
+  //           backgroundColor : "rgba(252,233,79,0.5)",
+  //           borderColor : "rgba(82,75,25,1)",
+  //           pointBackgroundColor : "rgba(166,152,51,1)",
+  //           pointBorderColor : "#fff",
+  //           label: 'Total Sleep Hours per Week',
+  //           data: [1,2,3,4,5]
+  //         }
+  //       ]
+  //     },
+  //     options: {
+  //       scales: {
+  //         xAxes: [
+  //           {
+  //             type: 'time',
+  //             distribution: 'series'
+  //           }
+  //         ]
+  //       },
+  //       tooltips: {
+  //         callbacks: {
+  //           title: (tooltipItem) => {
+  //             // The default tooltip shows ISO-formatted date/time strings
+  //             // that are hard to read.
+  //             //
+  //             // Moment is a JS library that is similar to Python's datetime
+  //             // module. Instead of using % syntax to format date/time, Moment
+  //             // uses its own formatting syntax.
+  //             //
+  //             // In this example, we want to display a date that looks
+  //             // like 'Jan 20'.
+  //             return moment(tooltipItem.label).format('MMM D');
+  //           }
+  //         }
+  //       }
+  //     }
+  //   }
+  // );
+});
+
+// const barChart = new Chart(
+//   $('#weekly-bar-scale'),
+//   {
+//     type: 'bar',
+//     data: {
+//       labels: ['Watermelon', 'Canteloupe', 'Honeydew'],
+//       datasets: [
+//         {
+//           label: 'Today',
+//           data: [10, 36, 27]
+//         },
+//         {
+//           label: 'Yesterday',
+//           data: [5, 0, 7]
+//         }
+//       ]
+//     }
+//   }
+// );
+
+//MONTHLY LINE SCALE CHART
+
+
+$.get('/monthly-sleep-data.json', (res) => {
+  console.log(res)
+
+  // const data = res.data.map((dailyTotal) => {
+  //   return {x: dailyTotal.monthly_dates_over_time, y: dailyTotal.total_monthly_hours};
+  // });
+  // In order to make this work, you need to use ISO-formatted date/time
+  // strings. Check out the view function for `/sales_this_week.json` in
+  // server.py to see an example.
+  
+  // const data = res.data.map((dailyTotal) => {
+  //   return {x: dailyTotal.date, y: dailyTotal.sleep_hours};
+  // });
+
+  // Also, to enable scaling by time, you need to import Moment *before*
+  // Chart.js. See `templates/chartjs.html`.
+
+  const lineMonthlyChart = new Chart(
+    $('#monthly-line-scale'),
+    {
+      type: 'line',
+      data: {
+      labels: res.data.monthly_dates_over_time,
+        datasets: [
+          {
+            //label: res.data.dates_over_time,
+            data: res.data.total_monthly_hours
+          },
+        ]
+      },
+      options: {
+        scales: {
+          xAxes: [{
+            type: 'time',
+            distribution: 'series'
+          }],
+          yAxes : [{
+            ticks: {
+              beginAtZero: true,
+              
+
+            }
+          }]
+        }
+      },
+      tooltips: {
+        callbacks: {
+          title: (tooltipItem) => {
+            // The default tooltip shows ISO-formatted date/time strings
+            // that are hard to read.
+            //
+            // Moment is a JS library that is similar to Python's datetime
+            // module. Instead of using % syntax to format date/time, Moment
+            // uses its own formatting syntax.
+            //
+            // In this example, we want to display a date that looks
+            // like 'Jan 20'.
+            return moment(tooltipItem.label).format('MMM D');
+          }
+        }
+      }
+    }
+  );
+  // new Chart(
+  //   $('#weekly-time-scale'),
+  //   {
+  //     type: 'line',
+  //     data: {
+  //       datasets: [
+  //         {
+  //           backgroundColor : "rgba(252,233,79,0.5)",
+  //           borderColor : "rgba(82,75,25,1)",
+  //           pointBackgroundColor : "rgba(166,152,51,1)",
+  //           pointBorderColor : "#fff",
+  //           label: 'Total Sleep Hours per Week',
+  //           data: [1,2,3,4,5]
+  //         }
+  //       ]
+  //     },
+  //     options: {
+  //       scales: {
+  //         xAxes: [
+  //           {
+  //             type: 'time',
+  //             distribution: 'series'
+  //           }
+  //         ]
+  //       },
+  //       tooltips: {
+  //         callbacks: {
+  //           title: (tooltipItem) => {
+  //             // The default tooltip shows ISO-formatted date/time strings
+  //             // that are hard to read.
+  //             //
+  //             // Moment is a JS library that is similar to Python's datetime
+  //             // module. Instead of using % syntax to format date/time, Moment
+  //             // uses its own formatting syntax.
+  //             //
+  //             // In this example, we want to display a date that looks
+  //             // like 'Jan 20'.
+  //             return moment(tooltipItem.label).format('MMM D');
+  //           }
+  //         }
+  //       }
+  //     }
+  //   }
+  // );
 });
