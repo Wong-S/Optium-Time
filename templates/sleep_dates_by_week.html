@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block title %} Sleep Graphs {% endblock %}
+
+
+{% block head %}
+  {# Moment: allows you to use time scales. If you want to use time scales,
+     you have to import Moment BEFORE Chart.js #}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+
+  {# ChartJS #}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.js"></script>
+
+  {# randomColor: generate random colors #}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/randomcolor/0.5.4/randomColor.min.js"></script>
+{% endblock %}
+
+{% block body %}
+
+    <h1>3 Graphs generated for user id:</h1>
+
+    <h2>User's sleep log data:</h2>
+
+    <p>The Filtered date you selected is: {{filtered_date}} </p>    
+
+    <h2>User's Average Sleep Hours per Week:</h2>
+
+    <p>Average hours per week is: {{average_hrs}} </p>   
+
+
+
+
+    
+    <div id="site-content">
+        <h1>Total Sleep Hour of User per Day Chart.js</h1>
+
+    
+        <h2>Weekly Sleep Log Bar Chart w/ Time Scale</h2>
+        <canvas id="weekly-bar-scale"></canvas>
+
+
+
+
+
+      </div>
+   
+
+
+{% endblock body%}
+
+{% block js %}
+  <script src="/static/js/sleep_charts.js"></script>
+{% endblock %}
