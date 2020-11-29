@@ -98,6 +98,28 @@ def create_filtered_date_obj(date_str):
     return datetime.date(datetime_obj)
 
 
+def create_filtered_date_obj_from_str_lst(date_str_lst):
+    """Return a datetime.date object from date str lst"""
+
+    print("The argument passed is:", date_str_lst)
+
+    month_datetime_datetime_obj_lst = []
+
+    for date_str in date_str_lst:
+        month_date_obj = datetime.strptime(
+            date_str, "%Y-%m-%d"
+        )  # NOTE: The date_str passed in is the converted one. So Nov-25-2020. And this must match the format!
+
+        month_datetime_datetime_obj_lst.append(month_date_obj)
+
+    month_datetime_date_obj_lst = []
+    for date in month_datetime_datetime_obj_lst:
+
+        month_datetime_date_obj_lst.append(datetime.date(date))
+
+    return month_datetime_date_obj_lst
+
+
 def change_filtered_dates_to_obj(date_str):
     """Return a datetime.date object"""
 
@@ -108,6 +130,82 @@ def change_filtered_dates_to_obj(date_str):
     )  # NOTE: The date_str passed in is the converted one. So Nov-25-2020. And this must match the format!
 
     return datetime.date(datetime_obj)
+
+
+# def change_datetime_date_obj_to_str(datetime_date_lst):
+#     """Return a datetime formatted string"""
+
+#     converted_current_date_str = []
+#     print("If you made it here, THEN That is good")
+#     for dates_lst in datetime_date_lst:
+#         for date in dates_lst:
+#             print(date)
+#             converted_current_date_str.append(date.strftime("%b-%d-%Y"))
+
+#     return converted_current_date_str
+
+
+def calculate_weekly_avg_hrs(total_hours_lst):
+    """Return average hours slept per week"""
+
+    sum = 0
+    for hour in total_hours_lst:
+        sum += hour
+
+    average_hrs = sum / 7
+
+    return f"{average_hrs:.2f}"
+
+
+# ======================================
+# Convert date obj to date string
+def create_date_str(date_obj_lst):
+    """Return datetime.date string from datetime.date obj"""
+
+    print("List of datetime.date objects is:", date_obj_lst)
+
+    all_datetime_str_lst = []
+    for date_obj in date_obj_lst:
+        datetime_str = datetime.strftime(
+            date_obj, "%Y-%m"
+        )  # Need in this format because the HTML string filter by month is "2020-11"
+        print(datetime_str)
+
+        all_datetime_str_lst.append(datetime_str)
+
+    return all_datetime_str_lst
+
+
+def convert_date_obj_to_str_format(date_obj_lst):
+    """Return lst of datetime.date strings"""
+
+    converted_dates_obj_to_str = []
+
+    for date_obj in date_obj_lst:
+        datetime_str = datetime.strftime(date_obj, "%Y-%m-%d")
+
+        converted_dates_obj_to_str.append(datetime_str)
+
+    print("Converted the DATETIME OBJ TO STRING FORMAT AS:", converted_dates_obj_to_str)
+
+    return converted_dates_obj_to_str
+
+
+def create_date_str_with_different_format(date_obj_lst):
+    """Return datetime.date string from datetime.date obj"""
+
+    print("List of datetime.date objects is:", date_obj_lst)
+
+    all_datetime_str_lst = []
+    for date_obj in date_obj_lst:
+        datetime_str = datetime.strftime(
+            date_obj, "%m/%d"
+        )  # Need in this format because the HTML string filter by month is "2020-11"
+        print(datetime_str)
+
+        all_datetime_str_lst.append(datetime_str)
+
+    return all_datetime_str_lst
 
 
 # ==================================================
