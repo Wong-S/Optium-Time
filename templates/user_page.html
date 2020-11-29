@@ -1,19 +1,46 @@
 {% extends 'base.html' %}
 {% block title %} User Options {% endblock %}
 
+{% block head %}
+  {# Moment: allows you to use time scales. If you want to use time scales,
+     you have to import Moment BEFORE Chart.js #}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+
+  {# ChartJS #}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.js"></script>
+
+  {# randomColor: generate random colors #}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/randomcolor/0.5.4/randomColor.min.js"></script>
+{% endblock %}
+
 {% block body %}
 
-    <h1>Welcome {{user.first_name}}</h1>
+    <h1>Welcome {{user_obj.first_name}}</h1>
 
     <h2>Navigation</h2>
     <ul>
-    <li><a href="/journal/{{user.user_id}}">View all journal entries</a></li>
-    <li><a href="/set-alarm/{{user.user_id}}">Set alarm clock</a></li>
-    <li><a href="/sleep-log/{{user.user_id}}">View all sleep log</a></li>
-    <li><a href="/video-playlist/{{user.user_id}}">View all playlists and videos</a></li>
+    <li><a href="/journal/{{user_obj.user_id}}">View all journal entries</a></li>
+    <li><a href="/set-alarm/{{user_obj.user_id}}">Set alarm clock</a></li>
+    <li><a href="/sleep-log">View all sleep log</a></li>
+    <li><a href="/video-playlist/{{user_obj.user_id}}">View all playlists and videos</a></li>
+    <li><a href="/countdown-timer">See Countdown Alarm</a></li>
+
     </ul>
 
+    <h1> Alarm Countdown</h1>
 
+    <div class = "countdown"> </div>
+
+
+    <h2>Line Chart w/ Time Scale Sleep Hours</h2>
+    <canvas id="line-time"></canvas>
 
 
 {% endblock body%}
+
+{% block js %}
+  <script src="/static/js/sleep_charts.js"></script>
+
+  <script src="/static/js/countdowntimer.js"></script>
+
+{% endblock %}
