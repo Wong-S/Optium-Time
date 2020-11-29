@@ -2,9 +2,14 @@ from random import random, randint, choice
 
 from datetime import datetime
 
+import time
 
 # from dateutil.parser import *
 import pytz
+
+# NOTE WILL INCLUDE TWILIO CALL MESSGAGE HERE
+import os
+from twilio.rest import Client
 
 # get the standard UTC time
 UTC = pytz.utc
@@ -71,6 +76,19 @@ def current_date_timezone_from_utc(timezone):
 
     return utc_datetime  # This is returning a datetime object
     # return utc_datetime.strftime("%m-%d-%Y")
+
+
+# ==================================================
+def format_time_str(time_str):
+    """Return a newly formatted time string"""
+
+    time_obj = datetime.strptime(time_str, "%H:%M:%S")
+    print("THE NEW TIME OBJ FROM STR IS:", time_obj)
+    # Now I need to convert that time obj back into a time string
+    new_time_str = datetime.strftime(time_obj, "%H:%M %p")
+    print("THE FINAL TIME STR FROM OBJ IS:", new_time_str)
+
+    return new_time_str
 
 
 # ==================================================
@@ -791,3 +809,115 @@ def create_doughnut_chart(time_dict, total_sleep_time):
     doughnut_dict["REM Sleep"] = rem_percent
 
     return doughnut_dict
+
+
+# ==================================
+# Use time module to make a function that will countdown on the backend!
+# THis function also Calls the Twilio Message SMS!
+
+
+# def countdown_message(num_time, user_name):
+
+#     # num_time = 2.15
+#     str_time = str(num_time)
+#     time_lst = str_time.split(".")
+#     print(time_lst)
+
+#     hours = int(time_lst[0])
+#     minutes = int(time_lst[1])
+
+#     print(hours)
+#     print(minutes)
+
+#     total_seconds = (hours * 3600) + (minutes * 60)
+#     print(total_seconds)
+
+#     # Convert back to min since 1 sleep cycle is 90 min
+#     total_min = total_seconds / 60
+#     total_sleep_cycles = (
+#         total_min // 90
+#     )  # Will give a rounded number. So if sleep for 8 hrs, you get 5 sleep cycles
+#     print(total_sleep_cycles)
+
+#     while total_seconds:
+#         mins, secs = divmod(total_seconds, 60)
+#         timer = "{:02d}:{:02d}".format(mins, secs)
+#         # print(timer, end="\r")
+#         time.sleep(1)
+#         total_seconds -= 1
+
+#     account_sid = os.environ["TWILIO_ACCOUNT_SID"]
+#     auth_token = os.environ["TWILIO_AUTH_TOKEN"]
+#     client = Client(account_sid, auth_token)
+
+#     message = client.messages.create(
+#         body=f" Hello {user_name}! You slept for a total of {hours} hours and {minutes} minutes. The total number of sleep cycles from this sleep period was {total_sleep_cycles}. You can alaways view your full sleep log report and NREM/REM time in your profile.",
+#         from_="+12028049589",
+#         to="+12817145109",
+#     )
+
+#     # message = client.messages.create(
+#     #     messaging_service_sid="MG9752274e9e519418a7406176694466fa",
+#     #     body="body",
+#     #     to="+12817145109",
+#     # )
+
+#     print(message.sid)
+# return message.sid   #NOTE: Don't need a return message??
+
+
+def countdown_message(num_time, user_name):
+
+    # num_time = 2.15
+    str_time = str(num_time)
+    time_lst = str_time.split(".")
+    print(time_lst)
+
+    hours = int(time_lst[0])
+    minutes = int(time_lst[1])
+
+    print(hours)
+    print(minutes)
+
+    total_seconds = (hours * 3600) + (minutes * 60)
+    print(total_seconds)
+
+    # Convert back to min since 1 sleep cycle is 90 min
+    total_min = total_seconds / 60
+    total_sleep_cycles = (
+        total_min // 90
+    )  # Will give a rounded number. So if sleep for 8 hrs, you get 5 sleep cycles
+    print(total_sleep_cycles)
+
+    # while total_seconds:
+    #     mins, secs = divmod(total_seconds, 60)
+    #     timer = "{:02d}:{:02d}".format(mins, secs)
+    #     # print(timer, end="\r")
+    #     time.sleep(1)
+    #     total_seconds -= 1
+
+    account_sid = os.environ["TWILIO_ACCOUNT_SID"]
+    auth_token = os.environ["TWILIO_AUTH_TOKEN"]
+    client = Client(account_sid, auth_token)
+
+    message = client.messages.create(
+        body=f" Hello {user_name}! You slept for a total of {hours} hours and {minutes} minutes. The total number of sleep cycles from this sleep period was {total_sleep_cycles}. You can alaways view your full sleep log report and NREM/REM time in your profile.",
+        from_="+12028049589",
+        to="+12817145109",
+    )
+
+    # message = client.messages.create(
+    #     messaging_service_sid="MG9752274e9e519418a7406176694466fa",
+    #     body="body",
+    #     to="+12817145109",
+    # )
+
+    return message.sid
+
+
+# input time in seconds
+# t = 0.15 * 3600
+
+# function call
+# countdown(int(5.15))
+
