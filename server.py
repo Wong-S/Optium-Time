@@ -9,6 +9,7 @@ import YouTube
 import os
 import requests
 
+from twilio.rest import Client
 from jinja2 import StrictUndefined
 
 app = Flask(__name__)
@@ -22,6 +23,10 @@ app.config["PRESERVE_CONTEXT_ON_EXCEPTION"] = True
 # try:
 app.secret_key = os.environ.get("FLASK_SECRET_KEY")
 API_KEY = os.environ["YOUTUBE_KEY"]
+
+account_sid = os.environ["TWILIO_ACCOUNT_SID"]
+auth_token = os.environ["TWILIO_AUTH_TOKEN"]
+client = Client(account_sid, auth_token)
 # except:
 # raise
 # print("No key avaliable")
@@ -100,6 +105,7 @@ def check_login_credentials():
         # NOTE: Storing user primary id in a session
         session["user"] = user_details.user_id
         print(session["user"])
+        session["user_name"] = user_details.first_name
 
         # NOTE: Storing user's timezone in a session
         session["timezone"] = user_details.timezone
@@ -115,7 +121,7 @@ def check_login_credentials():
 # User Page Route: What displays here is Journals, Sleep Log, Playlists Selection, etc:
 
 
-@app.route("/user-page")
+@app.route("/user-page", methods=["GET", "POST"])
 def display_user_options():
     """Return user's next selection"""
 
@@ -123,7 +129,30 @@ def display_user_options():
 
     user_obj = crud.get_user_by_id(user_id)
 
-    return render_template("user_page.html", user_obj=user_obj)
+    # print("GET THE HIDDEN INPUT WITHOUT A FORM SUBMISSION")
+    # x = request.form.get("send-text")
+    # print(x)
+
+    print("IF YOU MADE IT HERE!!!!")
+
+    # TODO !!!!! FIX BUG WHEN YOU RESTART A NEW SERVER WITHOUT AN ALARM SET! Basically once the session is cleared it messes up....
+    # FIXME: NOT SURE IF THE BELOW WORKS.....
+    ###########################################################
+    # WRITE A CONDITIONAL HERE TO BYPASS THIS PROBLEM???
+    if session["set-alarm-wake-time"] == None:
+        return render_template("user_page.html", user_obj=user_obj)
+    else:
+        alarm_wake_time = session["set-alarm-wake-time"]
+        print(type(alarm_wake_time))
+        print("THE CURRENT ALARM WAKE TIME IS:", alarm_wake_time)  # STRING TYPE!!
+
+        new_time_str = datetime_functions.format_time_str(alarm_wake_time)
+        print("THE NEWLY CONVERTED ALARM WAKE TIME IS:", new_time_str)
+
+        return render_template(
+            "user_page.html", user_obj=user_obj, new_time_str=new_time_str
+        )
+    ###########################################################
 
 
 # =====================================================================
@@ -340,6 +369,8 @@ def register_alarm(user_id):
     wake_time = wake_time + wake_add_sec_time
     print("THE Wake_time from the alarm is NOWL", wake_time)
 
+    session["set-alarm-wake-time"] = wake_time
+
     # NOTE: bed time calculation done by taking in user's current time zone from session
     user_timezone = session["timezone"]
     print(user_timezone)  # FIXME: Just a check
@@ -370,9 +401,18 @@ def register_alarm(user_id):
 
     # TODO CREATE A ALARM COUNTDOWN FOR THE HOMEPAGE 11/28 ---------
     # Steps I need to take is create a JSON route to store the user's alarm total alarm
-    session["alarm"] = user_total_time
+    session["alarm"] = user_total_time  # 0.15 or 2.15, etc
 
     print("THE STORED ALARM SESSION IS:", user_total_time)
+
+    # TODO: TWILIO API MESSAGE CALL HAPPENS HERE #UPDATE: IT WORKS SORTA...There is a bug now where the alarm waits until countdown is over before sending a message
+    # alarm_num_time = session["alarm"]
+    # user_first_name = session["user_name"]
+    # twilio_message = datetime_functions.countdown_message(
+    #     alarm_num_time, user_first_name
+    # )
+
+    print("YOU SHOULD HAVE RECEIVED A TEXT WITH INFORMATION ON YOUR SLEEP!!")
 
     #
     # return render_template("user_page.html")
@@ -405,14 +445,30 @@ def get_alarm_countdown_details():
 
 
 # =================================================
-# TODO MAKE A COUNTDOWN TIMER FOR USER TO SEE AND THEN IT SETS THE ALARM????????
-@app.route("/countdown-timer")
+# TODO: Once the countdown is finished, then the Twilio APP executes
+# @app.route("/countdown-timer")
+# def display_countdown_timer():
+#     """Return countdown timer page of set alarm"""
+
+#     print("YOU MADE IT HERE AT THIS ROUTE!!! FOR COUNTDOWN")
+
+#     return render_template("countdown.html")
+
+
+@app.route("/countdown-timer-message-twilio")
 def display_countdown_timer():
     """Return countdown timer page of set alarm"""
 
     print("YOU MADE IT HERE AT THIS ROUTE!!! FOR COUNTDOWN")
+    alarm_num_time = session["alarm"]
+    user_first_name = session["user_name"]
+    twilio_message = datetime_functions.countdown_message(
+        alarm_num_time, user_first_name
+    )
 
-    return render_template("countdown.html")
+    print("THE MESSAGE IS:", twilio_message)
+
+    return jsonify(twilio_message)
 
 
 # =================================================
