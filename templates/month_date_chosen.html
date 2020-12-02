@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block title %} Sleep Graphs by Month {% endblock %}
+
+
+{% block head %}
+  {# Moment: allows you to use time scales. If you want to use time scales,
+     you have to import Moment BEFORE Chart.js #}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+
+  {# ChartJS #}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.js"></script>
+
+  {# randomColor: generate random colors #}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/randomcolor/0.5.4/randomColor.min.js"></script>
+{% endblock %}
+
+{% block body %}
+
+    <h1>3 Graphs generated for user id is {{user_id}}:  which should be the date {{chosen_date}}</h1>
+
+    <div>
+      <p>Your wake time was {{wake_time}}</p>
+    </div>
+
+    <div>
+      <p>Your bed time was {{bed_time}}</p>
+    </div>
+
+
+    <h1>Journal for Associated with Sleep Log for user id: {{user_id}}</h1>
+
+    {% for entry_title_key, entry_details_value in journal_titles_by_date.items() %}
+  
+      <li><a href="/journal-entries/{{entry_details_value}}">{{entry_title_key}}</a></li>
+  
+        
+    {% endfor %}
+    
+    
+    <h2>Line Chart w/ Time Scale Hypnogram</h2>
+    <canvas id="line-hypnogram"></canvas>
+
+    <h2>Doughnut Chart w/ Sleep Stage Percentiles</h2>
+    <canvas id="doughnut-sleep-stages"></canvas>
+
+
+
+
+{% endblock body%}
+
+{% block js %}
+  <script src="/static/js/sleep_charts.js"></script>
+{% endblock %}
