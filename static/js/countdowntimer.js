@@ -113,6 +113,58 @@
 // }, 1000);
 
 
+// $.get('/countdown.json', (res) => {
+//   console.log(res)
+
+
+// let duration = moment.duration({
+// 	//'days': 1,
+// 	'hours': res.hours, //0, //res.hours,
+//   'minutes': res.minutes, //0, //res.minutes,
+//   'seconds': 00
+
+// });
+
+// let timestamp = new Date(0, 0, 0, 0, 0, 0); //hr, min, sec for last three numbers.
+// let interval = 1; //dictates speed of the countdown. At 2, it'll countdown faster
+// let timer = setInterval(function() {
+//   timestamp = new Date(timestamp.getTime() + interval * 1000); //multiply by 1000 to correct for epoch time
+
+//   duration = moment.duration(duration.asSeconds() - interval, 'seconds'); //so at 59 seconds and interval at 1, it'll count down to 58, 57, etc.
+//   let hour = duration.hours(); //defining the variable at hours
+//   let min = duration.minutes();
+//   let sec = duration.seconds();
+
+// 	//This is where the countdown is executed
+//   sec -= 1; 
+//   if (min < 0) return clearInterval(timer);
+//   if (min < 10 && min.length != 2) min = '0' + min;
+//   if (sec < 0 && min != 0 && hour == 0) {
+//   	//hour -= 1;
+//     min -= 1;
+//     sec = 59;
+//   } else if (sec < 10 && length.sec != 2) sec = '0' + sec;
+
+//   $('.countdown').text(hour + ':' + min + ':' + sec);
+//   if (hour == 0 && min == 0 && sec == 0)
+//     clearInterval(timer),
+//     $.get("/countdown-timer-message-twilio"), (res) => {
+//       console.log(res)
+//     };
+    
+//     //$('#alarm-alarm').prepend('href="/countdown-text/{{alarm}}"');
+//     //document.getElementById("text-send").submit();
+//     //return "ALARM";
+
+
+// }, 1000);
+
+// }) 
+
+
+
+//Revision 2 : Fixes Weird Countdown issue where there is a -1, now getting issue with minute formatting when != 2 and then the hour. Need additional conditional statement 
+
 $.get('/countdown.json', (res) => {
   console.log(res)
 
@@ -136,13 +188,21 @@ let timer = setInterval(function() {
   let sec = duration.seconds();
 
 	//This is where the countdown is executed
+  
   sec -= 1; 
   if (min < 0) return clearInterval(timer);
   if (min < 10 && min.length != 2) min = '0' + min;
+  //Nested if Statement below
   if (sec < 0 && min != 0 && hour == 0) {
   	//hour -= 1;
-    min -= 1;
+    //min -= 1;
     sec = 59;
+    if (min != 0){
+    min -= 1;
+    } 
+    if (hour != 0) {
+    hour -= 1;
+    }
   } else if (sec < 10 && length.sec != 2) sec = '0' + sec;
 
   $('.countdown').text(hour + ':' + min + ':' + sec);
