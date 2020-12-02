@@ -646,6 +646,12 @@ $.get('/monthly-sleep-data.json', (res) => {
         ]
       },
       options: {
+        // onClick: graphClickEvent 
+
+        
+        legend: {
+          display: false
+        },
         scales: {
           xAxes: [{
             type: 'time',
@@ -658,6 +664,50 @@ $.get('/monthly-sleep-data.json', (res) => {
 
             }
           }]
+        },
+        onClick:function(e){
+          var activePoints = lineMonthlyChart.getElementsAtEvent(e);
+          var selectedIndex = activePoints[0]._index;
+
+          var yAxisDatapoint = this.data.datasets[0].data[selectedIndex]; //Gives the Y axis data info (8.19)
+          //alert(yAxisdatapoint);
+
+          var xAxisDatapoint = this.data.labels[selectedIndex];
+
+          var information = {
+            'date': xAxisDatapoint,
+            'hour' : yAxisDatapoint
+          };
+
+          $.ajax({
+            type: "POST",
+            contentType: "application/json;charset=utf-8",
+            url: "http://0.0.0.0:5000/month-date-only",
+            traditional: "true",
+            data: JSON.stringify({information}),
+            dataType: "json"
+            });
+            // .done(function(res) {
+            //   console.log(res)
+            // });
+          // information = JSON.stringify(information);
+
+          // $.post("/month-date-only", information);
+
+          // console.log(information);  //THIS PRINTS TO THE CONSOLE THE DEFINED DICTIONARY
+          //console.log(data);
+
+          // NOTE: THIS FIXED THE DUPLICATED DATES!!!! NEEDED A CALL BACK FUNCTION
+          $.get('/month-date-only', (data) => {
+            window.location = "/month-date-only";
+          });
+
+          
+          //window.location = "/after-month-date"; 
+          //window.location = "/month-date-only";//THIS IS A GET REQUEST!!!
+           //Example: 11/19```
+          //alert(xAxisDatapoint);  //THIS WORKS! IT RETURNS THE DATE! Or the X axis!
+          // alert(this.data.datasets[0].data[selectedIndex]);
         }
       },
       tooltips: {
