@@ -78,6 +78,17 @@ def current_date_timezone_from_utc(timezone):
     # return utc_datetime.strftime("%m-%d-%Y")
 
 
+def current_date_timezone_from_utc_with_month_format(timezone):
+    """Return month in UTC active timezone"""
+
+    user_timezone = pytz.timezone(timezone)
+    utc_month_datetime = datetime.now(user_timezone).date()
+    utc_month_datetime = utc_month_datetime.strftime("%Y-%m")
+
+    return utc_month_datetime  # This is returning a datetime object
+    # return utc_datetime.strftime("%m-%d-%Y")
+
+
 # ==================================================
 def format_time_str(time_str):
     """Return a newly formatted time string"""
@@ -92,6 +103,18 @@ def format_time_str(time_str):
 
 
 # ==================================================
+# def create_datetime_time_str(datetime_date_obj):
+#     """Return a datetime.time string"""
+
+#     print("If you made it here, the argument passed is:", datetime_date_obj)
+
+#     datetime_str = datetime.strftime(
+#         datetime_date_obj, "%H:%S %p"
+#     )  # NOTE: The date_str passed in is the converted one. So Nov-25-2020. And this must match the format!
+
+#     return datetime_str
+
+
 def create_date_obj(date_str):
     """Return a datetime.date object"""
 
@@ -145,6 +168,19 @@ def change_filtered_dates_to_obj(date_str):
 
     datetime_obj = datetime.strptime(
         date_str, "%b-%d-%Y"
+    )  # NOTE: The date_str passed in is the converted one. So Nov-25-2020. And this must match the format!
+
+    return datetime.date(datetime_obj)
+
+
+# FIXME !!!!!  11/30
+def change_filtered_dates_different_format_to_obj(date_str):
+    """Return a datetime.date object"""
+
+    print("Finally, the argument passed is:", date_str)
+
+    datetime_obj = datetime.strptime(
+        date_str, "%m/%d/%Y"
     )  # NOTE: The date_str passed in is the converted one. So Nov-25-2020. And this must match the format!
 
     return datetime.date(datetime_obj)
@@ -217,7 +253,7 @@ def create_date_str_with_different_format(date_obj_lst):
     all_datetime_str_lst = []
     for date_obj in date_obj_lst:
         datetime_str = datetime.strftime(
-            date_obj, "%m/%d"
+            date_obj, "%m/%d/%Y"
         )  # Need in this format because the HTML string filter by month is "2020-11"
         print(datetime_str)
 
