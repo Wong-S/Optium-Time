@@ -20,7 +20,7 @@
     
 
     <!--NOTE: CSS, jQUERY, JS ; Double check if proper to inherit all from base.html!!-->
-    <link rel="stylesheet" href="/static/css/style.css">
+    <!-- <link rel="stylesheet" href="/static/css/homepage_bootstrap.css"> -->
     <script src="http://code.jquery.com/jquery.js"></script>
 
     <!-- <script src="/static/js/video_display.js"></script> -->
@@ -41,6 +41,7 @@
     {% block head %}{% endblock %}
   </head>
   <body>
+    
  <!-- part flashed messages -->
     {% for msg in get_flashed_messages() %}
       <p class="flash-msg">
@@ -64,9 +65,11 @@
 
         <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -- NOTE: This must go at the bottom before the body tag ends. Not above the Jinja templating inheritance above! -->
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
   </body>
 </html>
+
+<!-- NOTE: The slim version of jQuery doesn't support ajax function. SO the JS event handler chart.js will not work if you have that script tag in! So use the replaced script tag above!-->
