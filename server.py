@@ -267,9 +267,9 @@ def display_user_options():
     session["month_total_hours"] = total_time_hours_lst
     session["month_dates"] = month_date_converted_to_str
 
-    if session["set-alarm-wake-time"] == None:
-        return render_template("user_page.html", user_obj=user_obj)
-    else:
+    print("HEY THE USER ID IS:", user_id)  # Is user_id = 1
+
+    if "set-alarm-wake-time" in session:
         alarm_wake_time = session["set-alarm-wake-time"]
         print(type(alarm_wake_time))
         print("THE CURRENT ALARM WAKE TIME IS:", alarm_wake_time)  # STRING TYPE!!
@@ -278,8 +278,34 @@ def display_user_options():
         print("THE NEWLY CONVERTED ALARM WAKE TIME IS:", new_time_str)
 
         return render_template(
-            "user_page.html", user_obj=user_obj, new_time_str=new_time_str
+            "user_page.html",
+            user_obj=user_obj,
+            new_time_str=new_time_str,
+            user_id=user_id,
         )
+    else:
+        print("THERE IS NOTHING IN THE ALARM CLOCK SESSION")
+        new_time_str = "No Alarm Set"
+        return render_template(
+            "user_page.html",
+            user_obj=user_obj,
+            new_time_str=new_time_str,
+            user_id=user_id,
+        )
+
+    # if session["set-alarm-wake-time"] == None:
+    #     return render_template("user_page.html", user_obj=user_obj)
+    # else:
+    #     alarm_wake_time = session["set-alarm-wake-time"]
+    #     print(type(alarm_wake_time))
+    #     print("THE CURRENT ALARM WAKE TIME IS:", alarm_wake_time)  # STRING TYPE!!
+
+    #     new_time_str = datetime_functions.format_time_str(alarm_wake_time)
+    #     print("THE NEWLY CONVERTED ALARM WAKE TIME IS:", new_time_str)
+
+    #     return render_template(
+    #         "user_page.html", user_obj=user_obj, new_time_str=new_time_str
+    #     )
     ###########################################################
 
 
@@ -289,9 +315,14 @@ def display_user_options():
 def journal_entry(user_id):
     """Return journal page """
 
+    print("AT THE JOURNAL ROUTE THE ID IS:", user_id)
+
     return render_template(
-        "journal.html", user_id=user_id
+        "journal_creation.html", user_id=user_id
     )  # NOTE:Passing in the user's ID here!
+    # return render_template(
+    #     "journal.html", user_id=user_id
+    # )  # NOTE:Passing in the user's ID here!
 
 
 # NOTE: CHECKING if Journal Entries actually got seeded and display correctly
@@ -312,6 +343,10 @@ def display_journal_information(user_id):
 def display_new_journal(user_id):
     """Return new journal page"""
 
+    print(
+        "ON JOURNAL CREATE THE ID IS:", user_id
+    )  # NOTE: Getting this error: <user_id>
+
     return render_template("journal_creation.html", user_id=user_id)
 
 
@@ -322,9 +357,11 @@ def register_journal_entry(user_id):
 
     entry_name = request.form.get("entry-name")
     entry_details = request.form.get("entry-details")
-    user_id = int(
-        user_id
-    )  # NOTE FIXME: CODE REVIEW ?? Does a Foreign Key really need to be specified here? And converted from user_id string to int?
+
+    print("WHAT IS TEH TYPE OF USER ID", user_id)
+    print(type(user_id))
+    # user_id = int(user_id)
+    # NOTE FIXME: CODE REVIEW ?? Does a Foreign Key really need to be specified here? And converted from user_id string to int?
 
     timezone = session["timezone"]
     created_at = datetime_functions.current_date_timezone_from_utc(timezone)
@@ -335,14 +372,18 @@ def register_journal_entry(user_id):
     print("The Updated time is:", updated_at)
     print()
     # if user_id matches True:
+
+    print("THIS NEXT STEP HERE!!")
+
     crud.create_journal_entry(
         user_id, entry_name, entry_details, created_at, updated_at
     )
     flash("New entry made!!")
 
-    return render_template("journal.html", user_id=user_id)
+    return render_template("journal_creation.html", user_id=user_id)
 
 
+# TODO: COMMENTED OUT DEUBGIGGIN 12/4
 # =====================================================================
 # NOTE: Playlist and Video Routes Start Here:
 
@@ -392,6 +433,8 @@ def display_video_selection(user_id):
 def register_videos(user_id):
     """Store video and playlist in video database"""
 
+    user_obj = crud.check_user_to_playlist_id(user_id)
+
     # TODO: Not sure of this session will cause future bugs, for example, session won't clear until user clears cache...thus, possiblity of bug when adding videos to database?
     # NOTE: Get video id list from what user selected from HTML form
 
@@ -439,10 +482,11 @@ def register_videos(user_id):
             # crud.create_category(video_category_name)
 
     return render_template(
-        "playlist.html",
+        "current_playlists.html",
         user_id=user_id,
         video_list=video_list,
         playlist_obj=playlist_obj,
+        user_obj=user_obj,
     )
 
 
@@ -454,7 +498,7 @@ def view_playlist(user_id):
     user_obj = crud.check_user_to_playlist_id(user_id)
     print(user_obj)
 
-    return render_template("current_playlists.html", user_obj=user_obj)
+    return render_template("current_playlists.html", user_obj=user_obj, user_id=user_id)
 
 
 @app.route("/display-playlist-videos/<playlist_id>")
@@ -552,11 +596,11 @@ def register_alarm(user_id):
 def get_alarm_countdown_details():
     """Return user's alarm settings to frontend"""
 
-    #TODO: 12/1 Bug; everytime the user refreshes the page, the alarm also refreshes and restarts. 
-    #TODO: every refresh gets everything again from the backend. You cannot preserve refreshes. Javascript doesn't know anything happening on the backend.
+    # TODO: 12/1 Bug; everytime the user refreshes the page, the alarm also refreshes and restarts.
+    # TODO: every refresh gets everything again from the backend. You cannot preserve refreshes. Javascript doesn't know anything happening on the backend.
     user_alarm_details = session["alarm"]  # 7.46 (Float type)
-    #TODO NOTE: Get difference between Wake and now time
-    #TODO Keep in mind crossing over midnight (Remember the last issue with the hours mess up)
+    # TODO NOTE: Get difference between Wake and now time
+    # TODO Keep in mind crossing over midnight (Remember the last issue with the hours mess up)
     #
     print("THE ROUTE FOR THE ALARM COUNTDOWN SESSION IS:", user_alarm_details)
     print(type(user_alarm_details))
@@ -1460,26 +1504,6 @@ def get_individual_sleep_times():
     return jsonify({"data": hynogram_doughnut_data})
 
     # return jsonify({"data": hypnogram_data})
-
-
-# @app.route("/sms-twilio-sleep-response", methods=["GET", "POST"])
-# def incoming_sms():
-#     """Send a dynamic reply to an incoming text message"""
-#     # Get the message the user sent our Twilio number
-#     body = request.values.get("Body", None)
-
-#     # Start our TwiML response
-#     resp = MessagingResponse()
-
-#     # Determine the right reply for this message
-#     if body == "hello":
-#         resp.message("Hi!")
-#     elif body == "bye":
-#         resp.message("Goodbye")
-#     else:
-#         resp.message("See you")
-
-#     return str(resp)
 
 
 if __name__ == "__main__":
