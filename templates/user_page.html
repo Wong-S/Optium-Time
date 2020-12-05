@@ -2,6 +2,10 @@
 {% block title %} User Options {% endblock %}
 
 {% block head %}
+
+  <link rel="stylesheet" href="/static/css/user_page_styling.css">
+
+
   {# Moment: allows you to use time scales. If you want to use time scales,
      you have to import Moment BEFORE Chart.js #}
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
@@ -11,6 +15,54 @@
 
   {# randomColor: generate random colors #}
   <script src="https://cdnjs.cloudflare.com/ajax/libs/randomcolor/0.5.4/randomColor.min.js"></script>
+{% endblock %}
+
+
+{% block nav%}  
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <a class="navbar-brand" href="#">Optium Time</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link" href="/user-page">Home</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/journal/{{user_id}}">Journal</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/set-alarm/{{user_id}}">Set Alarm</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/sleep-log">Sleep Log</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/video-playlist/{{user_id}}">Playlist/Videos</a>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Ambient Station
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="/current-playlist/{{user_id}}">Your Playlists</a>
+          <a class="dropdown-item" href="/video-categories/{{user_id}}">Search Videos</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="#">Something else here</a>
+        </div>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link disabled" href="#">Disabled</a>
+      </li>
+    </ul>
+    <form class="form-inline my-2 my-lg-0">
+      <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+    </form>
+  </div>
+</nav>
 {% endblock %}
 
 {% block body %}
@@ -26,14 +78,39 @@
     <li><a href="/countdown-timer">See Countdown Alarm</a></li>
 
     </ul>
+    <!-- <h1> Twilio Trial</h1>
+    <div class = "twilio">Testing it out here</div> -->
+    
+    
+    <form id = "text-send">
+
+    </form>
+    
 
     <h1> Alarm Countdown</h1>
 
     <div class = "countdown"> </div>
 
+    <ul>
+      <li>
 
-    <h2>Line Chart w/ Time Scale Sleep Hours</h2>
-    <canvas id="line-time"></canvas>
+      </li>
+    </ul>
+
+    <br>
+
+    <div id = "alarm-wake-time">The Alarm is set to go off at:
+
+      <li><a href="/countdown-text/">{{new_time_str}}</a></li>
+
+    </div>
+
+
+    <!-- <h2>Line Chart w/ Time Scale Sleep Hours</h2>
+    <canvas id="line-time"></canvas> -->
+
+    <h2>Monthly Sleep Log Line Chart w/ Time Scale</h2>
+    <canvas id="monthly-line-scale"></canvas>
 
 
 {% endblock body%}
