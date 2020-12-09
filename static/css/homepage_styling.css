@@ -1,0 +1,126 @@
+body {
+  width: 50%;
+  height: 30000%;
+  background: url("/static/samuel-ferrara-1527pjeb6jg-unsplash2.jpg") no-repeat
+    center center;
+  background-size: cover;
+  overflow: hidden;
+  margin-bottom: 0px;
+}
+
+.navbar-brand {
+  font-family: "Comfortaa", cursive;
+
+  font-size: 30px;
+}
+
+/* body {
+  background: url("https://source.unsplash.com/twukN12EN7c/1920x1080") no-repeat
+    center center fixed;
+
+  background-size: cover;
+} */
+
+.backdrop-background {
+  background: #d6e0f0;
+  opacity: 0.8;
+  /* top: 12%; */
+  width: 600px;
+  padding: 50px;
+  /* display: flex; */
+  /* margin-left: auto; */
+  text-align: center;
+  margin-left: 420px;
+  margin-top: 100px;
+  border-radius: 15px;
+  font-family: "Signika", sans-serif;
+
+  /* display: flex; */
+}
+
+.homepage-form-text {
+  color: black;
+  text-align: center;
+  opacity: 1;
+}
+
+.navbar-custom-theme {
+  background-image: linear-gradient(315deg, #b3cdd1 0%, #9fa4c4 74%);
+
+  border-radius: 10px;
+}
+
+.navbar-custom-theme .navbar-brand {
+  color: #fcf8ec;
+}
+
+#account {
+  margin-bottom: 40px;
+  margin-top: 20px;
+  font-family: "Signika", sans-serif;
+  font-size: 15px;
+  border-radius: 15px;
+  background-color: #79a3b1;
+  width: 320px;
+  padding: 10px;
+  margin-left: -40px;
+  opacity: 0.9;
+  padding-left: 20px;
+  text-align: center;
+}
+
+#login {
+  margin-bottom: 40px;
+  margin-top: 22px;
+  font-family: "Signika", sans-serif;
+  font-size: 15px;
+  border-radius: 15px;
+  background-color: #79a3b1;
+  width: 220px;
+  padding: 10px;
+  margin-left: 50px;
+  opacity: 0.9;
+  padding-left: 20px;
+}
+
+#email-type {
+  margin-right: 32px;
+}
+
+#last-type {
+  margin-right: 2px;
+}
+
+#password-type {
+  margin-right: 8px;
+}
+
+#timezone-label {
+  margin-left: 36px;
+}
+
+#timezone-choices {
+  margin-right: 55px;
+}
+
+input {
+  size: 100px;
+}
+
+#account-submit {
+  margin-top: 10px;
+}
+
+#account-submit {
+  border-radius: 10px;
+  background: #dbf6e9;
+}
+
+#submit-login {
+  border-radius: 10px;
+  background: #dbf6e9;
+}
+
+h1 {
+  margin-left: 10px;
+}
