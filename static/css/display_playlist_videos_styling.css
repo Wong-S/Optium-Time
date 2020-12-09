@@ -1,0 +1,68 @@
+/* Nav Bar styling only */
+.navbar-brand {
+  font-family: "Comfortaa", cursive;
+
+  font-size: 30px;
+}
+
+#journal-nav {
+  margin-left: 720px;
+}
+
+.nav-link {
+  font-family: "Hammersmith One", sans-serif;
+  font-family: "Quantico", sans-serif;
+}
+
+/* Nav Bar styling only */
+/* Nav Bar styling only */
+
+.playlist-heading {
+  text-align: center;
+  /* margin-right: -300px; */
+  background: #d0e8f2;
+  opacity: 0.9;
+  /* top: 12%; */
+  width: 400px;
+  height: 100px;
+  padding: 15px;
+  border-radius: 15px;
+  margin-top: 20px;
+  margin-left: 550px;
+  font-family: "Signika", sans-serif;
+  /* padding-bottom: 30px; */
+}
+
+.video-of-title {
+  text-align: center;
+}
+
+.display-of-video {
+  text-align: center;
+}
+
+body {
+  /* background: linear-gradient(to right, #e0d2e9 0%, #ffffff 100%); */
+  background: url("/static/alex-shutin-kKvQJ6rK6S4-unsplash.jpg") no-repeat
+    center center;
+  /* background-size: cover; */
+}
+
+.current-playlist {
+  background: #9ddfd3;
+  opacity: 0.9;
+  /* top: 12%; */
+  width: 200px;
+  height: 50px;
+  padding: 20px;
+  border-radius: 25px;
+
+  /* display: flex; */
+  /* margin-left: auto; */
+  text-align: center;
+  margin-left: 650px;
+  margin-top: 40px;
+  font-family: "Signika", sans-serif;
+
+  /* display: flex; */
+}
