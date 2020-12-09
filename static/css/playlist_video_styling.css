@@ -1,0 +1,46 @@
+.navbar-brand {
+  font-family: "Comfortaa", cursive;
+
+  font-size: 30px;
+}
+
+#journal-nav {
+  margin-left: 702px;
+}
+
+.nav-link {
+  font-family: "Hammersmith One", sans-serif;
+  font-family: "Quantico", sans-serif;
+}
+
+body {
+  /* background: linear-gradient(to right, #e0d2e9 0%, #ffffff 100%); */
+  background: url("/static/alex-shutin-kKvQJ6rK6S4-unsplash.jpg") no-repeat
+    center center;
+  /* background-size: cover; */
+}
+
+.backdrop-background {
+  background: #d0e8f2;
+  opacity: 0.9;
+  /* top: 12%; */
+  width: 600px;
+  height: 500px;
+  padding: 10px;
+  border-radius: 35px;
+  /* display: flex; */
+  /* margin-left: auto; */
+  text-align: center;
+  margin-left: 420px;
+  margin-top: 20px;
+  font-family: "Signika", sans-serif;
+  font-size: 20px;
+
+  /* display: flex; */
+}
+
+.btn-primary {
+  background: #31326f;
+  border-radius: 20px;
+  font-family: "Signika", sans-serif;
+}
