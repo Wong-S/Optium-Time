@@ -1,0 +1,93 @@
+body {
+  /* background: linear-gradient(to right, #e0d2e9 0%, #ffffff 100%); */
+  background: url("/static/alex-shutin-kKvQJ6rK6S4-unsplash.jpg") no-repeat
+    center center;
+  background-size: cover;
+}
+
+/* Nav Bar styling only */
+.navbar-brand {
+  font-family: "Comfortaa", cursive;
+
+  font-size: 30px;
+}
+
+#journal-nav {
+  margin-left: 702px;
+}
+
+.nav-link {
+  font-family: "Hammersmith One", sans-serif;
+  font-family: "Quantico", sans-serif;
+}
+
+/* Nav Bar styling only */
+
+/* Styling the alarm portion  */
+#alarm-wake-time {
+  text-align: center;
+  font-family: "Signika", sans-serif;
+  border-radius: 15px;
+  font-size: 20px;
+
+  /* font-size: 20px; */
+}
+
+#countdown {
+  text-align: center;
+  font-family: "Signika", sans-serif;
+  /* border: 3px solid blue; */
+  border-radius: 25px;
+  font-size: 40px;
+  /* width: 100px;
+  height: 100px; */
+  /* width: 100px; */
+  /* margin-left: 600px; */
+}
+
+/* GREET USER */
+#greet-user {
+  background: #d0e8f2;
+  opacity: 0.9;
+  border-radius: 15px;
+  text-align: center;
+  margin-left: 520px;
+  margin-top: 20px;
+  width: 400px;
+  font-family: "Signika", sans-serif;
+  font-size: 60px;
+  /* border: 2px solid #9ddfd3 */
+}
+
+/* ALARM CONTAINER */
+.alarm-container {
+  background: #9ddfd3;
+  opacity: 0.9;
+  border-radius: 15px;
+  text-align: center;
+  margin-left: 620px;
+  margin-top: 20px;
+  width: 200px;
+  font-family: "Signika", sans-serif;
+}
+
+/* BACKDROP */
+
+.backdrop-background {
+  background: #d0e8f2;
+  opacity: 0.9;
+  /* top: 12%; */
+  width: 1000px;
+  height: 600px;
+  padding: 20px;
+  border-radius: 15px;
+  /* display: flex; */
+  /* margin-left: auto; */
+  text-align: center;
+  margin-left: 220px;
+  margin-top: 30px;
+  font-family: "Signika", sans-serif;
+  font-size: 30px;
+
+  /* display: flex; */
+}
