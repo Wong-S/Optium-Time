@@ -1,0 +1,163 @@
+/* Nav Bar styling only */
+.navbar-brand {
+  font-family: "Comfortaa", cursive;
+
+  font-size: 30px;
+}
+
+#journal-nav {
+  margin-left: 705px;
+}
+
+.nav-link {
+  font-family: "Hammersmith One", sans-serif;
+  font-family: "Quantico", sans-serif;
+}
+
+/* Nav Bar styling only */
+/* Nav Bar styling only */
+
+body {
+  /* background: linear-gradient(to right, #e0d2e9 0%, #ffffff 100%); */
+  background: url("/static/alex-shutin-kKvQJ6rK6S4-unsplash.jpg") no-repeat
+    center center;
+  background-size: cover;
+}
+
+.date-heading {
+  text-align: center;
+  width: 650px;
+  border-radius: 15px;
+  background: #d0e8f2;
+  opacity: 0.9;
+  margin-top: 20px;
+  font-family: "Signika", sans-serif;
+  margin-left: 400px;
+  font-size: 60px;
+}
+
+#wake {
+  text-align: center;
+  width: 150px;
+  height: 50px;
+  border-radius: 515px;
+  background: #9ddfd3;
+  opacity: 0.9;
+  font-family: "Signika", sans-serif;
+  margin-left: 420px;
+  padding-top: 10px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+#bed {
+  text-align: center;
+  width: 150px;
+  height: 50px;
+  border-radius: 515px;
+  background: #9ddfd3;
+  opacity: 0.9;
+  font-family: "Signika", sans-serif;
+  margin-left: 10px;
+  padding-top: 10px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.journal-log {
+  text-align: center;
+  width: 650px;
+  border-radius: 15px;
+  background: #dbf6e9;
+  opacity: 0.9;
+  margin-top: 20px;
+  font-family: "Signika", sans-serif;
+  margin-left: 399px;
+}
+
+.btn-primary {
+  background: #31326f;
+  border-radius: 15px;
+  margin-top: 22px;
+  width: 200px;
+  margin-left: 10px;
+}
+
+.hypnogram-title {
+  text-align: center;
+  width: 250px;
+  border-radius: 15px;
+  background: #d0e8f2;
+  opacity: 0.9;
+  margin-top: 50px;
+  font-family: "Signika", sans-serif;
+  margin-left: 120px;
+  font-size: 40px;
+}
+
+#line-hypnogram {
+  text-align: center;
+  width: 650px;
+  border-radius: 15px;
+  background: #d0e8f2;
+  opacity: 0.9;
+  margin-top: 20px;
+  font-family: "Signika", sans-serif;
+  margin-left: -80px;
+  padding-top: 10px;
+}
+
+#hypnogram-info-stages {
+  text-align: left;
+  width: 350px;
+  border-radius: 10px;
+  background: #d0e8f2;
+  opacity: 0.9;
+  margin-top: 20px;
+  font-family: "Signika", sans-serif;
+  margin-left: -78px;
+  padding-left: 10px;
+  /* padding: 5px; */
+}
+
+.sleep-stage-percent {
+  text-align: center;
+  width: 450px;
+  border-radius: 15px;
+  background: #d0e8f2;
+  opacity: 0.9;
+  margin-top: 50px;
+  font-family: "Signika", sans-serif;
+  margin-left: 150px;
+  font-size: 40px;
+}
+
+#doughnut-sleep-stages {
+  text-align: center;
+  width: 650px;
+  border-radius: 15px;
+  background: #d0e8f2;
+  opacity: 0.9;
+  margin-top: 40px;
+  font-family: "Signika", sans-serif;
+  margin-left: 57px;
+}
+
+#doughnut-info-percent {
+  text-align: left;
+  width: 350px;
+  border-radius: 10px;
+  background: #d0e8f2;
+  opacity: 0.9;
+  margin-top: -50px;
+  font-family: "Signika", sans-serif;
+  margin-left: 155px;
+  padding-left: 10px;
+  margin-bottom: 120px;
+
+  /* padding: 1px; */
+}
+
+.empty {
+  margin-top: 50px;
+}
