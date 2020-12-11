@@ -15,7 +15,7 @@ Having trouble falling asleep? Optium Time is a sleep tracker app that helps the
 
 **Front End:** HTML5, Jinja2, JavaScript, AJAX, Bootstrap, CSS<br>
 **Back End:** Python, Flask, PostgreSQL, SQLAlchemy<br>
-**Frameworks/Libraries:** Chart.js, Moment.js, Python Datetime, Pytz
+**Frameworks/Libraries:** Chart.js, Moment.js, Python Datetime, Pytz<br>
 **APIs:** Twilio API, Youtube Data API
 <br/>
 
