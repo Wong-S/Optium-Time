@@ -102,7 +102,7 @@ def check_login_credentials():
     )  # NOTE: Return the specified OBJECT relating to that exact email. From there, can call instance attributes
 
     if match_passwords == True:
-        flash("Logged in!")
+        # flash("Logged in!")
 
         # NOTE: Storing user primary id in a session
         session["user"] = user_details.user_id
@@ -276,11 +276,12 @@ def display_user_options():
 
         new_time_str = datetime_functions.format_time_str(alarm_wake_time)
         print("THE NEWLY CONVERTED ALARM WAKE TIME IS:", new_time_str)
+        # alarm_set_str = "Alarm:"
 
         return render_template(
             "user_page.html",
             user_obj=user_obj,
-            new_time_str=new_time_str,
+            new_time_str=f"Alarm Set: {new_time_str}",
             user_id=user_id,
         )
     else:
@@ -505,11 +506,15 @@ def view_playlist(user_id):
 def display_videos_in_playlist(playlist_id):
     """Return videos in selected playlist"""
 
+    user_id = session["user"]
+
     playlist_video_obj = crud.get_videos_from_playlist_id(playlist_id)
-    print(playlist_video_obj)
+    # print(playlist_video_obj)
 
     return render_template(
-        "display_playlist_videos.html", playlist_video_obj=playlist_video_obj
+        "display_playlist_videos.html",
+        playlist_video_obj=playlist_video_obj,
+        user_id=user_id,
     )
 
 
@@ -534,21 +539,21 @@ def register_alarm(user_id):
     print(
         wake_time
     )  # FIXME: Just a check; THIS IS A STRING!! But What is coming out is 06:30 which doesn't match the format H:M:S, so need to convert!
-    print("The HTML type WAKE time is:", type(wake_time))
+    # print("The HTML type WAKE time is:", type(wake_time))
     # COnvert to H:M:S by adding a ":00" string
 
     wake_add_sec_time = ":00"
     wake_time = wake_time + wake_add_sec_time
-    print("THE Wake_time from the alarm is NOWL", wake_time)
+    # print("THE Wake_time from the alarm is NOWL", wake_time)
 
     session["set-alarm-wake-time"] = wake_time
 
     # NOTE: bed time calculation done by taking in user's current time zone from session
     user_timezone = session["timezone"]
-    print(user_timezone)  # FIXME: Just a check
+    # print(user_timezone)  # FIXME: Just a check
 
     bed_time = datetime_functions.current_time_timezone_from_utc(user_timezone)
-    print(bed_time)  # FIXME: Just a check, This is a STRING formatted
+    # print(bed_time)  # FIXME: Just a check, This is a STRING formatted
     print("The HTML type BED time is:", type(bed_time))
 
     # NOTE: current_date calculation based on timezone because before, the date was not aware
@@ -557,25 +562,25 @@ def register_alarm(user_id):
     session[
         "current_date"
     ] = current_date  # NOTE: This is NOT the converted datetime format, just the regular object non formated??????
-    print("The SESSION STORED is", session["current_date"])  # Just an datetime object!
+    # print("The SESSION STORED is", session["current_date"])  # Just an datetime object!
 
     # Seed into the database what user choose for wake time
     crud.create_sleep_log(user_id, wake_time, bed_time, current_date)
-    print("THE NEXT STEP IS")
+    # print("THE NEXT STEP IS")
 
     # Find the total time user will have from bed time to wake time:
     user_total_time = datetime_functions.time_difference(
         user_timezone, wake_time, bed_time
     )
 
-    print("The Calculated SUBTRACT TIME is", user_total_time)
-    flash("Your alarm is set")
+    # print("The Calculated SUBTRACT TIME is", user_total_time)
+    # flash("Your alarm is set")
 
     # TODO CREATE A ALARM COUNTDOWN FOR THE HOMEPAGE 11/28 ---------
     # Steps I need to take is create a JSON route to store the user's alarm total alarm
     session["alarm"] = user_total_time  # 0.15 or 2.15, etc
 
-    print("THE STORED ALARM SESSION IS:", user_total_time)
+    # print("THE STORED ALARM SESSION IS:", user_total_time)
 
     # TODO: TWILIO API MESSAGE CALL HAPPENS HERE #UPDATE: IT WORKS SORTA...There is a bug now where the alarm waits until countdown is over before sending a message
     # alarm_num_time = session["alarm"]
@@ -584,7 +589,7 @@ def register_alarm(user_id):
     #     alarm_num_time, user_first_name
     # )
 
-    print("YOU SHOULD HAVE RECEIVED A TEXT WITH INFORMATION ON YOUR SLEEP!!")
+    # print("YOU SHOULD HAVE RECEIVED A TEXT WITH INFORMATION ON YOUR SLEEP!!")
 
     #
     # return render_template("user_page.html")
@@ -602,8 +607,8 @@ def get_alarm_countdown_details():
     # TODO NOTE: Get difference between Wake and now time
     # TODO Keep in mind crossing over midnight (Remember the last issue with the hours mess up)
     #
-    print("THE ROUTE FOR THE ALARM COUNTDOWN SESSION IS:", user_alarm_details)
-    print(type(user_alarm_details))
+    # print("THE ROUTE FOR THE ALARM COUNTDOWN SESSION IS:", user_alarm_details)
+    # print(type(user_alarm_details))
 
     user_alarm_details_str = str(user_alarm_details)
 
@@ -612,11 +617,11 @@ def get_alarm_countdown_details():
     alarm_hours = int(user_alarm_details_lst[0])
     alarm_minutes = int(user_alarm_details_lst[1])
 
-    print("THE ALARM HOURS IS:", alarm_hours)
-    print("THE ALARM MINUTES IS:", alarm_minutes)
+    # print("THE ALARM HOURS IS:", alarm_hours)
+    # print("THE ALARM MINUTES IS:", alarm_minutes)
 
     alarm_dict = {"hours": alarm_hours, "minutes": alarm_minutes}
-    print("ALARM DICTIONARY IS:", alarm_dict)
+    # print("ALARM DICTIONARY IS:", alarm_dict)
 
     return alarm_dict
 
@@ -636,7 +641,7 @@ def get_alarm_countdown_details():
 def display_countdown_timer():
     """Return countdown timer page of set alarm"""
 
-    print("YOU MADE IT HERE AT THIS ROUTE!!! FOR COUNTDOWN")
+    # print("YOU MADE IT HERE AT THIS ROUTE!!! FOR COUNTDOWN")
     alarm_num_time = session["alarm"]
     user_first_name = session["user_name"]
     twilio_message = datetime_functions.countdown_message(
@@ -645,7 +650,7 @@ def display_countdown_timer():
 
     # TODO NEED TO CLEAR THE SESSION TO PREVENT A REFRESH EACH TIME THE PAGE LOADS AND DISPLAYS THE ALARM AGAIN AND AGAIN?
     # session["alarm"] = 0
-    print("THE MESSAGE IS:", twilio_message)
+    # print("THE MESSAGE IS:", twilio_message)
 
     return jsonify(twilio_message)
 
@@ -675,7 +680,7 @@ def display_sleep_graph_options():
         # converted_current_date_for_grouping.append(current_date.strftime("%m/%d/%Y"))
         converted_current_date_for_grouping_obj.append(current_date)
 
-    print("CONVERTED CURRENT DATE LIST IS:", converted_current_date_for_grouping_obj)
+    # print("CONVERTED CURRENT DATE LIST IS:", converted_current_date_for_grouping_obj)
 
     # Store in session for later use:
     session["dates_group_obj"] = converted_current_date
@@ -715,7 +720,7 @@ def display_date_info_chosen_from_month_graph():
     # window.location will execute a GET request. By then, the session is already stored and should be able to relay that info back!
     # new_date = ""
     if request.method == "POST":
-        print("THIS IS FROM THE POST SIDE OF MONTH GRAPH JS SIDE")
+        # print("THIS IS FROM THE POST SIDE OF MONTH GRAPH JS SIDE")
         # data = {}
         # data["date"] = request.json["xAxisDatapoint"]
         # data["hour"] = request.json["yAxisdatapoint"]
@@ -724,31 +729,31 @@ def display_date_info_chosen_from_month_graph():
         # print(data)
         # print(data)
         user_id = session["user"]
-        print(request.get_json())
+        # print(request.get_json())
         data = request.get_json()  # {'information': {'date': '11/14', 'hour': 9.19}}
 
         # Pull date info from the nested dictionary above
         date = data["information"]["date"]
-        print(type(date))
-        print("THE DATE THAT WAS SELECTED FROM THE MONTH GRAPH WAS:", date)
+        # print(type(date))
+        # print("THE DATE THAT WAS SELECTED FROM THE MONTH GRAPH WAS:", date)
         # post_date.append(date)
 
         # If the session is already created, then pop what was in it so that a new session can be stored
         if "post_date" in session:
-            print("YEP SOMETHING IS HERE")
+            # print("YEP SOMETHING IS HERE")
             session.pop("post_date")
             # print(session["post_date"])  #SO THIS WORKS BECAUSE THERE IS NOT REGISTERED "POST DATE" AFTER THE POP happens
             session["post_date"] = date
         else:
             # If the session doesn't exist, create a session
-            print("NOPE NOTHING IS HERE")
+            # print("NOPE NOTHING IS HERE")
             session["post_date"] = date
 
         # post_date = session["post_date"]
         datee = session.get("post_date")
-        print("DATE HERE IS:", datee)
+        # print("DATE HERE IS:", datee)
         # print("THE POST DATE WAS:", post_date)
-        print(session["post_date"])
+        # print(session["post_date"])
         # new_date = date
 
         return redirect("/month-date-only")
@@ -758,7 +763,7 @@ def display_date_info_chosen_from_month_graph():
     # NOTE: Prob don't need this conditional since it is a POST request...
     # print("THE NEW DATE IS:", new_date)
     if request.method == "GET":
-        print("THIS IS FROM THE GET SIDE MONTH GRAPH JS SIDE")
+        # print("THIS IS FROM THE GET SIDE MONTH GRAPH JS SIDE")
         # data = {}
         # data["date"] = request.json["date"]
         # data["hour"] = request.json["hour"]
@@ -766,7 +771,7 @@ def display_date_info_chosen_from_month_graph():
             "post_date"
         )  # String, has the format "11/29" example
         # post_date = session["post_date"]
-        print("THE DATE FOR THE GET SIDE SESSION IS:", chosen_date_str)
+        # print("THE DATE FOR THE GET SIDE SESSION IS:", chosen_date_str)
         # data = request.get_json(silent=True)
 
         # print("ANYTHING HERE?", data)
@@ -786,7 +791,7 @@ def display_date_info_chosen_from_month_graph():
             chosen_date_str
         )
 
-        print("THE CHOSEN DATE BY USER OBJ FROM STRING IS:", chosen_date_by_user_obj)
+        # print("THE CHOSEN DATE BY USER OBJ FROM STRING IS:", chosen_date_by_user_obj)
 
         filtered_date_obj = crud.get_sleep_data_by_filtered_date(
             user_id, chosen_date_by_user_obj
@@ -795,32 +800,79 @@ def display_date_info_chosen_from_month_graph():
         # Now use that filtered_date_obj to get the wake and bed times
         # FIXME: Include AM and PM times.
         filtered_date_wake_time_obj = filtered_date_obj.wake_time
-        print("THE DATETIME TIME OBJ FOR WAKE_TIME IS", filtered_date_obj)
+        # print("THE DATETIME TIME OBJ FOR WAKE_TIME IS", filtered_date_obj)
 
         # Convert to a string to include the AM and PM
         # Cannot pass in a datetime.time object, but a datetime.date object!
         wake_time_str = str(filtered_date_wake_time_obj)
         wake_time_new_str = datetime_functions.format_time_str(wake_time_str)
 
+        if wake_time_new_str[-2:] == "PM":
+            wake_time_num_slice = int(wake_time_str[0:2]) - 12
+            # print("NUMBER WAKE TIME IS:", wake_time_num_slice)
+
+            new_wake_time_str = (
+                str(wake_time_num_slice) + wake_time_str[2:5] + " " + "PM"
+            )
+            wake_time_new_str = new_wake_time_str
+
+        elif wake_time_new_str[-2:] == "AM":
+            wake_time_new_str = wake_time_new_str[1:]
+
+        # ========BED TIME BELOW:
         filtered_date_bed_time_obj = filtered_date_obj.bed_time
+
+        # filtered_date_bed_time_obj = float(filtered_date_bed_time_obj) - 12
+
         bed_time_str = str(filtered_date_bed_time_obj)
 
+        # bed_time_num_slice = int(bed_time_str[0:2]) - 12
+        # print("NUMBER BED TIME IS:", bed_time_num_slice)  # It is 11
+
+        # new_bed_time_str = str(bed_time_num_slice) + bed_time_str[2:]
+        # print(
+        #     "THE NEW BED TIME STRING RE FORMATTED FROM MILITARY TIME IS:",
+        #     new_bed_time_str,
+        # )
+
+        # bed_time_str = str(new_bed_time_str)
+
         bed_time_new_str = datetime_functions.format_time_str(bed_time_str)
+        # print("THE BED TIME HERE IS:", bed_time_new_str)
+
+        # NOTE: Changing the format of this string from the military time!
+        if bed_time_new_str[-2:] == "PM":
+            bed_time_num_slice = int(bed_time_str[0:2]) - 12
+            # print("NUMBER BED TIME IS:", bed_time_num_slice)
+
+            new_bed_time_str = str(bed_time_num_slice) + bed_time_str[2:5] + " " + "PM"
+            bed_time_new_str = new_bed_time_str
+
+        elif bed_time_new_str[-2:] == "AM":
+            bed_time_new_str = bed_time_new_str[1:]
+
+        # bed_time_new_str = int(bed_time_new_str)
+
+        # bed_time_new_str = bed_time_new_str - 12
         # ===================================================================
         # Now, display the User's Journal based on the date that was filtered
 
         user_obj = crud.check_user_to_journal_id(user_id)
-        print(user_obj.journals)  # This is a list!
+        # print(user_obj.journals)  # This is a list!
 
         journal_titles_by_date = {}
         for date in user_obj.journals:
             print(date.created_at)
-        if chosen_date_by_user_obj == date.created_at:
-            print(date.created_at)
-            print("HEY IS THIS THE DATE YOU WANTED TO COMPARE TO JOURNALS!?")
-            journal_titles_by_date[date.entry_name] = date.entry_details
+            if chosen_date_by_user_obj == date.created_at:
+                # print(date.created_at)
+                # print("HEY IS THIS THE DATE YOU WANTED TO COMPARE TO JOURNALS!?")
+                journal_titles_by_date[date.entry_name] = date.entry_details
 
-        print("JOURNAL TITLES ARE:", journal_titles_by_date)
+        # print("JOURNAL TITLES ARE:", journal_titles_by_date)
+
+        # NOTE: Write conditional to check if a journal title was created. If not, then display "No Journals Found"
+        # if "date.entry_name" not in journal_titles_by_date:
+        #     no_journal = "No Journal Found"
 
         # ===================================================================
 
@@ -834,19 +886,19 @@ def display_date_info_chosen_from_month_graph():
         # STORES total_sleep hours. Need to convert to minutes
         session["total_sleep_hours"] = total_sleep_hours_this_day
         total_sleep_hrs = session["total_sleep_hours"]
-        print("THE TOTAL SLEEP HOURS IS:", total_sleep_hrs)
+        # print("THE TOTAL SLEEP HOURS IS:", total_sleep_hrs)
 
-        print("The HYPNOGRAM SUBTRACTED TIME DIFF  is", total_sleep_hours_this_day)
+        # print("The HYPNOGRAM SUBTRACTED TIME DIFF  is", total_sleep_hours_this_day)
 
         # NOTE: Call the datetime_function.py Hypnogram function!
         hypnogram_dict = datetime_functions.create_hypnogram(total_sleep_hours_this_day)
 
-        print("The SLEEP STAGE DICT Hypnogram is:", hypnogram_dict)
+        # print("The SLEEP STAGE DICT Hypnogram is:", hypnogram_dict)
 
         session["hypnogram"] = hypnogram_dict
 
         hypnogram_info = session["hypnogram"]
-        print("The FINAL info for hypnogram is:", hypnogram_info)
+        # print("The FINAL info for hypnogram is:", hypnogram_info)
 
         return render_template(
             "month_date_chosen.html",
@@ -877,7 +929,7 @@ def display_chosen_sleep_date(user_id):
 
     chosen_date_by_user_str = request.args.get("date-start")
 
-    print("THE STRING DATE IS:", chosen_date_by_user_str)
+    # print("THE STRING DATE IS:", chosen_date_by_user_str)
 
     print(
         type(chosen_date_by_user_str)
@@ -886,9 +938,9 @@ def display_chosen_sleep_date(user_id):
     chosen_date_by_user_obj = datetime_functions.create_filtered_date_obj(
         chosen_date_by_user_str
     )
-    print("THIS NEW DATE SHOULD BE AN OBJECT?:", chosen_date_by_user_obj)
+    # print("THIS NEW DATE SHOULD BE AN OBJECT?:", chosen_date_by_user_obj)
 
-    print(type(chosen_date_by_user_obj))
+    # print(type(chosen_date_by_user_obj))
 
     filtered_date_obj = crud.get_sleep_data_by_filtered_date(
         user_id, chosen_date_by_user_obj
@@ -903,7 +955,7 @@ def display_chosen_sleep_date(user_id):
 
     # TODO: WRITE A CONDITIONAL STATEMENT HERE -> If filtered_date_obj is None, aka the user selected a date that doesn't exist, then return an Error message to user!
     if filtered_date_obj is None:
-        print("YEP NOTHING TO SEE HERE")
+        # print("YEP NOTHING TO SEE HERE")
         flash("The date you selected does not exist")
         return redirect("/sleep-log")
 
@@ -912,11 +964,11 @@ def display_chosen_sleep_date(user_id):
             filtered_date_obj.current_date
         )  # This stores the current date as an OBJECT
 
-        print("THE FILTERED DATE IS:", filtered_date)  # Example: 2020-11-26
+        # print("THE FILTERED DATE IS:", filtered_date)  # Example: 2020-11-26
 
         # TODO: Now, taking that filtered_date obj, you need to use that date to filter out a seven date period
-        print("The STORED SESSION DATES ARE:")
-        print(session["dates_group_obj"])
+        # print("The STORED SESSION DATES ARE:")
+        # print(session["dates_group_obj"])
         grouped_per_week = session["dates_group_obj"]
 
         grouped_per_week_obj = []
@@ -928,21 +980,21 @@ def display_chosen_sleep_date(user_id):
                 datetime_functions.change_filtered_dates_to_obj(i)
             )
 
-        print(grouped_per_week_obj)
+        # print(grouped_per_week_obj)
 
         dates_grouped_by_seven = []
         for x in range(0, len(grouped_per_week_obj), 7):
             dates_grouped_by_seven.append(grouped_per_week_obj[x : x + 7])
 
-        print("THE FINAL GROUPED DATES AS OBJECTS:", dates_grouped_by_seven)
+        # print("THE FINAL GROUPED DATES AS OBJECTS:", dates_grouped_by_seven)
 
         # NOTE: Now, Compare the filtered date to the list of dates and take only that list
         selected_group_dates_obj_lst = []
         for date in dates_grouped_by_seven:
             print()
-            print("IS THIS WORKING!?!?")
+            # print("IS THIS WORKING!?!?")
             if filtered_date in date:
-                print("THIS LIST THAT FILTERED OUT 7 DAYS:", date)
+                # print("THIS LIST THAT FILTERED OUT 7 DAYS:", date)
                 selected_group_dates_obj_lst.append(date)
 
         print(
@@ -952,13 +1004,13 @@ def display_chosen_sleep_date(user_id):
 
         converted_current_date_str = []  # This list contains ALL the dates.
         for date_lst in selected_group_dates_obj_lst:
-            print(date_lst)
+            # print(date_lst)
             for date in date_lst:
-                print("LOOK HERE:", date)
+                # print("LOOK HERE:", date)
 
                 converted_current_date_str.append(date.strftime("%b-%d-%Y"))
 
-        print("THE CONVERTED DATES OBJ TO STR IS:", converted_current_date_str)
+        # print("THE CONVERTED DATES OBJ TO STR IS:", converted_current_date_str)
 
         session["final_weekly_dates"] = converted_current_date_str
 
@@ -975,7 +1027,7 @@ def display_chosen_sleep_date(user_id):
         # NOTE: Now, take the query filtered list of objects above and take the wake and bed time hours and return a list of only those hours!
         # //  TODO STOPPED HERE!!!
         timezone = session["timezone"]
-        print("USER TIMEZONE CURRENTLY IS:", timezone)
+        # print("USER TIMEZONE CURRENTLY IS:", timezone)
 
         total_time_hours_lst = []
         for i in pre_time_sleep_log_obj:
@@ -993,12 +1045,13 @@ def display_chosen_sleep_date(user_id):
         weekly_hours_lst = session["total_weekly_hrs_json"]
         # Calculate the average number of hours per week:
         average_hrs = datetime_functions.calculate_weekly_avg_hrs(weekly_hours_lst)
-        print("AVERAGE HOURS SLEPT PER WEEK:", average_hrs)
+        # print("AVERAGE HOURS SLEPT PER WEEK:", average_hrs)
 
         return render_template(
             "sleep_dates_by_week.html",
             filtered_date=filtered_date,
             average_hrs=average_hrs,
+            user_id=user_id,
         )
 
 
@@ -1008,7 +1061,7 @@ def weekly_dates_json():
     """Return JSON dict to chart.js"""
 
     weekly_date_lst_obj = session["final_weekly_dates"]
-    print("FOR JSON WEEKLY DATES IS:", weekly_date_lst_obj)
+    # print("FOR JSON WEEKLY DATES IS:", weekly_date_lst_obj)
 
     # converted_current_date_str = []  # This list contains ALL the dates.
     # for date_lst in weekly_date_lst_obj:
@@ -1021,7 +1074,7 @@ def weekly_dates_json():
     # print("THE CONVERTED DATES FOR JSON IS:", converted_current_date_str)
 
     total_hrs = session["total_weekly_hrs_json"]
-    print("TOTAL HOURS LIST IS:", total_hrs)
+    # print("TOTAL HOURS LIST IS:", total_hrs)
 
     # sleep_hours_this_day.append(
     #     {
@@ -1066,13 +1119,13 @@ def filter_by_month(user_id):
 
     chosen_month_by_user_str = request.args.get("start-month")  # 2020-11 (STRING)
 
-    print("THE CHOSEN MONTH BY USER WAS:", chosen_month_by_user_str)
+    # print("THE CHOSEN MONTH BY USER WAS:", chosen_month_by_user_str)
 
     sleep_log_user_obj = crud.get_sleep_data_user_id(
         user_id
     )  # <User user_id = 1 first_name = Shelby>
 
-    print("ALL THE USER'S  DATA IS:", sleep_log_user_obj)
+    # print("ALL THE USER'S  DATA IS:", sleep_log_user_obj)
 
     # Now I need to call the joined sleep_log table
     all_date_obj_lst = []
@@ -1146,7 +1199,7 @@ def filter_by_month(user_id):
     )  # [<SleepLog sleep_log_id = 1 wake_time = 07:30:00 bed_time = 23:11:00 current_date = 2020-11-01>, <SleepLog sleep_log_id = 2 wake_time = 08:30:00 bed_time = 23:11:00 current_date = 2020-11-02>, <SleepLog sleep_log_id = 3 wake_time = 07:30:00 bed_time = 23:11:00 current_date = 2020-11-03>, <SleepLog sleep_log_id = 4 wake_time = 08:30:00 bed_time = 23:11:00 current_date = 2020-11-04>, <SleepLog sleep_log_id = 5 wake_time = 07:30:00 bed_time = 23:11:00 current_date = 2020-11-05>, <SleepLog sleep_log_id = 6 wake_time = 08:30:00 bed_time = 23:11:00 current_date = 2020-11-06>, <SleepLog sleep_log_id = 7 wake_time = 07:30:00 bed_time = 23:11:00 current_date = 2020-11-07>, <SleepLog sleep_log_id = 8 wake_time = 08:30:00 bed_time = 23:11:00 current_date = 2020-11-08>, <SleepLog sleep_log_id = 9 wake_time = 07:30:00 bed_time = 23:11:00 current_date = 2020-11-09>, <SleepLog sleep_log_id = 10 wake_time = 08:30:00 bed_time = 23:11:00 current_date = 2020-11-10>, <SleepLog sleep_log_id = 11 wake_time = 07:30:00 bed_time = 23:11:00 current_date = 2020-11-11>, <SleepLog sleep_log_id = 12 wake_time = 08:30:00 bed_time = 23:11:00 current_date = 2020-11-12>, <SleepLog sleep_log_id = 13 wake_time = 07:30:00 bed_time = 23:11:00 current_date = 2020-11-13>, <SleepLog sleep_log_id = 14 wake_time = 08:30:00 bed_time = 23:11:00 current_date = 2020-11-14>, <SleepLog sleep_log_id = 15 wake_time = 07:30:00 bed_time = 23:11:00 current_date = 2020-11-15>, <SleepLog sleep_log_id = 16 wake_time = 08:30:00 bed_time = 23:11:00 current_date = 2020-11-16>, <SleepLog sleep_log_id = 17 wake_time = 09:30:00 bed_time = 23:11:00 current_date = 2020-11-17>, <SleepLog sleep_log_id = 18 wake_time = 10:30:00 bed_time = 23:11:00 current_date = 2020-11-18>, <SleepLog sleep_log_id = 19 wake_time = 07:30:00 bed_time = 23:11:00 current_date = 2020-11-19>, <SleepLog sleep_log_id = 20 wake_time = 10:30:00 bed_time = 23:11:00 current_date = 2020-11-20>, <SleepLog sleep_log_id = 21 wake_time = 09:30:00 bed_time = 23:11:00 current_date = 2020-11-21>, <SleepLog sleep_log_id = 22 wake_time = 09:30:00 bed_time = 23:11:00 current_date = 2020-11-22>, <SleepLog sleep_log_id = 23 wake_time = 09:30:00 bed_time = 23:11:00 current_date = 2020-11-23>, <SleepLog sleep_log_id = 24 wake_time = 09:30:00 bed_time = 23:11:00 current_date = 2020-11-24>, <SleepLog sleep_log_id = 25 wake_time = 05:55:00 bed_time = 23:42:52 current_date = 2020-11-25>, <SleepLog sleep_log_id = 26 wake_time = 08:33:00 bed_time = 12:20:21 current_date = 2020-11-26>, <SleepLog sleep_log_id = 27 wake_time = 06:30:00 bed_time = 17:55:33 current_date = 2020-11-27>]
 
     timezone = session["timezone"]
-    print("USER TIMEZONE CURRENTLY IS:", timezone)
+    # print("USER TIMEZONE CURRENTLY IS:", timezone)
 
     total_time_hours_lst = []
     for i in user_sleep_log_obj_for_date_lst:
@@ -1189,10 +1242,10 @@ def monthly_dates_json():
     """Return JSON dict with a month dates to chart.js"""
 
     total_monthly_hours = session["month_total_hours"]
-    print("FOR JSON MONTH ROUTE THE TOTAL MONTHLY HOURS IS:", total_monthly_hours)
+    # print("FOR JSON MONTH ROUTE THE TOTAL MONTHLY HOURS IS:", total_monthly_hours)
 
     all_dates_in_month = session["month_dates"]
-    print("MONTHLY DATES FOR CHOSEN DATE IS:", all_dates_in_month)
+    # print("MONTHLY DATES FOR CHOSEN DATE IS:", all_dates_in_month)
 
     monthly_sleep_data = {
         "total_monthly_hours": total_monthly_hours,
@@ -1213,22 +1266,22 @@ def display_sleep_times_for_date(user_id, date):
         "THE HTML DATE is:", date
     )  # NOTE: ThIS CHECKS OUT! The date does pass in correctly depending on what the user click on
 
-    print(type(date))
+    # print(type(date))
 
     date_obj = datetime_functions.create_date_obj(date)
-    print("The NEW DATETIME DATE Object is:", date_obj)
+    # print("The NEW DATETIME DATE Object is:", date_obj)
 
     user_id = session["user"]
     sleep_log_user_obj = crud.get_sleep_data_user_id(user_id)
 
-    print("The user object is:", sleep_log_user_obj)
+    # print("The user object is:", sleep_log_user_obj)
 
     # TODO: MAKE A CRUD FUNCTION THAT CHECKS THE DATE IN THE DATABASE!! QUERY FOR IT! NOTE: Nvm...cannot filter by Date because need to filter by user_id since multiple dates in that database!
     # sleep_log_current_date_obj = crud.get_sleep_data_by_date(date)
     # print("The CURRENT DATE is", sleep_log_current_date_obj)
     current_date_lst = []
     for date in sleep_log_user_obj.sleep_logs:
-        print("DOES THIS WORK?", date.current_date)
+        # print("DOES THIS WORK?", date.current_date)
         current_date_lst.append(date.current_date)
 
     print(
@@ -1238,8 +1291,8 @@ def display_sleep_times_for_date(user_id, date):
     # // TODO: CHECKING HERE IF the HTML "date" is the date the user clicked on!
     # NOTE: This conditional isn't even running because the "date" is != to the datetime objects in that list
     # SO I can either convert this "date" string into an object to compare to the list of objects
-    print()
-    print("CHECK THIS NOW!!!")
+    # print()
+    # print("CHECK THIS NOW!!!")
     # NOTE: Convert the datetime.datetime obj to a datetime.date ONLY object
 
     # if date_obj in current_date_lst:
@@ -1255,7 +1308,7 @@ def display_sleep_times_for_date(user_id, date):
     wake_bed_times_obj = crud.get_sleep_data_by_date(
         user_id, current_date_lst, date_obj
     )
-    print("IF THIS WORKS", wake_bed_times_obj)
+    # print("IF THIS WORKS", wake_bed_times_obj)
 
     unconverted_current_date = wake_bed_times_obj.current_date
     # NOTE: Going to put this datetime object into a session (This is unformatted version!!)
@@ -1269,10 +1322,10 @@ def display_sleep_times_for_date(user_id, date):
     # ===============================DISPLAYING USER JOURNAL BASED ON DATE
     print()
     user_obj = crud.check_user_to_journal_id(user_id)
-    print("THIS ROUTE IS THE SLEEP-JOURNAL ROUTE")
+    # print("THIS ROUTE IS THE SLEEP-JOURNAL ROUTE")
     print()
 
-    print("The user_obj is:", user_obj)
+    # print("The user_obj is:", user_obj)
     print(user_obj.journals)  # This is a list!
 
     # TODO FIXMEEEEEEEE; update: IT CHECKS OUT!!! IT WORKS! I CAN PASS IN A DICTIONARY!! TO JINJA
@@ -1281,10 +1334,10 @@ def display_sleep_times_for_date(user_id, date):
         print(date.created_at)
         if unconverted_current_date == date.created_at:
             print(date.created_at)
-            print("HEY IS THIS THE DATE YOU WANTED TO COMPARE TO JOURNALS!?")
+            # print("HEY IS THIS THE DATE YOU WANTED TO COMPARE TO JOURNALS!?")
             journal_titles_by_date[date.entry_name] = date.entry_details
 
-    print("JOURNAL TITLES ARE:", journal_titles_by_date)
+    # print("JOURNAL TITLES ARE:", journal_titles_by_date)
 
     return render_template(
         "sleep_bed_wake_times.html",
@@ -1300,7 +1353,7 @@ def display_sleep_times_for_date(user_id, date):
 # THIS ROUTE READS THE JOURNALS IF USER CLICKS ON THEM!
 @app.route("/journal-entries/<entry_details>")
 def read_journals(entry_details):
-    print("WHAT IS THIS ENTRY???:", entry_details)
+    # print("WHAT IS THIS ENTRY???:", entry_details)
 
     return render_template("choosen_journal_details.html", entry_details=entry_details)
 
@@ -1313,22 +1366,22 @@ def get_total_sleep():
     """Get total sleep per day"""
 
     user_id = session["user"]
-    print("FOR TOTAL SLEEP JSON user is:", user_id)
+    # print("FOR TOTAL SLEEP JSON user is:", user_id)
     sleep_log_user_obj = crud.get_sleep_data_user_id(user_id)
 
     # NOTE: Need to convert the date to this format in this file, not the crud file because you'll still get this output to frontend: 2020-11-13 00:00:00, which is not what I need. Just the date, not the time
     sleep_hours_this_day = []
     for date in sleep_log_user_obj.sleep_logs:
-        print("The date in the database is", date.current_date)
+        # print("The date in the database is", date.current_date)
         # print("The session current date is", session["current_date"])  #FIXME NOTE: somehow, after commenting this out, the session error that current data doesn't exist anymore works!
         # if date.current_date == session["current_date"]:
         current_date = date.current_date
         converted_current_date_this_day = current_date.strftime("%b-%d-%Y")
 
-        print("The CURRENT CONVERTED Date is", converted_current_date_this_day)
+        # print("The CURRENT CONVERTED Date is", converted_current_date_this_day)
 
-        print("The WAKE time is", date.wake_time)
-        print("The BED time is", date.bed_time)
+        # print("The WAKE time is", date.wake_time)
+        # print("The BED time is", date.bed_time)
 
         # Calling the user's timezone from session
         user_timezone = session["timezone"]
@@ -1337,7 +1390,7 @@ def get_total_sleep():
             user_timezone, date.wake_time, date.bed_time
         )
 
-        print("The SUBTRACTED TIME DIFF is", total_sleep_hours_this_day)
+        # print("The SUBTRACTED TIME DIFF is", total_sleep_hours_this_day)
 
         sleep_hours_this_day.append(
             {
@@ -1400,12 +1453,12 @@ def get_individual_sleep_times():
     """Get total sleep per day and Return JSON dictionary for Chart.js"""
 
     total_sleep_hrs = session["total_sleep_hours"]
-    print("Total SLEEP HOURS for JSON route is:", total_sleep_hrs)
+    # print("Total SLEEP HOURS for JSON route is:", total_sleep_hrs)
 
     total_sleep_min = total_sleep_hrs * 60
 
     hypnogram_time_dict = session["hypnogram"]  # Return time_dict
-    print("THE Hypnogram SLEEP JSON route time_dict is:", hypnogram_time_dict)
+    # print("THE Hypnogram SLEEP JSON route time_dict is:", hypnogram_time_dict)
 
     # NOTE: need to put the sleep stages as individual units on y axis
     # sleep_stages = []
@@ -1426,16 +1479,16 @@ def get_individual_sleep_times():
         hypnogram_time_dict, total_sleep_hrs
     )
 
-    print("THE TIME STAGE ON SERVER.PY side is:", time_stages)
+    # print("THE TIME STAGE ON SERVER.PY side is:", time_stages)
 
     time_lst = datetime_functions.create_total_time_lst(time_stages)
 
-    print("The TIME LST on SERVER.PY side is", time_lst)
+    # print("The TIME LST on SERVER.PY side is", time_lst)
 
     final_time_dict = datetime_functions.create_time_final_dict(
         time_stages, time_lst, total_sleep_hrs
     )
-    print("DOES FINAL time dict work?:", final_time_dict)
+    # print("DOES FINAL time dict work?:", final_time_dict)
     # =========================================================
     # hypnogram_data = []
 
@@ -1448,8 +1501,8 @@ def get_individual_sleep_times():
     # print("The data going INTO Chart.js Hypnogram is:", hypnogram_data)
 
     # CHART.JS Hypnogram==================
-    sleep_labels = []
-    time_data = []
+    sleep_labels = [0]
+    time_data = [0]
     for key_time, value_stage in final_time_dict.items():
         time_data.append(key_time)
         sleep_labels.append(value_stage)
@@ -1459,6 +1512,7 @@ def get_individual_sleep_times():
     print("THE LABELS for Hynogram is:", sleep_labels)
     print("THE DATA for hynoogram is:", time_data)
     print()
+
     # return jsonify(labels, data)  #Returning object
 
     # CHART.JS Doughnut======================
@@ -1468,7 +1522,7 @@ def get_individual_sleep_times():
     )
 
     print()
-    print("THE Data from the DOUGHNUT dict is:", doughnut_data_dict)
+    # print("THE Data from the DOUGHNUT dict is:", doughnut_data_dict)
     print()
 
     doughnut_percent_lst = []
@@ -1478,8 +1532,8 @@ def get_individual_sleep_times():
         doughnut_name_lst.append(sleep_name)
         doughnut_percent_lst.append(f"{percentage:.2f}")
 
-    print("The DOUGHNUT percents is:", doughnut_percent_lst)
-    print("The DOUGHNUT Name is:", doughnut_name_lst)
+    # print("The DOUGHNUT percents is:", doughnut_percent_lst)
+    # print("The DOUGHNUT Name is:", doughnut_name_lst)
 
     # doughnut_data_lst = []
     # awake_percentage = doughnut_data_dict.get("Awake")
