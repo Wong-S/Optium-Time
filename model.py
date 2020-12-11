@@ -1,13 +1,10 @@
-"""Models for Sleep app."""
-
 from datetime import datetime
 
-# import datetime  #FIXME
 from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
-# NOTE: needed to change "postgresql:///ratings" to new database name, which i called "journals" for now
+
 def connect_to_db(flask_app, db_uri="postgresql:///sleeps", echo=True):
     flask_app.config["SQLALCHEMY_DATABASE_URI"] = db_uri
     flask_app.config["SQLALCHEMY_ECHO"] = echo
@@ -19,7 +16,6 @@ def connect_to_db(flask_app, db_uri="postgresql:///sleeps", echo=True):
     print("Connected to the db!")
 
 
-# Class Functions:
 class User(db.Model):
     """A user"""
 
@@ -27,21 +23,14 @@ class User(db.Model):
 
     user_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
 
-    first_name = db.Column(db.String)  # nullable=False
-    last_name = db.Column(db.String)  # nullable=False
-    email = db.Column(db.String, unique=True)  # nullable=True
-    password = db.Column(db.String(30), unique=True)  # nullable=False
+    first_name = db.Column(db.String)
+    last_name = db.Column(db.String)
+    email = db.Column(db.String, unique=True)
+    password = db.Column(db.String(30), unique=True)
     timezone = db.Column(db.String)
-    # NOTE: For Journal class, can call entry_1.users; For User class, can call lenoard.journal
-    # FIXME: Need to change these and put in appropriate classes!
 
     def __repr__(self):
         return f"<User user_id = {self.user_id} first_name = {self.first_name}>"
-
-
-# NOTE --> Need to db.session.add() and commit() before an ID key is assigned to the user_id; instead show None
-# Test run in interactive mode:
-# user_1 = User(first_name = 'M', last_name = 'H', email = 'test@test', password = '123')
 
 
 class Journal(db.Model):
@@ -52,33 +41,15 @@ class Journal(db.Model):
     journal_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(db.Integer, db.ForeignKey("users.user_id"))
 
-    entry_name = db.Column(db.String(50))  # nullable=True
-    entry_details = db.Column(db.String)  # nullable=True
-    created_at = db.Column(db.Date)  # nullable=True
-    updated_at = db.Column(db.Date)  # nullable=True
+    entry_name = db.Column(db.String(50))
+    entry_details = db.Column(db.String)
+    created_at = db.Column(db.Date)
+    updated_at = db.Column(db.Date)
 
-    user = db.relationship(
-        "User", backref="journals"
-    )  # NOTE: This works and not like this in before in User Class: journal = db.relationship("Journal", backref="users")
+    user = db.relationship("User", backref="journals")
 
     def __repr__(self):
         return f"<Journal journal_id = {self.journal_id} user_id = {self.user_id} entry_name = {self.entry_name} created_at = {self.created_at} updated_at = {self.updated_at}>"
-
-
-# NOTE
-# Test run in interactive mode:
-# journal_1 = Journal(entry_name = 'Entry 1', entry_details = 'My journaling starts today', created_at = datetime.now(), updated_at = datetime.now())
-
-# Another way using datetime string formating:
-# journal_1 = Journal(entry_name = 'Entry 1', entry_details = 'My journaling starts today', created_at = datetime.now(), updated_at = datetime.strptime("31-Oct-2015", "%d-%b-%Y"))
-
-
-# NOTE NOTE:
-# Test Run in Interactive mode using joinedload!
-# user_1 = User.query.filter(User.user_id == 13).options(db.joinedload("journals")).first()
-# >>> user_1.first_name
-# >>> for i in user_1.journals:
-# print(i.entry_name)
 
 
 class SleepLog(db.Model):
@@ -89,19 +60,14 @@ class SleepLog(db.Model):
     sleep_log_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(db.Integer, db.ForeignKey("users.user_id"))
 
-    wake_time = db.Column(db.Time)  # nullable=False
-    bed_time = db.Column(db.Time)  # nullable=False
-    current_date = db.Column(db.Date)  # nullable=False
+    wake_time = db.Column(db.Time)
+    bed_time = db.Column(db.Time)
+    current_date = db.Column(db.Date)
 
     user = db.relationship("User", backref="sleep_logs")
 
     def __repr__(self):
         return f"<SleepLog sleep_log_id = {self.sleep_log_id} wake_time = {self.wake_time} bed_time = {self.bed_time} current_date = {self.current_date}>"
-
-
-# NOTE
-# Test run in interactive mode:
-# sleep_log_1 = SleepLog(bed_time = datetime.now(), wake_time = datetime.now(), current_date = datetime.now())
 
 
 class Playlist(db.Model):
@@ -112,17 +78,12 @@ class Playlist(db.Model):
     playlist_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(db.Integer, db.ForeignKey("users.user_id"))
 
-    playlist_name = db.Column(db.String(50))  # nullable=False
+    playlist_name = db.Column(db.String(50))
 
     user = db.relationship("User", backref="playlists")
 
     def __repr__(self):
         return f"<Playlist playlist_id = {self.playlist_id} playlist_name = {self.playlist_name}>"
-
-
-# NOTE
-# Test run in interactive mode:
-# playlist_1 = Playlist(playlist_name = 'Rain sounds only')
 
 
 class Video(db.Model):
@@ -133,36 +94,14 @@ class Video(db.Model):
     video_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
 
     video_title = db.Column(db.String)
-    video_duration = db.Column(db.String)  # nullable=False
-    video_url = db.Column(db.String)  # nullable=False
+    video_duration = db.Column(db.String)
+    video_url = db.Column(db.String)
     playlist_id = db.Column(db.Integer, db.ForeignKey("playlists.playlist_id"))
 
     playlist = db.relationship("Playlist", backref="videos")
 
     def __repr__(self):
         return f"<Video video_id = {self.video_id} video_title = {self.video_title} video_url = {self.video_url}>"
-
-
-# NOTE
-# Test run in interactive mode:
-# video_1 = Video(description = 'Inside a car while it rains', duration = 2, video_url = 'https://etc')
-
-
-# ration_id} duration_length = {self.duration_length}>"
-# class VideoDuration(db.Model):
-#     """API video duration (short, medium, long)"""
-
-#     __tablename__ = "video_durations"
-
-#     video_duration_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-#     video_id = db.Column(db.Integer, db.ForeignKey("videos.video_id"))
-
-#     duration_length = db.Column(db.String)
-
-#     video = db.relationship("Video", backref="video_durations")
-
-#     def __repr__(self):
-#         return f"<VideoDuration video_duration_id = {self.video_du
 
 
 class Category(db.Model):
@@ -172,15 +111,10 @@ class Category(db.Model):
 
     category_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
 
-    category_name = db.Column(db.String(30))  # nullable=False
+    category_name = db.Column(db.String(30))
 
     def __repr__(self):
         return f"<Category category_id = {self.category_id} category_name = {self.category_name}>"
-
-
-# NOTE
-# Test run in interactive mode:
-# category_1 = Category(category_name = 'Rain sounds')
 
 
 class VideoCategories(db.Model):
@@ -200,16 +134,8 @@ class VideoCategories(db.Model):
         return f"<VideoCategories video_category_id = {self.video_category_id} video = {self.video} category = {self.category}>"
 
 
-# NOTE
-# Test run in interactive mode:
-# video_category_1 = VideoCategories(video = video_1, category = category_1)
-
 if __name__ == "__main__":
     from server import app
-
-    # Call connect_to_db(app, echo=False) if your program output gets
-    # too annoying; this will tell SQLAlchemy not to print out every
-    # query it executes.
 
     connect_to_db(app)
 
