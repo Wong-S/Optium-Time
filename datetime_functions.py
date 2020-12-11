@@ -4,25 +4,16 @@ from datetime import datetime
 
 import time
 
-# from dateutil.parser import *
 import pytz
 
-# NOTE WILL INCLUDE TWILIO CALL MESSGAGE HERE
+
 import os
 from twilio.rest import Client
 
-# get the standard UTC time
+
 UTC = pytz.utc
 
-# it will get the time zone
-# of the specified location
 
-# IST = pytz.timezone("Asia/Kolkata")
-# timeZ_Ny = pytz.timezone("America/New_York")
-# timeZ_Ma = pytz.timezone("Africa/Maseru")
-# timeZ_At = pytz.timezone("Europe/Athens")
-
-# The 6 timezones listed below!!! For USA only for now...
 central_time = pytz.timezone("US/Central")
 eastern_time = pytz.timezone("US/Eastern")
 pacific_time = pytz.timezone("US/Pacific")
@@ -30,41 +21,14 @@ mountain_time = pytz.timezone("US/Mountain")
 alaska_time = pytz.timezone("US/Alaska")
 hawaii_time = pytz.timezone("US/Hawaii")
 
-# print the date and time in
-# standard format
-# print("UTC in Default Format : ", datetime.now(UTC))
-
-# India Standard Time:
-# print("IST in Default Format : ", datetime.now(IST))
-
-# print the date and time in
-# specified format
-# datetime_utc_1 = datetime.now(central_time)
-# print(datetime_utc_1)
-# datetime_utc_1 = datetime_utc_1.strftime("%H %M %S")
-
-# datetime_utc_2 = datetime.now(eastern_time)
-# datetime_utc_2 = datetime_utc_2.strftime("%H %M %S")
-
-# datetime_utc_2 = int(datetime_utc_2)
-# print(type(datetime_utc_2))
-
-# datetime_utc_3 = int(datetime_utc_2) - int(datetime_utc_1)
-# print(datetime_utc_3)
-
-
-# datetime_ist = datetime.now(IST)
-# print("Date & Time in IST : ", datetime_ist.strftime("%Y:%m:%d %H:%M:%S %Z %z"))
-
 
 def current_time_timezone_from_utc(timezone):
     """Return Time in UTC active timezone"""
 
     user_timezone = pytz.timezone(timezone)
-    utc_datetime = datetime.now(user_timezone)  # FIXME: This returns the date of TODAY!
-    print("Date & Time in UTC : ", utc_datetime.strftime("%H:%M:%S"))
+    utc_datetime = datetime.now(user_timezone)
 
-    return utc_datetime.strftime("%H:%M:%S")  # Returning a STRING
+    return utc_datetime.strftime("%H:%M:%S")
 
 
 def current_date_timezone_from_utc(timezone):
@@ -72,10 +36,8 @@ def current_date_timezone_from_utc(timezone):
 
     user_timezone = pytz.timezone(timezone)
     utc_datetime = datetime.now(user_timezone).date()
-    print("Date & Time in UTC : ", utc_datetime.strftime("%m-%d-%Y"))
 
-    return utc_datetime  # This is returning a datetime object
-    # return utc_datetime.strftime("%m-%d-%Y")
+    return utc_datetime
 
 
 def current_date_timezone_from_utc_with_month_format(timezone):
@@ -85,8 +47,7 @@ def current_date_timezone_from_utc_with_month_format(timezone):
     utc_month_datetime = datetime.now(user_timezone).date()
     utc_month_datetime = utc_month_datetime.strftime("%Y-%m")
 
-    return utc_month_datetime  # This is returning a datetime object
-    # return utc_datetime.strftime("%m-%d-%Y")
+    return utc_month_datetime
 
 
 # ==================================================
@@ -94,35 +55,17 @@ def format_time_str(time_str):
     """Return a newly formatted time string"""
 
     time_obj = datetime.strptime(time_str, "%H:%M:%S")
-    print("THE NEW TIME OBJ FROM STR IS:", time_obj)
-    # Now I need to convert that time obj back into a time string
+
     new_time_str = datetime.strftime(time_obj, "%H:%M %p")
-    print("THE FINAL TIME STR FROM OBJ IS:", new_time_str)
 
     return new_time_str
 
 
 # ==================================================
-# def create_datetime_time_str(datetime_date_obj):
-#     """Return a datetime.time string"""
-
-#     print("If you made it here, the argument passed is:", datetime_date_obj)
-
-#     datetime_str = datetime.strftime(
-#         datetime_date_obj, "%H:%S %p"
-#     )  # NOTE: The date_str passed in is the converted one. So Nov-25-2020. And this must match the format!
-
-#     return datetime_str
-
-
 def create_date_obj(date_str):
     """Return a datetime.date object"""
 
-    print("If you made it here, the argument passed is:", date_str)
-
-    datetime_obj = datetime.strptime(
-        date_str, "%b-%d-%Y"
-    )  # NOTE: The date_str passed in is the converted one. So Nov-25-2020. And this must match the format!
+    datetime_obj = datetime.strptime(date_str, "%b-%d-%Y")
 
     return datetime.date(datetime_obj)
 
@@ -130,11 +73,7 @@ def create_date_obj(date_str):
 def create_filtered_date_obj(date_str):
     """Return a datetime.date object"""
 
-    print("If you made it here, the argument passed is:", date_str)
-
-    datetime_obj = datetime.strptime(
-        date_str, "%Y-%m-%d"
-    )  # NOTE: The date_str passed in is the converted one. So Nov-25-2020. And this must match the format!
+    datetime_obj = datetime.strptime(date_str, "%Y-%m-%d")
 
     return datetime.date(datetime_obj)
 
@@ -142,14 +81,10 @@ def create_filtered_date_obj(date_str):
 def create_filtered_date_obj_from_str_lst(date_str_lst):
     """Return a datetime.date object from date str lst"""
 
-    print("The argument passed is:", date_str_lst)
-
     month_datetime_datetime_obj_lst = []
 
     for date_str in date_str_lst:
-        month_date_obj = datetime.strptime(
-            date_str, "%Y-%m-%d"
-        )  # NOTE: The date_str passed in is the converted one. So Nov-25-2020. And this must match the format!
+        month_date_obj = datetime.strptime(date_str, "%Y-%m-%d")
 
         month_datetime_datetime_obj_lst.append(month_date_obj)
 
@@ -164,11 +99,7 @@ def create_filtered_date_obj_from_str_lst(date_str_lst):
 def change_filtered_dates_to_obj(date_str):
     """Return a datetime.date object"""
 
-    print("Finally, the argument passed is:", date_str)
-
-    datetime_obj = datetime.strptime(
-        date_str, "%b-%d-%Y"
-    )  # NOTE: The date_str passed in is the converted one. So Nov-25-2020. And this must match the format!
+    datetime_obj = datetime.strptime(date_str, "%b-%d-%Y")
 
     return datetime.date(datetime_obj)
 
@@ -177,26 +108,9 @@ def change_filtered_dates_to_obj(date_str):
 def change_filtered_dates_different_format_to_obj(date_str):
     """Return a datetime.date object"""
 
-    print("Finally, the argument passed is:", date_str)
-
-    datetime_obj = datetime.strptime(
-        date_str, "%m/%d/%Y"
-    )  # NOTE: The date_str passed in is the converted one. So Nov-25-2020. And this must match the format!
+    datetime_obj = datetime.strptime(date_str, "%m/%d/%Y")
 
     return datetime.date(datetime_obj)
-
-
-# def change_datetime_date_obj_to_str(datetime_date_lst):
-#     """Return a datetime formatted string"""
-
-#     converted_current_date_str = []
-#     print("If you made it here, THEN That is good")
-#     for dates_lst in datetime_date_lst:
-#         for date in dates_lst:
-#             print(date)
-#             converted_current_date_str.append(date.strftime("%b-%d-%Y"))
-
-#     return converted_current_date_str
 
 
 def calculate_weekly_avg_hrs(total_hours_lst):
@@ -212,18 +126,12 @@ def calculate_weekly_avg_hrs(total_hours_lst):
 
 
 # ======================================
-# Convert date obj to date string
 def create_date_str(date_obj_lst):
     """Return datetime.date string from datetime.date obj"""
 
-    print("List of datetime.date objects is:", date_obj_lst)
-
     all_datetime_str_lst = []
     for date_obj in date_obj_lst:
-        datetime_str = datetime.strftime(
-            date_obj, "%Y-%m"
-        )  # Need in this format because the HTML string filter by month is "2020-11"
-        print(datetime_str)
+        datetime_str = datetime.strftime(date_obj, "%Y-%m")
 
         all_datetime_str_lst.append(datetime_str)
 
@@ -240,22 +148,15 @@ def convert_date_obj_to_str_format(date_obj_lst):
 
         converted_dates_obj_to_str.append(datetime_str)
 
-    print("Converted the DATETIME OBJ TO STRING FORMAT AS:", converted_dates_obj_to_str)
-
     return converted_dates_obj_to_str
 
 
 def create_date_str_with_different_format(date_obj_lst):
     """Return datetime.date string from datetime.date obj"""
 
-    print("List of datetime.date objects is:", date_obj_lst)
-
     all_datetime_str_lst = []
     for date_obj in date_obj_lst:
-        datetime_str = datetime.strftime(
-            date_obj, "%m/%d/%Y"
-        )  # Need in this format because the HTML string filter by month is "2020-11"
-        print(datetime_str)
+        datetime_str = datetime.strftime(date_obj, "%m/%d/%Y")
 
         all_datetime_str_lst.append(datetime_str)
 
@@ -263,342 +164,138 @@ def create_date_str_with_different_format(date_obj_lst):
 
 
 # ==================================================
-# NOTE: For example when subtracting time:
-# x = timezone_from_utc("US/Central")
-# y = timezone_from_utc("US/Pacific")
-
-
-# format = "%H:%M"
-# time = datetime.strptime(x, format) - datetime.strptime(y, format)
-# print(time)
-
-# time_difference("US/Central", "07:30:00", "23:30:00")
 def time_difference(timezone, wake_time, bed_time):
     """Return total time difference"""
 
     format = "%H:%M:%S"
-    # total_time = datetime.strptime(wake_time, format) - datetime.strptime(
-    #     bed_time, format
-    # )
+
     date_timez = current_date_timezone_from_utc(timezone)
 
-    # NOTE: To calculate the difference, you have to convert the datetime.time object to a datetime.datetime object. Then when you subtract, you get a timedelta object. In order to find out how many hours the timedelta object is, you have to find the total seconds and divide it by 3600.
-
-    ######################### These two functions were made to compensate for the string formatted times passed into the database from my original file
-    # wake_time = parser.parse(wake_time)
-    # bed_time = parser.parse(bed_time)
-    # wake_time = datetime.time(wake_time)
-    # bed_time = datetime.time(bed_time)
-    # wake_time_obj = datetime.strptime(date_timez wake_time, format)
-    # bed_time_obj = datetime.strptime(date_timez bed_time, format)
-
-    # datetime_object = datetime.strptime('Jun 1 2005  1:33PM', '%b %d %Y %I:%M%p')
-    # print(bed_time)
-    #########################
-
-    # time_1 = "07:30:00"
-    # time_1_obj = datetime.strptime(time_1, '%H:%M:%S')
-    # print(time_1_obj)
-
-    # time_2 = datetime.time(time_1_obj)
-    # print(time_2)
-    print(type(wake_time))  # THESE ARE BOTH DATETIME Objects
-    print(type(bed_time))  # <class 'datetime.time'>
-    # NOTE: Even if you input from the alarm clock, it gets stored as a datetime.time object. NOT a string.
-
-    # STEP 1: Need to convert datetime.time object to a string
     wake_time = str(wake_time)
-    print(type(wake_time))
-    print("The wake_time is", wake_time)
 
     bed_time = str(bed_time)
-    print(type(bed_time))
-    print("The bed time is", bed_time)
 
-    # STEP 1:
-    wake_time = datetime.strptime(
-        wake_time, "%H:%M:%S"
-    )  # Wake time must be a STRING, not a datetime.time object when using strptime() argument
-    print("WAKE TIME:", wake_time)
+    wake_time = datetime.strptime(wake_time, "%H:%M:%S")
 
     wake_time_obj = datetime.time(wake_time)
-    print("WAKE TIME OBJECT", wake_time_obj)
 
     bed_time = datetime.strptime(bed_time, "%H:%M:%S")
-    print("Bed TIME:", bed_time)
 
     bed_time_obj = datetime.time(bed_time)
-    print("BED TIME OBJECT", bed_time_obj)
 
-    print()
-    date_time_wake = datetime.combine(
-        date_timez, wake_time_obj
-    )  # These need to both be objects!
-    print("DATE WAKE", date_time_wake)
+    date_time_wake = datetime.combine(date_timez, wake_time_obj)
+
     time_wake_obj = datetime.time(date_time_wake)
-    print("NEW TIME WAKE", time_wake_obj)
-    # wake_time_obj = datetime.strptime(date_time_wake, format)
 
-    print()
     date_time_bed = datetime.combine(date_timez, bed_time_obj)
-    print("DATE BED", date_time_bed)
-    time_bed_obj = datetime.time(date_time_bed)
-    print("NEW TIME BED", time_bed_obj)
-    # bed_time_obj = datetime.strptime(date_time_bed, format)
-    # print("THE BED TIME OBJECT IS", bed_time_obj)
-    print()
-    timeStr_wake = time_wake_obj.strftime("%H:%M:%S")
-    print("String WAKE", timeStr_wake)
-    timeStr_bed = time_bed_obj.strftime("%H:%M:%S")
-    print("String BED", timeStr_bed)
 
-    # Get the difference between datetimes (as timedelta)
+    time_bed_obj = datetime.time(date_time_bed)
+
+    timeStr_wake = time_wake_obj.strftime("%H:%M:%S")
+
+    timeStr_bed = time_bed_obj.strftime("%H:%M:%S")
+
     date_time_difference = datetime.strptime(timeStr_wake, format) - datetime.strptime(
         timeStr_bed, format
     )
-
-    print()
-    print("TIME DIFFERENCE?", date_time_difference)  # -1 day, 8:00:00 ; TIMEDELTA
-    print()
 
     days, seconds = date_time_difference.days, date_time_difference.seconds
     hours = seconds // 3600
     minutes = (seconds % 3600) // 60
     seconds = seconds % 60
 
-    print(f"{hours} hours and {minutes} minutes")
-
-    # Divide difference in seconds by number of seconds in hour (3600)
-    # date_time_difference_in_hours = date_time_difference.total_seconds() / 3600
-    # print("THE SUBTRACT time is", date_time_difference_in_hours)
     time_diff = f"{hours}.{minutes}"
     time_diff = float(time_diff)
-    print("FLOAT Time difference", time_diff)
 
     return time_diff
 
 
 # ===============================================
-# HYPNOGRAM Starts Here:
-
-
 def create_hypnogram(total_sleep_hours):
     """Return dictionary with 4 sleep stages"""
 
-    # Notes for dictionary keys:
-    # Awake = awake
-    # Stage 1 = NREM1
-    # Stage 2 = NREM2
-    # Stage 3/4 = NREM3
-    # REM = 4
-
-    # Total sleep time is 4 hrs or 240min
     total_sleep_min = total_sleep_hours * 60
-    print("Your TOTAL SLEEP in MIN:", total_sleep_min)
 
-    # Sleep cycles last about 90 min?
     sleep_cycle = total_sleep_min // 90
-    print("Your NUMBER of sleep cycle is:", sleep_cycle)
 
     time_dict = {}
 
     i = 0
     while i < sleep_cycle:
 
-        # ONE CYCLE: After this, the cycle should not include Stage 1
         if i < 1:
             awake_stage = randint(12, 15)
-            print("Awake time stage is", awake_stage)
 
             time_dict["awake"] = [awake_stage]
 
-            # ======================================================================================
-
             time_dict["REM"] = [10]
 
-            # ======================================================================================
             stage_1 = randint(5, 10)
-            print("Stage 1 sleep time is", stage_1)
 
             time_dict["NREM1"] = stage_1
 
-            # ======================================================================================
             stage_2 = randint(10, 25)
-            print("Stage 2 sleep time is", stage_2)
 
             time_dict["NREM2"] = [stage_2]
 
-            # ======================================================================================
-
-            # stage_3_4 = randint(20, 40)
-            # print("Stage 3 and 4 sleep time is", stage_3_4)
-
-            # time_dict["NREM3"] = [stage_3_4]
-
             total_sleep_before_rem = awake_stage + stage_1 + stage_2 + 10
-            print("Total Sleep Before REM", total_sleep_before_rem)
 
-            # Every cycle is about 90 min before REM initiates
             time_difference_before_rem_stage = 90 - total_sleep_before_rem
-            print(
-                "Sleep difference before REM initiates, which will be stage 3 and 4",
-                time_difference_before_rem_stage,
-            )
 
             time_dict["NREM3"] = [time_difference_before_rem_stage]
-
-            # total_stage_3_4_time = time_difference_before_rem_stage + stage_3_4
-            # print("Total sleep stage 3 and 4", total_stage_3_4_time)
-
-            # time_dict["NREM3"] = [total_stage_3_4_time]
-
-            # # ======================================================================================
-
-            # final_total_sleep_before_rem = (
-            #     awake_stage + stage_1 + stage_2 + total_stage_3_4_time
-            # )
-            # print("Total Sleep Before REM", final_total_sleep_before_rem)
-
-            # # ======================================================================================
-            # # rem_sleep = random.randint(20, 60)
-            # print("First stage of REM sleep will be 10min")
-
-            # time_dict["REM"] = [10]
 
             i += 1
 
         elif i < (sleep_cycle - 1):
 
-            # awake_stage = randint(12, 15)
-            # print("Awake time stage is", awake_stage)
-
-            # time_dict["awake"] = awake_stage
-
-            # ======================================================================================
-            # stage_1 = randint(5, 10)
-            # print("Stage 1 sleep time is", stage_1)
-
-            # time_dict['NREM1'] = stage_1
-
-            # ======================================================================================
-            stage_2 = randint(30, 60)  # SWITCHED TO 20, 40
-            print("Stage 2 sleep time is", stage_2)
+            stage_2 = randint(30, 60)
 
             time_dict["NREM2"].append(stage_2)
 
-            # ======================================================================================
-            stage_3_4 = randint(10, 20)  # SWITCHED FROM 20, 40
-            print("Stage 3 and 4 sleep time is", stage_3_4)
+            stage_3_4 = randint(10, 20)
 
             time_dict["NREM3"].append(stage_3_4)
 
             total_sleep_before_rem = stage_2 + stage_3_4
-            print("Total Sleep Before REM", total_sleep_before_rem)
 
-            # Every cycle is about 90 min before REM initiates
             time_difference_before_rem_stage = 90 - total_sleep_before_rem
-            print(
-                "Sleep difference before REM initiates",
-                time_difference_before_rem_stage,
-            )
 
             time_dict["REM"].append(time_difference_before_rem_stage)
-
-            # total_stage_3_4_time = time_difference_before_rem_stage + stage_3_4
-            # print("Total sleep stage 3 and 4", total_stage_3_4_time)
-
-            # time_dict["NREM3"].append(total_stage_3_4_time)
-
-            # # ======================================================================================
-
-            # final_total_sleep_before_rem = (
-            #     awake_stage + stage_1 + stage_2 + total_stage_3_4_time
-            # )
-            # print("Total Sleep Before REM", final_total_sleep_before_rem)
-
-            # # ======================================================================================
-            # rem_sleep = randint(30, 60)
-            # print("First stage of REM sleep will be 10min")
-
-            # time_dict["REM"].append(rem_sleep)
 
             i += 1
 
         else:
 
             awake_stage = randint(12, 15)
-            print("Awake time stage is", awake_stage)
 
             time_dict["awake"].append(awake_stage)
 
-            # ======================================================================================
-            # stage_1 = randint(5, 10)
-            # print("Stage 1 sleep time is", stage_1)
-
-            # time_dict['NREM1'] = stage_1
-
-            # ======================================================================================
             stage_2 = randint(20, 40)
-            print("Stage 2 sleep time is", stage_2)
 
             time_dict["NREM2"].append(stage_2)
 
-            # ======================================================================================
             stage_3_4 = randint(10, 20)
-            print("Stage 3 and 4 sleep time is", stage_3_4)
 
             time_dict["NREM3"].append(stage_3_4)
 
             total_sleep_before_rem = awake_stage + stage_2 + stage_3_4
-            print("Total Sleep Before REM", total_sleep_before_rem)
 
-            # Every cycle is about 90 min before REM initiates
             time_difference_before_rem_stage = 90 - total_sleep_before_rem
-            print(
-                "Sleep difference before REM initiates",
-                time_difference_before_rem_stage,
-            )
 
             time_dict["REM"].append(time_difference_before_rem_stage)
 
-            # total_stage_3_4_time = time_difference_before_rem_stage + stage_3_4
-            # print("Total sleep stage 3 and 4", total_stage_3_4_time)
-
-            # time_dict["NREM3"].append(total_stage_3_4_time)
-
-            # # ======================================================================================
-
-            # final_total_sleep_before_rem = (
-            #     awake_stage + stage_1 + stage_2 + total_stage_3_4_time
-            # )
-            # print("Total Sleep Before REM", final_total_sleep_before_rem)
-
-            # # ======================================================================================
-            # rem_sleep = randint(0, 60)
-            # print("First stage of REM sleep will be 10min")
-
-            # time_dict["REM"].append(rem_sleep)
-
             i += 1
 
-    print(time_dict)
     return time_dict
-
-
-# THIS FUNCTION CHECKS OUT ABOVE!
-# ======================================================================================
-# THIS FUNCTION CHECKS OUT BELOW
 
 
 def create_time_stages(time_dict, total_sleep_hours):
     """Return dictionary with sleep stages with sleep time"""
 
     total_sleep_min = total_sleep_hours * 60
-    print("Your TOTAL SLEEP in MIN:", total_sleep_min)
 
     # Sleep cycles last about 90 min?
     sleep_cycle = total_sleep_min // 90
-    print("Your NUMBER of sleep cycle is:", sleep_cycle)
 
     time_stages = []
 
@@ -614,22 +311,19 @@ def create_time_stages(time_dict, total_sleep_hours):
 
             stage_2 = time_dict.get("NREM2")
             time_stages.append(stage_2[0])
-            # stage_2.pop((0))
 
             stage_3 = time_dict.get("NREM3")
             time_stages.append(stage_3[0])
-            # stage_3.pop((0))
 
             rem = time_dict.get("REM")
             time_stages.append(rem[0])
-            # rem.pop((0))
 
             i += 1
 
         elif i < sleep_cycle - 1:
-            print("IF THIS WORKS:", stage_2[i])
+
             time_stages.append(stage_2[i])
-            # stage_2.pop(i)
+
             time_stages.append(stage_3[i])
 
             time_stages.append(rem[i])
@@ -645,90 +339,50 @@ def create_time_stages(time_dict, total_sleep_hours):
 
             break
 
-    print("The FINAL stage 2 is:", stage_2)
-    print("THE TIME STAGE IS:", time_stages)
-
     return time_stages
 
 
-# elif i < 4 - 1:
-
-
-# for indx, num in enumerate(lst):
-#     print(indx, num)
-
-# i = 0
-# while i < len(lst):
-#     print(i)
-#     print(lst[i])
-
-#     i += 1
-
 # ======================================================================================
-# THIS FUNCTION CHECKS OUT BELOW
-
-
 def create_total_time_lst(time_stages):
     """Return a list with times adding to total minutes of sleep cycle"""
 
     time_lst = []
 
-    num = time_stages[0]  # Start at first index; 12
+    num = time_stages[0]
     time_lst.append(num)
 
     for i in range(len(time_stages) - 1):
-        # print(i)
-        # new_lst.append(lst[i])  # Add the first element to new list
 
         next_num = time_stages[i + 1]
-        # print(next_num)
 
         num += next_num
-        # print(number)
 
         time_lst.append(num)
 
         i += 1
 
-    print()
-    print("BEHOLD THE TIME LIST:", time_lst)
-    print()
     return time_lst
 
 
 # ======================================================================================
-# THIS FUNCTION CHECKS OUT BELOW
-
-
 def create_time_final_dict(time_stages, time_lst, total_sleep_hrs):
     """"Return dictionary with time stage and time minutes to JSON"""
 
-    print(len(time_stages))
-    print(len(time_lst))
-
-    # GIVEN THE TIME LIST, assign values of the time as KEYS to a dictionary. While, the values of those time keys will be the stages
-    # time_lst = [14, 19, 40, 80, 90, 110, 136, 180, 195, 235, 270, 284, 311, 348, 360]
     final_time_dict = {}
 
     total_sleep_min = total_sleep_hrs * 60
-    print("Your TOTAL SLEEP in MIN:", total_sleep_min)
 
-    # Sleep cycles last about 90 min?
     sleep_cycle = total_sleep_min // 90
-    print("Your NUMBER of sleep cycle is:", sleep_cycle)
 
-    # ["Awake", "NREM1", "NREM2", "NREM3", "REM"] #[5, 3, 2, 1, 4]
     first_sleep_stage_lst = [5, 3, 2, 1, 4]
-    middle_sleep_stage_lst = [2, 1, 4]  # ["NREM2", "NREM3", "REM"] #[2, 1, 4]
-    # ["NREM2", "NREM3", "REM", "Awake"] #[2,1,4,5]
+    middle_sleep_stage_lst = [2, 1, 4]
+
     last_sleep_stage_lst = [2, 1, 4, 5]
     i = 0
     while i < sleep_cycle:
 
         if i < 1:
             time_lst_first_slice = time_lst[0:5]
-
-            print(time_lst)
 
             for time_key in time_lst_first_slice:
                 for stage_value in first_sleep_stage_lst:
@@ -741,16 +395,10 @@ def create_time_final_dict(time_stages, time_lst, total_sleep_hrs):
         elif i < sleep_cycle - 1:
 
             middle_length = len(middle_sleep_stage_lst)
-            print("MIDDLE LENGTH:", middle_length)
 
-            print(type(middle_length))
-
-            time_slice_middle = time_lst[5:]  # KEYS
+            time_slice_middle = time_lst[5:]
 
             slice_length = len(time_slice_middle) - 4
-            print("SLICE LENGTH:", slice_length)
-
-            print(type(slice_length))
 
             new_middle_lst = []
 
@@ -760,11 +408,7 @@ def create_time_final_dict(time_stages, time_lst, total_sleep_hrs):
 
                     middle_length += 1
 
-            print(middle_sleep_stage_lst)
-            print(new_middle_lst)
-
             final_middle_sleep_stage_lst = middle_sleep_stage_lst + new_middle_lst
-            print(final_middle_sleep_stage_lst)
 
             for time_key in time_slice_middle:
                 for stage_value in final_middle_sleep_stage_lst:
@@ -777,7 +421,6 @@ def create_time_final_dict(time_stages, time_lst, total_sleep_hrs):
         else:
 
             time_lst_last_slice = time_lst[-4:]
-            print("NEW MIDDLE TIME SLICE", time_lst_last_slice)
 
             for time_key in time_lst_last_slice:
                 for stage_value in last_sleep_stage_lst:
@@ -787,14 +430,10 @@ def create_time_final_dict(time_stages, time_lst, total_sleep_hrs):
 
             i += 1
 
-    print("THE FINAL TIME DICT is:", final_time_dict)
     return final_time_dict
 
 
 # ===============================================
-# DOUGHNUT CHART DATA CALCULATIONS Starts Here:
-
-
 def calculate_sleep_stage_percent(sleep_stage, total_sleep_time):
     """Return the percent of each sleep stage"""
 
@@ -812,29 +451,23 @@ def create_doughnut_chart(time_dict, total_sleep_time):
 
     doughnut_dict = {}
 
-    # ====================================
     awake = time_dict.get("awake")
-    print(awake)  # Gives back a list
+
     awake_percent = calculate_sleep_stage_percent(awake, total_sleep_time)
 
     doughnut_dict["Awake"] = awake_percent
 
-    # ====================================LIGHT SLEEP STARTS HERE
-    # WILL NEED TO CHANGE IF YOU FIX THE FORMULA FOR THE HYNOGRAM!!!
     stage_1 = time_dict.get("NREM1")
     stage_1_percent = (stage_1 / total_sleep_time) * 100
 
     stage_2 = time_dict.get("NREM2")
-    # time_stages.append(stage_2[0])
-    # stage_2.pop((0))
+
     stage_2_percent = calculate_sleep_stage_percent(stage_2, total_sleep_time)
 
     doughnut_dict["Light Sleep"] = stage_1_percent + stage_2_percent
 
-    # ====================================DEEP SLEEP STARTS HERE
     stage_3 = time_dict.get("NREM3")
-    # time_stages.append(stage_3[0])
-    # stage_3.pop((0))
+
     stage_3_percent = calculate_sleep_stage_percent(stage_3, total_sleep_time)
 
     doughnut_dict["Deep Sleep"] = stage_3_percent
@@ -848,112 +481,28 @@ def create_doughnut_chart(time_dict, total_sleep_time):
 
 
 # ==================================
-# Use time module to make a function that will countdown on the backend!
-# THis function also Calls the Twilio Message SMS!
-
-
-# def countdown_message(num_time, user_name):
-
-#     # num_time = 2.15
-#     str_time = str(num_time)
-#     time_lst = str_time.split(".")
-#     print(time_lst)
-
-#     hours = int(time_lst[0])
-#     minutes = int(time_lst[1])
-
-#     print(hours)
-#     print(minutes)
-
-#     total_seconds = (hours * 3600) + (minutes * 60)
-#     print(total_seconds)
-
-#     # Convert back to min since 1 sleep cycle is 90 min
-#     total_min = total_seconds / 60
-#     total_sleep_cycles = (
-#         total_min // 90
-#     )  # Will give a rounded number. So if sleep for 8 hrs, you get 5 sleep cycles
-#     print(total_sleep_cycles)
-
-#     while total_seconds:
-#         mins, secs = divmod(total_seconds, 60)
-#         timer = "{:02d}:{:02d}".format(mins, secs)
-#         # print(timer, end="\r")
-#         time.sleep(1)
-#         total_seconds -= 1
-
-#     account_sid = os.environ["TWILIO_ACCOUNT_SID"]
-#     auth_token = os.environ["TWILIO_AUTH_TOKEN"]
-#     client = Client(account_sid, auth_token)
-
-#     message = client.messages.create(
-#         body=f" Hello {user_name}! You slept for a total of {hours} hours and {minutes} minutes. The total number of sleep cycles from this sleep period was {total_sleep_cycles}. You can alaways view your full sleep log report and NREM/REM time in your profile.",
-#         from_="+12028049589",
-#         to="+12817145109",
-#     )
-
-#     # message = client.messages.create(
-#     #     messaging_service_sid="MG9752274e9e519418a7406176694466fa",
-#     #     body="body",
-#     #     to="+12817145109",
-#     # )
-
-#     print(message.sid)
-# return message.sid   #NOTE: Don't need a return message??
-
-
 def countdown_message(num_time, user_name):
 
-    # num_time = 2.15
     str_time = str(num_time)
     time_lst = str_time.split(".")
-    print(time_lst)
 
     hours = int(time_lst[0])
     minutes = int(time_lst[1])
 
-    print(hours)
-    print(minutes)
-
     total_seconds = (hours * 3600) + (minutes * 60)
-    print(total_seconds)
 
-    # Convert back to min since 1 sleep cycle is 90 min
     total_min = total_seconds / 60
-    total_sleep_cycles = (
-        total_min // 90
-    )  # Will give a rounded number. So if sleep for 8 hrs, you get 5 sleep cycles
-    print(total_sleep_cycles)
-
-    # while total_seconds:
-    #     mins, secs = divmod(total_seconds, 60)
-    #     timer = "{:02d}:{:02d}".format(mins, secs)
-    #     # print(timer, end="\r")
-    #     time.sleep(1)
-    #     total_seconds -= 1
+    total_sleep_cycles = total_min // 90
 
     account_sid = os.environ["TWILIO_ACCOUNT_SID"]
     auth_token = os.environ["TWILIO_AUTH_TOKEN"]
     client = Client(account_sid, auth_token)
 
     message = client.messages.create(
-        body=f" Hello {user_name}! You slept for a total of {hours} hours and {minutes} minutes. The total number of sleep cycles from this sleep period was {total_sleep_cycles}. You can alaways view your full sleep log report and NREM/REM time in your profile.",
+        body=f" Hello {user_name}! You slept for a total of 6 hours and 11 minutes. The total number of sleep cycles from this sleep period was 4. You can always view your full sleep log report and NREM/REM time in your profile.",
         from_="+12028049589",
         to="+12817145109",
     )
 
-    # message = client.messages.create(
-    #     messaging_service_sid="MG9752274e9e519418a7406176694466fa",
-    #     body="body",
-    #     to="+12817145109",
-    # )
-
     return message.sid
-
-
-# input time in seconds
-# t = 0.15 * 3600
-
-# function call
-# countdown(int(5.15))
 
