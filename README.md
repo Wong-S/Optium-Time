@@ -23,7 +23,7 @@ Having trouble falling asleep? Optium Time is a sleep tracker app that helps the
 
 -Create an account and login
 <br>
-<img src ="https://giphy.com/gifs/qtQhbW02dgujNIx0NQ/html5">
+<img src ="https://giphy.com/gifs/qtQhbW02dgujNIx0NQ/html5" />
 <br>
 
 -Set an alarm and have Twilio API send a text message detailing the total hours you slept and the number of sleep cycles for that night.
