@@ -41,9 +41,11 @@ Having trouble falling asleep? Optium Time is a sleep tracker app that helps the
 ![Alt Text](https://media.giphy.com/media/iYR6U5JNnZbPfjIs1A/giphy.gif)
 
 
--Need extra sounds to help you focus and relax for bed? The ambient sound station allows you to create a playlist and query videos using the Youtube Data API. Search and select certain white,brown, and pink noises. 
+-Need extra sounds to help you focus and relax for bed? The ambient sound station uses the Youtube Data API to search for videos with white, brown, and pink noises. 
 <br>
 ![Alt Text](https://media.giphy.com/media/Xl71de1NLh476mKNHp/giphy.gif)
+<br>
+-Create a playlist and save your videos for future use.
 <br>
 ![Alt Text](https://media.giphy.com/media/hHp4BbL5Amzj38qtUw/giphy.gif)
 <br>
@@ -56,6 +58,7 @@ Having trouble falling asleep? Optium Time is a sleep tracker app that helps the
 -Select any point on the homepage graph to see additional details like the user's previous journals or their hypnogram and sleep stages for that night.
 <br>
 ![Alt Text](https://media.giphy.com/media/SObFK00OPfHEdSP1Ta/giphy.gif)
+<br>
 <br>
 ![Alt Text](https://media.giphy.com/media/3DA1pFqU7eGOnfa5A9/giphy.gif)
 <br>
