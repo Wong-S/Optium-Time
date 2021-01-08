@@ -24,8 +24,7 @@ Having trouble falling asleep? Optium Time is a sleep tracker app that helps the
 -Create an account and login
 <br>
 ![Alt Text](https://media.giphy.com/media/qtQhbW02dgujNIx0NQ/giphy.gif)
-
-
+<br>
 <br>
 
 -Set an alarm and have Twilio API send a text message detailing the total hours you slept and the number of sleep cycles for that night.
@@ -35,12 +34,12 @@ Having trouble falling asleep? Optium Time is a sleep tracker app that helps the
 ![Alt Text](https://media.giphy.com/media/wD0jWC0ihE1gCG7eu8/giphy.gif)
 <br>
 
-
+<br>
 -Keep a journal to help you unwind your thoughts.
 <br>
 ![Alt Text](https://media.giphy.com/media/iYR6U5JNnZbPfjIs1A/giphy.gif)
 
-
+<br>
 -Need extra sounds to help you focus and relax for bed? The ambient sound station uses the Youtube Data API to search for videos with white, brown, and pink noises. 
 <br>
 ![Alt Text](https://media.giphy.com/media/Xl71de1NLh476mKNHp/giphy.gif)
@@ -50,10 +49,12 @@ Having trouble falling asleep? Optium Time is a sleep tracker app that helps the
 ![Alt Text](https://media.giphy.com/media/hHp4BbL5Amzj38qtUw/giphy.gif)
 <br>
 
-
+<br>
 -Look back on your previous sleep log data and view your sleep stages per that week or previous months. 
 <br>
 ![Alt Text](https://media.giphy.com/media/DOjZd2my1OMyxl5y5G/giphy.gif)
+<br>
+
 <br>
 -Select any point on the homepage graph to see additional details like the user's previous journals or their hypnogram and sleep stages for that night.
 <br>
