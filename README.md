@@ -29,45 +29,36 @@ Having trouble falling asleep? Optium Time is a sleep tracker app that helps the
 <br>
 
 -Set an alarm and have Twilio API send a text message detailing the total hours you slept and the number of sleep cycles for that night.
-<br><br>
+<br>
+![Alt Text](https://media.giphy.com/media/McQk8VytpnLSaQwDKV/giphy.gif)
+<br>
+![Alt Text](https://media.giphy.com/media/wD0jWC0ihE1gCG7eu8/giphy.gif)
+<br>
 
-<!-- <p align="center">
-<img src="/static/images/reminder.jpg">
-<br/><br/>
- </p> -->
 
 -Keep a journal to help you unwind your thoughts.
-<br><br>
+<br>
+![Alt Text](https://media.giphy.com/media/iYR6U5JNnZbPfjIs1A/giphy.gif)
 
-<!-- <p align="center">
-<img src="/static/images/todolist.jpg">
-<br/><br/>
- </p> -->
 
-<!-- After a long day, write a simple
-journal entry to help clear the mind
-and not stress over what to write
-with guided prompts or free write what's
-on your mind. -->
+-Need extra sounds to help you focus and relax for bed? The ambient sound station allows you to create a playlist and query videos using the Youtube Data API. Search and select certain white,brown, and pink noises. 
+<br>
+![Alt Text](https://media.giphy.com/media/Xl71de1NLh476mKNHp/giphy.gif)
+<br>
+![Alt Text](https://media.giphy.com/media/hHp4BbL5Amzj38qtUw/giphy.gif)
+<br>
 
-<br><br>
 
-<!-- <p align="center">
-<img src="/static/images/journal.jpg">
-<br/><br/>
- </p> -->
-
--Need extra sounds to help you focus and relax for bed? The ambient sound station uses the Youtube Data API for you
-to select certain white,brown, and pink noises.
-<br><br>
-
-<!-- <p align="center">
-<img src="/static/images/meditation.jpg">
-<br><br>
- </p> -->
-
--Look back on your previous sleep log data and view your sleep stages and hypnogram for that day.
-<br><br>
+-Look back on your previous sleep log data and view your sleep stages per that week or previous months. 
+<br>
+![Alt Text](https://media.giphy.com/media/DOjZd2my1OMyxl5y5G/giphy.gif)
+<br>
+-Select any point on the homepage graph to see additional details like the user's previous journals or their hypnogram and sleep stages for that night.
+<br>
+![Alt Text](https://media.giphy.com/media/SObFK00OPfHEdSP1Ta/giphy.gif)
+<br>
+![Alt Text](https://media.giphy.com/media/3DA1pFqU7eGOnfa5A9/giphy.gif)
+<br>
 
 ## <a name="developer"></a>About the Developer
 
