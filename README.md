@@ -65,7 +65,7 @@ Having trouble falling asleep? Optium Time is a sleep tracker app that helps the
 ![Alt Text](https://media.giphy.com/media/SObFK00OPfHEdSP1Ta/giphy.gif)
 <br>
 
-<br>
+
 ![Alt Text](https://media.giphy.com/media/3DA1pFqU7eGOnfa5A9/giphy.gif)
 <br>
 
