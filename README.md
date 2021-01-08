@@ -34,12 +34,12 @@ Having trouble falling asleep? Optium Time is a sleep tracker app that helps the
 ![Alt Text](https://media.giphy.com/media/wD0jWC0ihE1gCG7eu8/giphy.gif)
 <br>
 
-<br>
+
 -Keep a journal to help you unwind your thoughts.
 <br>
 ![Alt Text](https://media.giphy.com/media/iYR6U5JNnZbPfjIs1A/giphy.gif)
 
-<br>
+
 -Need extra sounds to help you focus and relax for bed? The ambient sound station uses the Youtube Data API to search for videos with white, brown, and pink noises. 
 <br>
 ![Alt Text](https://media.giphy.com/media/Xl71de1NLh476mKNHp/giphy.gif)
@@ -60,6 +60,7 @@ Having trouble falling asleep? Optium Time is a sleep tracker app that helps the
 <br>
 ![Alt Text](https://media.giphy.com/media/SObFK00OPfHEdSP1Ta/giphy.gif)
 <br>
+
 <br>
 ![Alt Text](https://media.giphy.com/media/3DA1pFqU7eGOnfa5A9/giphy.gif)
 <br>
