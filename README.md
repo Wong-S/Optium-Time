@@ -21,7 +21,7 @@ Having trouble falling asleep? Optium Time is a sleep tracker app that helps the
 
 ## <a name="features"></a>Features
 
--Create an account and login
+### Create an account and login
 <br>
 ![Alt Text](https://media.giphy.com/media/qtQhbW02dgujNIx0NQ/giphy.gif)
 <br>
@@ -35,32 +35,32 @@ Having trouble falling asleep? Optium Time is a sleep tracker app that helps the
 <br>
 
 
--Keep a journal to help you unwind your thoughts.
+### Keep a journal to help you unwind your thoughts.
 <br>
 ![Alt Text](https://media.giphy.com/media/iYR6U5JNnZbPfjIs1A/giphy.gif)
 
 
--Need extra sounds to help you focus and relax for bed? The ambient sound station uses the Youtube Data API to search for videos with white, brown, and pink noises. 
+### Need extra sounds to help you focus and relax for bed? The ambient sound station uses the Youtube Data API to search for videos with white, brown, and pink noises. 
 <br>
 ![Alt Text](https://media.giphy.com/media/Xl71de1NLh476mKNHp/giphy.gif)
 <br>
 <br>
 
--Create a playlist and save your videos for future use.
+### Create a playlist and save your videos for future use.
 <br>
 
 ![Alt Text](https://media.giphy.com/media/hHp4BbL5Amzj38qtUw/giphy.gif)
 <br>
 
 
--Look back on your previous sleep log data and view your sleep stages per that week or previous months. 
+### Look back on your previous sleep log data and view your sleep stages per that week or previous months. 
 <br>
 ![Alt Text](https://media.giphy.com/media/DOjZd2my1OMyxl5y5G/giphy.gif)
 <br>
 <br>
 
 
--Select any point on the homepage graph to see additional details like the user's previous journals or their hypnogram and sleep stages for that night.
+### Select any point on the homepage graph to see additional details like the user's previous journals or their hypnogram and sleep stages for that night.
 <br>
 ![Alt Text](https://media.giphy.com/media/SObFK00OPfHEdSP1Ta/giphy.gif)
 <br>
